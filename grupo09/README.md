@@ -94,5 +94,21 @@ Se realizaron pruebas de ensamblado y ejecución en el simulador LC-3, verifican
 
 Las optimizaciones MULQ y HALF permiten reducir el número de instrucciones ejecutadas respecto de la implementación original, manteniendo los resultados numéricos del núcleo Q7.8.
 
+## Rangos y formatos
+
+Entrada: Q15.16, valores desde 0 hasta menos de 32768.
+
+Salida: Q15.16, raíz cuadrada aproximada. Para el rango de entrada admitido, el valor matemático de la raíz se encuentra entre 0 y aproximadamente 181,02.
+
+Cálculo interno: Q7.8, con seis iteraciones de Newton-Raphson.
+
+Precisión: limitada por el cálculo interno en Q7.8; los resultados no son necesariamente exactos.
+
+## Compatibilidad con el simulador
+
+La implementación fue ensamblada y ejecutada exitosamente en el simulador LC-3 del Grupo 08: https://lc3.lgrum.xyz/
+
+Se verificó su funcionamiento integrado con el menú principal de la calculadora, incluyendo las optimizaciones MULQ y HALF.
+
 ## Vitacora
 https://docs.google.com/document/d/1y0KH7npD7WXnLNtVTXCE_g3k6S87dZBEdLG64QTJp9Q/edit?usp=sharing
