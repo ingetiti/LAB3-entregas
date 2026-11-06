@@ -17,10 +17,10 @@ OUTVAL
     ST R4 outval_r4                     ;
     ST R7 outval_r7                     ;
 
-    LEA R2 GETVAL_BUFFER-BUFFER         ;
+    LD R2 outval_buffer_ptr         ;
     AND R3 R3 #0                        ;
     JSR TODEC-TODEC                     ;
-    LEA R0 GETVAL_BUFFER-BUFFER         ;
+    LD R0 outval_buffer_ptr         ;
     PUTS                                ;   print(todec(value))
     AND R0 R0 #0                        ;
     ADD R0 R0 #10                       ;
@@ -34,3 +34,6 @@ OUTVAL
 outval_r3       .FILL #0 
 outval_r4       .FILL #0 
 outval_r7       .FILL #0 
+outval_buffer_ptr .FILL GETVAL_BUFFER-BUFFER
+
+.END
