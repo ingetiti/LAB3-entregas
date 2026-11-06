@@ -11,7 +11,7 @@
 
 Se desarrolló una subrutina en Assembly LC-3 para calcular raíces cuadradas mediante el método de Newton-Raphson aplicado a la raíz recíproca.
 
-##Características:
+## Características:
 
 -Implementación en Assembly LC-3.
 
@@ -63,6 +63,7 @@ En grupo27/main_menu/:
 
 ## Cómo probarlo
 Opción A (Desde Git Hub): 
+
   -Descargar el repositorio desde GitHub.
 
   -Abrir el simulador LC-3: https://lc3.lgrum.xyz/
@@ -80,6 +81,7 @@ Opción A (Desde Git Hub):
   -Ingresar un número decimal y comprobar el resultado.
 
 Opción B (Carga Rapida):
+  
   -Copiar e ingresar al link y descargar (zip con todos los archivos listos para subir en el simulador LC-3) + Guía de       Carga Rapida: 
 
    https://drive.google.com/drive/folders/1LdAcch1DFq27HeZzpC9q4ezxdLd3fQvj?usp=drive_link
