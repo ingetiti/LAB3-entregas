@@ -28,8 +28,8 @@ GETVAL_Q12
 
     PUTS                                ;   print(prompt)
 
-    LEA R0 GETVAL_BUFFER-BUFFER         ;
-    LEA R1 GETVAL_BUFFER-BUFFER_END     ;
+    LD R0 getval_q12_buffer_ptr         ;
+    LD R1 getval_q12_buffer_end_ptr     ;
     JSR GETLINE-GETLINE                 ;   [R0] buffer = getline()
 
     JSR FROMDEC-FROMDEC                 ;   [R0, R1, R5] = [entero, decimal, errores]
@@ -38,7 +38,7 @@ GETVAL_Q12
     ST R0 getval_q12_value              ;   
     JSR Q12_TO_DQ16-Q12_TO_DQ16         ;
 
-    LEA R2 GETVAL_BUFFER-BUFFER         ;
+    LD R2 getval_q12_buffer_ptr         ;
     AND R3 R3 #0                        ;   # (R3 = formato)
     JSR TODEC-TODEC                     ;   [R2] = buffer   # (con valor actualizado)
 
@@ -64,6 +64,7 @@ getval_q12_r2      .FILL #0
 getval_q12_r3      .FILL #0
 getval_q12_r5      .FILL #0
 getval_q12_r7      .FILL #0
-
+getval_q12_buffer_ptr     .FILL GETVAL_BUFFER-BUFFER
+getval_q12_buffer_end_ptr .FILL GETVAL_BUFFER-BUFFER_END
 
 .END
