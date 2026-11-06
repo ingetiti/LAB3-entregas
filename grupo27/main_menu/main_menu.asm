@@ -6,7 +6,9 @@
 
 .EXTERNAL Q12_TO_DQ16-Q12_TO_DQ16
 .EXTERNAL Q8_TO_DQ16-Q8_TO_DQ16
-
+.EXTERNAL SQRT_NR_DQ16-SQRT_NR_DQ16
+.EXTERNAL GETLINE-GETLINE
+.EXTERNAL FROMDEC-FROMDEC
 .EXTERNAL GETVAL-GETVAL         
 .EXTERNAL GETVAL_INT-GETVAL_INT 
 .EXTERNAL GETVAL_Q8-GETVAL_Q8   
@@ -298,6 +300,66 @@ main_menu_sub_getval_int    .FILL GETVAL_INT-GETVAL_INT
 main_menu_sub_getval_q8     .FILL GETVAL_Q8-GETVAL_Q8   
 main_menu_sub_getval_q12    .FILL GETVAL_Q12-GETVAL_Q12 
 main_menu_sub_outval        .FILL OUTVAL-OUTVAL
+main_menu_sqrt_nr_validado
+    LD R5 main_menu_state
+    LDR R0 R5 #1
+    PUTS
+
+main_menu_sqrt_nr_pedir
+    LEA R0 main_menu_prompt_a
+    PUTS
+    LEA R0 main_menu_sqrt_input
+    LEA R1 main_menu_sqrt_input_end
+    LD R2 main_menu_sqrt_getline
+    JSRR R2
+    LD R2 main_menu_sqrt_fromdec
+    JSRR R2
+
+    AND R2 R5 #1
+    BRnp main_menu_sqrt_invalid
+    AND R2 R5 #2
+    BRnp main_menu_sqrt_range
+    ADD R0 R0 #0
+    BRn main_menu_sqrt_negative
+
+    LD R5 main_menu_state
+    LDR R2 R5 #4
+    LDR R2 R2 #0
+    JSRR R2
+
+    LD R2 main_menu_sub_outval
+    JSRR R2
+    LD R0 main_menu_sub_pause
+    JSRR R0
+    AND R0 R0 #0
+    LD R2 main_menu_sqrt_swap_addr
+    JMP R2
+
+main_menu_sqrt_invalid
+    LEA R0 main_menu_sqrt_invalid_msg
+    PUTS
+    BRnzp main_menu_sqrt_nr_pedir
+
+main_menu_sqrt_negative
+    LEA R0 main_menu_sqrt_negative_msg
+    PUTS
+    BRnzp main_menu_sqrt_nr_pedir
+
+main_menu_sqrt_range
+    LEA R0 main_menu_sqrt_range_msg
+    PUTS
+    BRnzp main_menu_sqrt_nr_pedir
+
+main_menu_sqrt_getline .FILL GETLINE-GETLINE
+main_menu_sqrt_fromdec .FILL FROMDEC-FROMDEC
+main_menu_sqrt_swap_addr .FILL main_menu_swap_node
+
+main_menu_sqrt_invalid_msg .STRINGZ "ERROR: Invalid Input\n"
+main_menu_sqrt_negative_msg .STRINGZ "ERROR: Invalid Argument (a < 0)\n"
+main_menu_sqrt_range_msg .STRINGZ "ERROR: Out Of Range (Q15.16)\n"
+
+main_menu_sqrt_input .BLKW #32
+main_menu_sqrt_input_end .BLKW #1
 
 
 
@@ -432,12 +494,12 @@ main_menu_sqrt_nonres       .FILL main_menu_one_q7_8
 main_menu_sqrt_nonres_text  .STRINGZ "\n\n==RAIZ CUADRADA (NON RESTORING)==\n a (Q7.8)\n"
 main_menu_sqrt_nonres_next  .FILL main_menu_init
 ;   ----------------------------------------------------------------------------
-main_menu_sqrt_nr           .FILL main_menu_one_q7_8
+main_menu_sqrt_nr           .FILL main_menu_sqrt_nr_validado
                             .FILL main_menu_sqrt_nr_text
                             .FILL #0
                             .FILL main_menu_sqrt_nr_next
                             .FILL main_menu_sub_sqrt_nr
-main_menu_sqrt_nr_text      .STRINGZ "\n\n==RAIZ CUADRADA (NEWTON-RAPHSON)==\n a (Q7.8)\n"
+main_menu_sqrt_nr_text      .STRINGZ "\n\n==RAIZ CUADRADA (NEWTON-RAPHSON)==\nRango: 0 <= a < 32768 (Q15.16)\n a (decimal)\n"
 main_menu_sqrt_nr_next      .FILL main_menu_init
 
 ;   ============================================================================
@@ -614,7 +676,7 @@ main_menu_sub_div_long      .FILL NULL_SUBRUTINE        ; <- DIV_LONG
 main_menu_sub_div_nr        .FILL NULL_SUBRUTINE        ; <- DIV_NEWTONRAPHSON
 main_menu_sub_log           .FILL NULL_SUBRUTINE        ; <- LOG
 main_menu_sub_sqrt_nonres   .FILL NULL_SUBRUTINE        ; <- SQRT_NONRES
-main_menu_sub_sqrt_nr       .FILL NULL_SUBRUTINE        ; <- SQRT_NEWTONRAPHSON
+main_menu_sub_sqrt_nr       .FILL SQRT_NR_DQ16-SQRT_NR_DQ16        ; <- SQRT_NEWTONRAPHSON
 main_menu_sub_exp           .FILL NULL_SUBRUTINE        ; <- EXP
 main_menu_sub_pow_sumas     .FILL NULL_SUBRUTINE        ; <- POW_SUMAS
 main_menu_sub_pow_expbin    .FILL NULL_SUBRUTINE        ; <- POW_EXPBIN
