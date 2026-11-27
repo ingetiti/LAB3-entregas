@@ -1,0 +1,234 @@
+================================================================================
+           BITÁCORA DE INVESTIGACIÓN - ARQUITECTURA DE COMPUTADORAS
+           LABORATORIO N° 3a y 3b: PUNTO FIJO Y CONVERSIÓN DE BASES EN LC-3
+================================================================================
+
+--------------------------------------------------------------------------------
+REGISTRO DE SESIÓN #1
+--------------------------------------------------------------------------------
+- Fecha y hora: 
+  15/10/2026 - 17:30 hs.
+
+- Objetivo del día: 
+  Comprender e implementar los fundamentos de la representación de punto fijo 
+  en lenguaje C, abordando la captura de variables en punto flotante, el casting 
+  a formatos Q distintos (Q3.12 y Q7.8), y la normalización de formatos para 
+  operaciones de suma y resta (Puntos 1, 2 y 3 de la guía de alto nivel).
+
+- Actividades realizadas:
+  * Desarrollo del programa inicial (Punto 1) para el ingreso y almacenamiento 
+    de dos valores flotantes por teclado utilizando scanf y tipos double.
+  * Análisis de los rangos admisibles para registros signados de 16 bits (int16_t):
+    determinación de [-8.0, 7.9997) para Q3.12 y [-128.0, 127.996) para Q7.8.
+  * Programación del algoritmo de conversión mediante casting de flotante a 
+    entero de 16 bits aplicando los factores de escala 2^12 (4096.0) y 2^8 (256.0) 
+    (Punto 2).
+  * Implementación y verificación del alineamiento de formatos fraccionarios para 
+    permitir adición y sustracción (Punto 3), convirtiendo la variable en Q3.12 
+    a Q7.8 mediante división por 16 (descarte de 4 bits fraccionarios).
+  * Depuración en el IDE con breakpoints y visualización de variables vigiladas 
+    (watch values) para cotejar la precisión fraccionaria obtenida frente al valor 
+    teórico.
+
+- Observaciones y hallazgos:
+  * Para sumar o restar dos números en punto fijo es imperativo que compartan 
+    la misma posición del punto binario (mismo factor de escala fraccionario).
+  * La conversión de Q3.12 a Q7.8 requiere reducir la resolución fraccionaria en 
+    4 bits (12 - 8 = 4). Esto se traduce matemáticamente en una división entera 
+    por 2^4 = 16 (desplazamiento a la derecha de 4 bits).
+  * Se comprobó la necesidad de utilizar variables intermedias de 32 bits (int32_t) 
+    para evaluar posibles desbordamientos (overflow/underflow) antes de truncar 
+    el resultado final a 16 bits.
+
+- Dificultades u obstáculos:
+  * Truncamiento por división entera en C con operandos negativos: se observó 
+    que la división entera directa trunca hacia cero en vez de redondear hacia el 
+    infinito negativo como lo haría un corrimiento aritmético estricto. Se verificó 
+    que los valores elegidos dentro del rango no generasen discrepancias en la 
+    conversión manual.
+  * Validación de límites: el ingreso de valores flotantes fuera de los rangos 
+    producía overflow inmediato al hacer el casting a int16_t. Se resolvió 
+    añadiendo bloques de verificación previa de rango antes de calcular el entero.
+
+- Plan para la siguiente sesión:
+  * Diseñar la multiplicación y la división en punto fijo en lenguaje C (Puntos 4 y 5).
+  * Determinar las escalas resultantes de los productos y cocientes, evaluando 
+    la necesidad de variables de 32 bits.
+  * Trasladar los algoritmos matemáticos a lenguaje Assembly de la LC-3, teniendo en 
+    cuenta que el procesador no cuenta con instrucciones nativas de multiplicación 
+    ni desplazamientos directos.
+
+--------------------------------------------------------------------------------
+REGISTRO DE SESIÓN #2
+--------------------------------------------------------------------------------
+- Fecha y hora: 
+  22/10/2026 - 16:53 hs.
+
+- Objetivo del día: 
+  Completar los algoritmos de multiplicación y división en C (Puntos 4 y 5 de 
+  alto nivel) e implementar la solución completa en lenguaje Assembly para la 
+  arquitectura LC-3 (Puntos 3 y 4 en bajo nivel), integrando los operandos 
+  directamente en memoria (.FILL).
+
+- Actividades realizadas:
+  * Desarrollo del programa de multiplicación en C (Punto 4): cálculo del formato 
+    intermedio Q10.20 en 32 bits y ajuste a Q7.8 mediante desplazamiento aritmético 
+    hacia la derecha de 12 posiciones (>> 12).
+  * Desarrollo del programa de división en C (Punto 5): escalamiento previo del 
+    dividendo a 32 bits (desplazamiento de 8 bits a la izquierda) para preservar la 
+    máxima resolución posible y obtener un cociente en formato Q3.12 tras dividirlo 
+    por el divisor en Q7.8.
+  * Análisis de las restricciones del conjunto de instrucciones (ISA) de la LC-3 
+    (ausencia de MUL, DIV y desplazadores de hardware).
+  * Escritura del código Assembly para la LC-3 (`lab3.asm`):
+      - Carga de constantes prefijadas en memoria: NUM1 en Q3.12 (x1800) y 
+        NUM2 en Q7.8 (x0200).
+      - Desarrollo de la subrutina `ASHR_ONE` para ejecutar el desplazamiento 
+        aritmético a la derecha de 1 bit con preservación de signo mediante 
+        restas sucesivas.
+      - Compatibilización de NUM1 a Q7.8 y ejecución de suma y resta (Punto 3 en assembly).
+      - Implementación del algoritmo de multiplicación por sumas sucesivas y 
+        su posterior escalado mediante un bucle de 12 desplazamientos a la 
+        derecha (Punto 4 en assembly).
+  * Simulación paso a paso en el entorno LC-3 para verificar los registros 
+    y celdas de memoria resultantes.
+
+- Observaciones y hallazgos:
+  * Multiplicación: Al multiplicar números en punto fijo, las escalas fraccionarias 
+    se suman: 2^12 * 2^8 = 2^20. Para restablecer el resultado al formato destino 
+    Q7.8, se debe dividir por 2^12 (descartar 12 bits fraccionarios).
+  * División: La división directa resta las escalas fraccionarias (12 - 8 = 4 bits), 
+    lo cual degrada fuertemente la resolución. El pre-escalado de 8 bits al dividendo 
+    (llevándolo a escala 2^20) asegura que el cociente final conserve 12 bits 
+    fraccionarios (formato Q3.12).
+  * En LC-3, la falta de shift aritmético exige construir subrutinas auxiliares 
+    apoyándose en el complemento a dos y la división entera manual por 2.
+
+- Dificultades u obstáculos:
+  * Manejo del signo en desplazamientos a la derecha dentro de la LC-3: un 
+    desplazamiento lógico introduce ceros en el bit más significativo, corrompiendo 
+    los valores negativos. Se solucionó en la subrutina `ASHR_ONE` aislando el signo, 
+    procesando la magnitud en positivo mediante restas sucesivas de 2, y 
+    restaurando el complemento a dos solo si el flag de signo estaba activo.
+  * Prevención de overflow en la multiplicación en LC-3: debido a que la palabra de 
+    datos del LC-3 es de 16 bits, valores de entrada elevados pueden provocar desborde 
+    durante el acumulador del producto intermedio antes de poder realizar el ajuste. 
+    Se resolvió configurando operandos de prueba acotados (1.5 y 2.0) para validar 
+    el camino crítico del algoritmo.
+
+- Plan para la siguiente sesión:
+  * Integrar las mediciones de ciclos de reloj y cantidad de instrucciones ejecutadas 
+    en el simulador funcional para evaluar el costo computacional del algoritmo de 
+    multiplicación por software frente a una ISA que incorpore instrucciones específicas.
+  * Consolidar el informe escrito del Laboratorio N° 3a y preparar la presentación 
+    de los diagramas de flujo y decisiones de diseño para la defensa grupal.
+
+--------------------------------------------------------------------------------
+REGISTRO DE SESIÓN #3
+--------------------------------------------------------------------------------
+- Fecha y hora: 
+  28/10/2026 - 17:07 hs.
+
+- Objetivo del día: 
+  Implementar y comparar distintas versiones de un conversor de decimal a binario 
+  y hexadecimal para enteros de 16 bits, tanto en lenguaje C como en Assembly de 
+  la LC-3, y documentar la adaptación final del algoritmo al archivo 
+  conversorFuente.c.
+
+- Actividades realizadas:
+  * Desarrollo de conversor.c: programa en C con menú para convertir un decimal 
+    entre -32768 y 32767 a binario, hexadecimal o ambas bases. Incluye lectura de 
+    línea completa, parseo manual del signo y los dígitos, validación de rango y 
+    conversión mediante máscara de 16 bits y extracción de dígitos por divisiones 
+    sucesivas.
+  * Desarrollo de conversor_q7_8.c: conversor para el formato de punto fijo Q7.8. 
+    Se parsea la parte entera y la parte fraccionaria por separado, se calculan 
+    los 8 bits fraccionarios multiplicando por 2 y dividiendo por el denominador, 
+    y se arma el valor crudo de 16 bits. La salida binaria y hexadecimal separa 
+    la parte entera de la fraccionaria con una coma.
+  * Implementación de conversor_lc3.asm: primera versión completa para LC-3 con 
+    menú, subrutina LEER_DECIMAL (validación de signo, dígitos y rango), salida 
+    binaria mediante el flag N y desplazamientos, salida hexadecimal mediante 
+    restas sucesivas de los valores de lugar de cada nibble, y rutina PAUSA.
+  * Implementación de conversor_lc3_opt.asm: versión optimizada del conversor. 
+    La multiplicación decimal por 10 se reemplaza por sumas y desplazamientos; 
+    el signo y la cuenta de dígitos comparten el registro R2; la salida binaria 
+    y hexadecimal utiliza árboles de decisión de 4 bits con tablas de cadenas; 
+    la opción combinada extrae cada nibble una sola vez; y R6 se usa como 
+    dirección de retorno para no guardar R7 en memoria. La pausa puede omitirse 
+    con MODO_BENCHMARK para pruebas automáticas.
+  * Implementación de conversor_lc3_max.asm: versión de máximo rendimiento, con 
+    la conversión totalmente desenrollada, sin JSR, sin JMP internos y sin bucles 
+    dentro de CONV_AMBOS. Se usan tablas locales por nibble para binario y 
+    hexadecimal, se calcula cada nibble una sola vez y se guardan los caracteres 
+    hexadecimales en un buffer para imprimirlos al final. Los JMP externos solo 
+    se utilizan para superar el alcance de 9 bits de las instrucciones BR.
+  * Creación del Makefile para compilar conversor.c y conversor_q7_8.c con las 
+    opciones -std=c11 -Wall -Wextra -Werror -O2.
+  * Creación de conversorFuente.c como adaptación fiel de conversor_lc3_max.asm 
+    a C estándar. El programa pide un número, lo valida en el rango -32768..32767, 
+    lo interpreta en complemento a dos de 16 bits y muestra siempre las dos 
+    representaciones: 16 bits binarios y 4 dígitos hexadecimales. Luego pausa 
+    hasta Enter y repite el ciclo hasta que se ingresa una línea vacía.
+  * En conversorFuente.c toda la lectura, el parseo decimal y la conversión de 
+    base se realizaron manualmente, sin usar printf, scanf, sprintf, itoa, strtol 
+    ni funciones de conversión de biblioteca. Solo se emplea <stdio.h> para la 
+    entrada/salida básica (getchar, putchar y fputs), equivalente a las traps 
+    GETC, OUT y PUTS de la LC-3.
+  * Se agregaron comentarios explicativos en cada procedimiento y un resumen final 
+    comentado sobre la lectura del decimal, la validación de rango, la conversión 
+    a complemento a dos, la obtención de nibbles y la generación de las salidas 
+    binaria y hexadecimal.
+  * Compilación y prueba de conversorFuente.c con gcc -std=c11 -Wall -Wextra 
+    -Werror -O2. Se verificaron los casos 255, -1, 32767, -32768, 0, valores 
+    fuera de rango, texto inválido y línea vacía. Los resultados coinciden con 
+    la versión Assembly: -1 -> FFFF, 32767 -> 7FFF, -32768 -> 8000.
+
+- Observaciones y hallazgos:
+  * Para convertir un entero con signo a su representación de 16 bits se aplica 
+    la máscara 0xFFFF. Los negativos quedan automáticamente en complemento a dos: 
+    -1 se representa como 0xFFFF y -32768 como 0x8000.
+  * Un dígito hexadecimal equivale exactamente a un nibble (4 bits). Por eso el 
+    valor de 16 bits se puede dividir en cuatro grupos mediante desplazamientos 
+    y la máscara 0xF.
+  * El binario se obtiene recorriendo las posiciones 15 a 0 y aislando cada bit 
+    con un desplazamiento a la derecha y una operación AND con 1.
+  * El rango debe controlarse antes de multiplicar por 10 para evitar desbordes. 
+    El caso -32768 es especial: se admite el valor 32768 solo si el signo es 
+    negativo; el 32768 positivo debe rechazarse.
+  * En LC-3 no existen instrucciones de multiplicación, división ni 
+    desplazamiento directo, por lo que estas operaciones se construyen con sumas, 
+    restas y desplazamientos de un bit.
+  * La versión desenrollada de conversor_lc3_max.asm mejora el tiempo de 
+    ejecución a costa de un mayor tamaño de código y de la duplicación de las 
+    tablas de conversión para cada nibble.
+  * Mantener separada la lógica de lectura/validación de la lógica de conversión 
+    permite reutilizar la misma conversión para las distintas salidas y facilita 
+    la comparación entre las versiones en C y en Assembly.
+
+- Dificultades u obstáculos:
+  * Distinguir correctamente una línea vacía (fin del programa) de una entrada 
+    inválida. Un carácter no numérico como "abc" o un signo suelto como "-" deben 
+    informarse como error, mientras que una línea vacía o un "+" solo deben 
+    terminar el programa, igual que en la versión LC-3.
+  * Evitar el desbordamiento durante el parseo de números con muchos dígitos. Se 
+    resolvió controlando el acumulado antes de cada multiplicación por 10.
+  * Consumir el resto de la línea después de un error para que los caracteres 
+    sobrantes no se interpreten como una nueva entrada.
+  * Respetar el alcance de 9 bits de las instrucciones BR en LC-3. En la versión 
+    MAX fue necesario usar JMP externos para saltar entre secciones alejadas.
+  * La versión totalmente desenrollada requiere repetir las tablas y el código 
+    de salida para cada nibble, lo que aumenta considerablemente el tamaño del 
+    archivo y el trabajo de mantenimiento.
+
+- Plan para la siguiente sesión:
+  * Ejecutar las tres versiones en LC-3 (conversor_lc3.asm, conversor_lc3_opt.asm 
+    y conversor_lc3_max.asm) en el simulador y comparar los resultados con 
+    conversorFuente.c para los mismos casos de prueba.
+  * Medir cantidad de instrucciones y ciclos de reloj de cada versión, usando 
+    MODO_BENCHMARK para omitir la pausa, y analizar la relación entre velocidad y 
+    tamaño del código.
+  * Documentar en el informe final las decisiones de diseño, los diagramas de 
+    flujo y las conclusiones sobre la representación en complemento a dos y la 
+    conversión de bases en una arquitectura sin multiplicación ni división.
+================================================================================

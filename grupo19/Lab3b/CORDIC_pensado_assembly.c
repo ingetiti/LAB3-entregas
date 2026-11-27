@@ -18,7 +18,8 @@ typedef struct {
 // pesos de cada iteracion: 2^14, 2^13, ..., 2^0
 // reemplaza a "current_z /= 2", ya que el LC-3 no puede dividir ni desplazar
 // en assembly esto se escribe con .FILL
-int16_t tabla_z[15] = {16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1};
+int16_t tabla_z[15] = {16384, 8192, 4096, 2048, 1024, 512, 256, 128,
+                       64, 32, 16, 8, 4, 2, 1};
 
 // ------------------------------------------------------------------
 // funciones de 16 bits
