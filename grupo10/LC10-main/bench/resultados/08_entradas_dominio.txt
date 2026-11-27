@@ -1,0 +1,9 @@
+$ python bench/equivalencia_entradas.py RUTA --solo 3 5 --casos 150 --rango dominio
+# seno y coseno por tabla con el ángulo dentro de 0..2π
+# código de salida: 0   duración: 34 s
+
+ op  operación                                casos iguales distintos
+  3  SENO TABLA: seno(pi/2) ~= 1                150     150         0
+  5  COSENO: coseno(pi/2) ~= 0                  150     150         0
+
+RESULTADO: todo coincide

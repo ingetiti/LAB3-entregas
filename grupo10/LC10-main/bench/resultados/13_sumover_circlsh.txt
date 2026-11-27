@@ -1,0 +1,6 @@
+$ python bench/equivalencia_chicos_lc10.py
+# SUMOVER y CIRCLSH en LC10, unas 400.000 llamadas
+# código de salida: 0   duración: 76 s
+
+SUMOVER: 200242 casos, distintos: 0, instrucciones por llamada: 5
+CIRCLSH: 200904 casos, distintos: 0, instrucciones por llamada: mín 5, máx 20

@@ -1,0 +1,10 @@
+$ python bench/bench_division.py
+# división larga del grupo: LC-3 contra LC10
+# código de salida: 0   duración: 8 s
+
+casos: 20361
+LC-3 : {'min': 27, 'max': 327, 'prom': 227.9, 'mediana': 267, 'p95': 292} | modulo completo: 106 palabras = 212 bytes
+LC10 : {'min': 19, 'max': 175, 'prom': 122.7, 'mediana': 145, 'p95': 158} | modulo: 120 bytes = 60 palabras
+reduccion de instrucciones (promedio): 46.2 %
+reduccion de memoria del modulo: 43.4 %
+casos tipicos (n=3000): LC-3 prom 281.0, LC10 prom 151.5

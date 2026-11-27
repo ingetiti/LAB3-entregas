@@ -1,0 +1,36 @@
+$ python bench/equivalencia_entradas.py RUTA --casos 40 --semilla 2
+# el main de la cátedra con operandos al azar, operación por operación
+# código de salida: 1   duración: 116 s
+
+ op  operación                                casos iguales distintos
+  1  REDUCCION DE ARGUMENTO: pi/2 (Q3.12) deb    40      40         0
+  2  SENO TAYLOR: seno de 205 grados ~= -0.42    40      40         0
+  3  SENO TABLA: seno(pi/2) ~= 1                 40      31         9
+       a=xFA3D b=x0001  fin LC-3 halt / LC10 halt  LC10 '(Q1.14) 0.285461425'  LC-3 '(Q1.14) 1.899108886'
+       a=xFF90 b=x07D2  fin LC-3 halt / LC10 halt  LC10 '(Q1.14) -1.087768553'  LC-3 '(Q1.14) 1.554748535'
+       a=xFF49 b=xA8C4  fin LC-3 halt / LC10 halt  LC10 '(Q1.14) -1.008911132'  LC-3 '(Q1.14) 0.362365722'
+  4  SENO CHEBYSHEV-PADE: seno(pi/2) ~= 1        40      40         0
+  5  COSENO: coseno(pi/2) ~= 0                   40      36         4
+       a=xF9A8 b=xFA2B  fin LC-3 halt / LC10 halt  LC10 '(Q1.14) -1.117065428'  LC-3 '(Q1.14) 0.26574707'
+       a=xFB22 b=xF847  fin LC-3 halt / LC10 halt  LC10 '(Q1.14) 0.321350097'  LC-3 '(Q1.14) 0.06085205'
+       a=x9EB4 b=x0001  fin LC-3 halt / LC10 halt  LC10 '(Q1.14) 0.050048827'  LC-3 '(Q1.14) 0.29510498'
+  6  CAMBIO DE BASE A HEX: muestra el entero     40      40         0
+  7  CAMBIO DE BASE A BIN: muestra el entero     40      40         0
+  8  SQRT NON RESTORING: raiz(4) = 2             40      40         0
+  9  SQRT NEWTON-RAPHSON: raiz(4) = 2            40      40         0
+ 10  EXPONENCIACION: e^(ln(2)) ~= 2              40      40         0
+ 11  POTENCIA POR MULTIPLICACIONES: 2^3 = 8      40      40         0
+ 12  POTENCIA EXPONENCIAL BINARIA: 2^5 = 32      40      40         0
+ 13  MULTIPLICACION CORDIC: 3 * 4 = 12           40      40         0
+ 14  MULTIPLICACION SHIFT-SUMA: 3 * 4 = 12       40      40         0
+ 15  MULTIPLICACION BOOTH: (-3) * 4 = -12        40      40         0
+ 16  DIVISION LARGA: 6 / 3 = 2                   40      40         0
+ 17  DIVISION NEWTON-RAPHSON: 9 / 3 = 3          40      40         0
+ 18  DIVISION CORDIC: 0.25 / 0.5 = 0.5           40      40         0
+ 19  LOGARITMO BORCHARDT: ln(1) = 0              40      40         0
+ 20  LOGARITMO CORDIC: ln(2) ~= 0.6931           40      40         0
+ 21  MAXIMO COMUN DIVISOR: mcd(48, 18) = 6       40      40         0
+ 22  MINIMO COMUN MULTIPLO: mcm(6, 8) = 24       40      40         0
+ 23  CONVERSION Q3.12 A Q7.8: 1.5 permanece 1    40      40         0
+
+RESULTADO: 13 casos distintos

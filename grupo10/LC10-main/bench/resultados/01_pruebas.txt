@@ -1,0 +1,11 @@
+$ python -m unittest discover -s tests -t .
+# pruebas automáticas (ISA, ensamblador, simulador, ventana si hay pantalla, benchmark)
+# código de salida: 0   duración: 9 s
+
+
+--- stderr ---
+.................sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss............................................................................................................................................
+----------------------------------------------------------------------
+Ran 244 tests in 8.756s
+
+OK (skipped=87)

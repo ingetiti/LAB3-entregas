@@ -1,0 +1,5 @@
+$ python bench/equivalencia_div_lc10.py RUTA
+# DIV_NEWTON en LC10 contra el módulo real
+# código de salida: 0   duración: 18 s
+
+12210 casos, 0 diferencias

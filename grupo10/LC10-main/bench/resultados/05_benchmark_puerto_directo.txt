@@ -1,0 +1,8 @@
+$ python bench/lc10_bench.py asm/bench10
+# puerto directo (traducción sin optimizar): misma salida
+# código de salida: 0   duración: 1 s
+
+módulos: 38   imagen: 13792 bytes = 6896 palabras (relleno 17 byte)
+instrucciones ejecutadas: 369.382 = 358.481 usuario + 10.901 SO
+LC-3: 357.505 usuario + 22.074 SO = 379.579 instrucciones y 7896 palabras   ->   instrucciones -2.7 % (solo usuario +0.3 %), palabras -12.7 %
+salida idéntica a la de la línea base LC-3: sí

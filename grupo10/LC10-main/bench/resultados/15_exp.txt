@@ -1,0 +1,5 @@
+$ python bench/equivalencia_exp_lc10.py
+# EXP_Q3_12 en LC10, las 65.536 entradas, contra el puerto directo
+# código de salida: 0   duración: 472 s
+
+65536 entradas [0, 65536), 0 diferencias; instrucciones medias ref 4020 / opt 893

@@ -1,0 +1,6 @@
+$ python bench/equivalencia_seno_lc10.py
+# seno de Taylor en LC10, las 65.536 entradas, contra ese modelo
+# código de salida: 0   duración: 5 s
+
+valores de R0 probados: 65536 | distintos del modelo exacto: 0 | sin preservar R1-R5/R6/R7: 0
+instrucciones por llamada (CALCULAR_SENO ... RET): mín 21, máx 48, ángulo 600: 45
