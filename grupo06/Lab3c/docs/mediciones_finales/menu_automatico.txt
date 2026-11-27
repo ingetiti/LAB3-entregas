@@ -1,0 +1,21 @@
+
+
+==MULTIPLICACION (BOOTH)==
+(Q7.8) 5
+(Q7.8) -12
+(Q7.8) -60
+
+
+==RAIZ CUADRADA (NEWTON-RAPHSON)==
+(Q15.16) 2
+(Q15.16) 1.421875
+
+
+==COSENO TRIGONOMETRICO (TABLE)==
+(Q3.12) 1.57055664
+(Q1.14) 0
+
+HALT
+
+METRICAS instrucciones=12706 interrupciones=0 programa_bytes=14558 accedidos_bytes=2866 escritos_bytes=282 excepcion=0
+TRAFICO lecturas_bytes=32308 escrituras_bytes=3668

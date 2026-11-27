@@ -1,0 +1,4 @@
+.EXTERNAL inexistente-SUMA
+.ORIG x3000
+HALT
+.END

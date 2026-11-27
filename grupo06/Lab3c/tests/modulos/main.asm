@@ -1,0 +1,11 @@
+.EXTERNAL aritmetica-SUMA
+.ORIG x3000
+    AND R0,R0,#0
+    ADD R0,R0,#5
+    AND R1,R1,#0
+    ADD R1,R1,#7
+    JSR aritmetica-SUMA
+    ST R0,RESULTADO
+    HALT
+RESULTADO .BLKW #1
+.END

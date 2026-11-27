@@ -1,0 +1,23 @@
+{
+  "fecha": "2026-11-26",
+  "comprobaciones_editor": 44,
+  "fallos_editor": 0,
+  "comprobaciones_sesion": 121,
+  "fallos_sesion": 0,
+  "suite_completa": "sin fallos",
+  "pegado_real": {
+    "separador_portapapeles": "LF",
+    "lineas_editor": 10,
+    "acentos_y_lineas_vacias": true,
+    "deshacer_restaura_seleccion": true,
+    "ensamblado": true,
+    "R0": 7,
+    "RESULTADO": 7,
+    "programa": 4,
+    "sistema": 103,
+    "total": 107
+  },
+  "modulo": "src/gui_editor.c",
+  "nucleo_modificado": false,
+  "respaldo": "ISA3C_antes_correccion_pegado_20261126.zip"
+}

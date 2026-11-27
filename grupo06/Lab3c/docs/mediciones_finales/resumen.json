@@ -1,0 +1,80 @@
+{
+  "fecha": "2026-11-26",
+  "version": "ISA3C integrada 1.1 con EXP optimizada e interfaz Windows",
+  "criterio": "Misma entrada y salida binaria. Banco: solo llamada, sin impresión ni HALT del llamador. Menú: incluye sistema. No son ciclos físicos.",
+  "banco": {
+    "casos": 37,
+    "instrucciones_estable": 60225,
+    "instrucciones_experimental": 38299,
+    "instrucciones_integrada": 25206,
+    "imagen_bytes": 7468
+  },
+  "programas": {
+    "menu_automatico": {
+      "instrucciones": 12706,
+      "interrupciones": 0,
+      "programa_bytes": 14558,
+      "accedidos_bytes": 2866,
+      "escritos_bytes": 282,
+      "excepcion": 0,
+      "lecturas_bytes": 32308,
+      "escrituras_bytes": 3668,
+      "objeto_bytes": 14560
+    },
+    "exp_demo": {
+      "instrucciones": 2204,
+      "interrupciones": 0,
+      "programa_bytes": 1176,
+      "accedidos_bytes": 1062,
+      "escritos_bytes": 82,
+      "excepcion": 0,
+      "lecturas_bytes": 5970,
+      "escrituras_bytes": 526,
+      "objeto_bytes": 1178
+    }
+  },
+  "exp": {
+    "entradas": 65536,
+    "instrucciones_antes": 222466798,
+    "instrucciones_despues": 68450717,
+    "dominio_sin_saturacion": 52642,
+    "entradas_saturadas_excluidas": 12894,
+    "error_minimo": {
+      "entrada_cruda": 0,
+      "x": 0.0,
+      "salida": 1.0,
+      "referencia_exp_double": 1.0,
+      "error_absoluto": 0.0,
+      "error_relativo": 0.0
+    },
+    "error_maximo": {
+      "entrada_cruda": 19626,
+      "x": 4.79150390625,
+      "salida": 120.48046875,
+      "referencia_exp_double": 120.48242675650525,
+      "error_absoluto": 0.0019580065052480222,
+      "error_relativo": 1.6251386679031206e-05
+    },
+    "error_relativo_maximo": {
+      "entrada_cruda": -32768,
+      "x": -8.0,
+      "salida": 0.0,
+      "referencia_exp_double": 0.00033546262790251185,
+      "error_absoluto": 0.00033546262790251185,
+      "error_relativo": 1.0
+    },
+    "resolucion_entrada": 0.000244140625,
+    "resolucion_salida": 0.00390625,
+    "referencia": "math.exp de doble precisión sobre el x cuantizado; no incluye error de conversión de una entrada real anterior ni mide saturación como error de aproximación.",
+    "vueltas_ruta_general": 6,
+    "vueltas_rutas_rapidas": 0
+  },
+  "sha256_evidencia": {
+    "build/funciones.obj": "0e59e187ae737f14f3e1c67205cb4d61e0de7e0212e8b782528f31ab49feb0d2",
+    "build/calculadora_automatica.obj": "c10e9e6cdde3ab1bb07fb5f79415a280086bdbca781d66e159e32e1fef66cd13",
+    "build/exp_comparacion.csv": "cbb5179407e3d466535b205e38c84c4064885bb9551397f83f393cee0c336a6a",
+    "build/benchmark.csv": "33f5a84f1fab0330393b03e827b75af22575106c0c0424d3aed4966f06bc7b64",
+    "benchmark/modulos/g6_EXP.asm": "494ef27071b1b6c3725ad236eadb8aab6b1c139251d9af522f695dd7cb5fade0",
+    "tests/test_exp_optimized.c": "0593de11f6ec6ff064c95f995bb3e941dde988364323026a365231eac418161c"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "fecha": "2026-11-26",
+  "origen": "Lc-3-Lab3c-integrada",
+  "carpeta_entrega": "ISA-Grupo-6-Entrega",
+  "objetos_reensamblados_identicos": [
+    "calculadora",
+    "calculadora_automatica",
+    "funciones"
+  ],
+  "menu_automatico_instrucciones": 12706,
+  "calculadora_EXP3": "20.0859375",
+  "banco_casos": 37,
+  "sesion_gui_comprobaciones": 121,
+  "editor_comprobaciones": 44,
+  "fallos": 0,
+  "excluidos_de_esta_copia": [
+    "build/benchmark.csv",
+    "build/codificacion_invalida.asm",
+    "build/codificacion_invalida.obj",
+    "build/compatibilidad_estable.csv",
+    "build/exp_comparacion.csv",
+    "build/exp_optimizacion.json",
+    "build/gui_prueba.obj",
+    "build/isa3c_resources.o",
+    "build/os_image.h",
+    "build/sqrt_integrada.bin",
+    "build/validacion_exp_20261126.txt",
+    "docs/guia/Guia_de_uso_ISA3C.docx",
+    "docs/informes/Bitacora_Laboratorio_3.docx",
+    "docs/informes/Informe_ISA3C_integrada.docx",
+    "docs/salida_calculadora.txt",
+    "SHA256SUMS.txt"
+  ],
+  "carpeta_original_modificada": false,
+  "suite_completa_desde_zip_extraido": "sin fallos",
+  "hashes_del_zip_extraido": "todos correctos"
+}

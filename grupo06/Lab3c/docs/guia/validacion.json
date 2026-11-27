@@ -1,0 +1,150 @@
+{
+  "version": "ISA3C integrada 1.1, EXP optimizada 2026-11-26",
+  "paginas_guia": 29,
+  "secciones": 27,
+  "programas_principales": 12,
+  "programas_finalizados_y_verificados_en_registros_y_memoria": 11,
+  "prueba_bucle_infinito_con_corte_controlado": 1,
+  "fallas": 0,
+  "exp_coincide_con_modulo_actual_del_proyecto": true,
+  "sha256_exp": "494ef27071b1b6c3725ad236eadb8aab6b1c139251d9af522f695dd7cb5fade0",
+  "comprobacion_registros_memoria": [
+    "OK 01_suma.asm R0=x002A instrucciones=108",
+    "OK 02_hola.asm R0=x3006 instrucciones=454",
+    "OK 03_teclado.asm R0=x0041 instrucciones=122",
+    "OK 04_producto.asm R0=xFFF4 instrucciones=108",
+    "OK 05_desplazamientos.asm R0=xFF00 instrucciones=113",
+    "OK 06_bytes.asm R0=x7F80 instrucciones=112",
+    "OK 07_subrutina.asm R0=x000C instrucciones=112",
+    "OK 08_modulos.asm R0=x000C instrucciones=113",
+    "OK 09_exp.asm R0=x1416 instrucciones=2204",
+    "OK 10_punto_fijo.asm R0=x0300 instrucciones=116",
+    "OK 11_bucle.asm R0=x000A instrucciones=138",
+    "11 practicas terminadas con registros y memoria verificados; 0 fallos."
+  ],
+  "pruebas_de_consola": [
+    {
+      "archivo": "01_suma.asm",
+      "esperado": {
+        "R0": 42,
+        "RESULTADO": 42
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=108 interrupciones=0 programa_bytes=16 accedidos_bytes=148 escritos_bytes=32 excepcion=0\nTRAFICO lecturas_bytes=344 escrituras_bytes=72\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "02_hola.asm",
+      "esperado": {
+        "texto": "Hola desde nuestra ISA3C!"
+      },
+      "salida": "Hola desde nuestra ISA3C!\n\nHALT\n\nMETRICAS instrucciones=454 interrupciones=0 programa_bytes=60 accedidos_bytes=192 escritos_bytes=30 excepcion=0\nTRAFICO lecturas_bytes=1460 escrituras_bytes=286\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "03_teclado.asm",
+      "esperado": {
+        "R0": 65,
+        "texto": "A"
+      },
+      "salida": "A\nHALT\n\nMETRICAS instrucciones=122 interrupciones=0 programa_bytes=6 accedidos_bytes=164 escritos_bytes=30 excepcion=0\nTRAFICO lecturas_bytes=398 escrituras_bytes=84\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "04_producto.asm",
+      "esperado": {
+        "R0": 65524,
+        "PRODUCTO": 65524
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=108 interrupciones=0 programa_bytes=16 accedidos_bytes=148 escritos_bytes=32 excepcion=0\nTRAFICO lecturas_bytes=344 escrituras_bytes=72\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "05_desplazamientos.asm",
+      "esperado": {
+        "LOGICO": 4095,
+        "ARITMETICO": 65535,
+        "IZQUIERDA": 65280
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=113 interrupciones=0 programa_bytes=28 accedidos_bytes=160 escritos_bytes=36 excepcion=0\nTRAFICO lecturas_bytes=352 escrituras_bytes=76\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "06_bytes.asm",
+      "esperado": {
+        "R0": 32640,
+        "R2": 65408,
+        "R3": 48879,
+        "DATOS": 32895
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=112 interrupciones=0 programa_bytes=24 accedidos_bytes=155 escritos_bytes=31 excepcion=0\nTRAFICO lecturas_bytes=353 escrituras_bytes=71\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "07_subrutina.asm",
+      "esperado": {
+        "R0": 12,
+        "RESULTADO": 12
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=112 interrupciones=0 programa_bytes=20 accedidos_bytes=152 escritos_bytes=32 excepcion=0\nTRAFICO lecturas_bytes=348 escrituras_bytes=72\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "08_modulos.asm",
+      "esperado": {
+        "R0": 12,
+        "RESULTADO": 12
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=113 interrupciones=0 programa_bytes=24 accedidos_bytes=156 escritos_bytes=32 excepcion=0\nTRAFICO lecturas_bytes=352 escrituras_bytes=72\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "09_exp.asm",
+      "esperado": {
+        "R0": 5142,
+        "RES_EXP": 5142,
+        "texto": "EXP en Q7.8 (hex): x1416"
+      },
+      "salida": "EXP en Q7.8 (hex): x1416\nHALT\n\nMETRICAS instrucciones=2204 interrupciones=0 programa_bytes=1176 accedidos_bytes=1062 escritos_bytes=82 excepcion=0\nTRAFICO lecturas_bytes=5970 escrituras_bytes=526\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "10_punto_fijo.asm",
+      "esperado": {
+        "R0": 768,
+        "SUMA": 896,
+        "PRODUCTO": 768
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=116 interrupciones=0 programa_bytes=34 accedidos_bytes=166 escritos_bytes=34 excepcion=0\nTRAFICO lecturas_bytes=360 escrituras_bytes=74\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "11_bucle.asm",
+      "esperado": {
+        "R0": 10,
+        "RESULTADO": 10
+      },
+      "salida": "\nHALT\n\nMETRICAS instrucciones=138 interrupciones=0 programa_bytes=18 accedidos_bytes=150 escritos_bytes=32 excepcion=0\nTRAFICO lecturas_bytes=400 escrituras_bytes=72\n",
+      "error": "",
+      "exit_code": 0
+    },
+    {
+      "archivo": "12_infinito.asm",
+      "esperado": {
+        "limite": 100
+      },
+      "salida": "\nMETRICAS instrucciones=100 interrupciones=0 programa_bytes=2 accedidos_bytes=2 escritos_bytes=0 excepcion=0\nTRAFICO lecturas_bytes=200 escrituras_bytes=0\n",
+      "error": "Se alcanzo el limite de instrucciones.\n",
+      "exit_code": 2
+    }
+  ]
+}

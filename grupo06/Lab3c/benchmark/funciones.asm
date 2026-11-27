@@ -1,0 +1,43 @@
+.ORIG x3000
+HALT
+    .FILL g1_cordic_division-CORDIC_DIV
+    .FILL g3_MultiplicacionSHIFTandADD-MULTIPLICARSHIFTANDADD
+    .FILL g4_potencia-EXP_RAPIDA
+    .FILL g5_Mul_Sucesiva_POW-Mul_Sucesiva_POW
+    .FILL g6_EXP-EXP_Q3_12
+    .FILL g7_mcm-MCM
+    .FILL g7_mcd-MCD
+    .FILL g9_sqrt_nr_dq16-SQRT_NR_DQ16
+    .FILL g10_division_larga-DIV_LONG
+    .FILL g11_CORDICLog-CORDIC_LOG_BASE
+    .FILL g12_subrutina_grupo_12-DIV_NEWTON
+    .FILL g14_log_borchardt_q8_7-LN_GENERAL_Q8_7
+    .FILL g15_G15_Q312_Q78-G15_Q312_Q78
+    .FILL g18_booth-MULT_BOOTH
+    .FILL g19_cordic_multiplicacion-CORDIC_MUL
+    .FILL g20_Cordic_reduccion_de_argumento-Reduccion_Argumento
+    .FILL g22_Tabla_SIN_y_COS-SENO_TABLA
+    .FILL g22_Tabla_SIN_y_COS-COSENO_TABLA
+    .FILL g23_modulo_sqrt_nr-SQRT_NR
+    .FILL g30_seno_cheb_pade-SEN_CHEB_PADE
+    .EXTERNAL g1_cordic_division-CORDIC_DIV
+    .EXTERNAL g3_MultiplicacionSHIFTandADD-MULTIPLICARSHIFTANDADD
+    .EXTERNAL g4_potencia-EXP_RAPIDA
+    .EXTERNAL g5_Mul_Sucesiva_POW-Mul_Sucesiva_POW
+    .EXTERNAL g6_EXP-EXP_Q3_12
+    .EXTERNAL g7_mcm-MCM
+    .EXTERNAL g7_mcd-MCD
+    .EXTERNAL g9_sqrt_nr_dq16-SQRT_NR_DQ16
+    .EXTERNAL g10_division_larga-DIV_LONG
+    .EXTERNAL g11_CORDICLog-CORDIC_LOG_BASE
+    .EXTERNAL g12_subrutina_grupo_12-DIV_NEWTON
+    .EXTERNAL g14_log_borchardt_q8_7-LN_GENERAL_Q8_7
+    .EXTERNAL g15_G15_Q312_Q78-G15_Q312_Q78
+    .EXTERNAL g18_booth-MULT_BOOTH
+    .EXTERNAL g19_cordic_multiplicacion-CORDIC_MUL
+    .EXTERNAL g20_Cordic_reduccion_de_argumento-Reduccion_Argumento
+    .EXTERNAL g22_Tabla_SIN_y_COS-SENO_TABLA
+    .EXTERNAL g22_Tabla_SIN_y_COS-COSENO_TABLA
+    .EXTERNAL g23_modulo_sqrt_nr-SQRT_NR
+    .EXTERNAL g30_seno_cheb_pade-SEN_CHEB_PADE
+.END
