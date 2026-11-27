@@ -101,10 +101,17 @@ main_menu_return                        ;
 main_menu_show_menu                     ;
     LD R1 main_menu_op_cursor           ;
     BRz main_menu_show_menu_sk1         ;   if [cursor_de_op]:
-    LDR R0 R1 #0                        ;       [R0] valor
+    LDR R0 R1 #0                        ;       [R0] indice
     ADD R1 R1 #1                        ;
     ST R1 main_menu_op_cursor           ;       [cursor_de_op].incr()
-    BR main_menu_swap_node              ;       # Cambio de nodo (offset = valor)
+    
+    LD R5 main_menu_op_table_ads        ;
+    ADD R5 R5 R0                        ;
+    LDR R5 R5 #0                        ;
+    ST R5 main_menu_state               ;       [estado] = tabla_de_nodos.peek(indice)
+
+    LDR R0 R5 #0                        ;
+    JMP R0                              ;       goto nodo.controlador
 
 main_menu_show_menu_sk1
     LD R5 main_menu_state               ;   [R5] nodo = [estado]
@@ -131,6 +138,13 @@ main_menu_one_int_noresult
     LD R0 main_menu_0
     LD R1 main_menu_neg_1
     LD R2 main_menu_neg_1
+    BR main_menu_call
+
+;   ==- Controlador subrutinas de un entero resultado en Q3.12 -================
+main_menu_one_int_result_q12
+    LD R0 main_menu_0
+    LD R1 main_menu_neg_1
+    LD R2 main_menu_12
     BR main_menu_call
 
 ;   ==- Controlador subrutinas de dos enteros  -================================
@@ -333,6 +347,7 @@ main_menu_aux_3             .FILL #0
 main_menu_aux_4             .FILL #0
 
 main_menu_swap_node_ads     .FILL main_menu_swap_node
+main_menu_op_table_ads      .FILL main_menu_op_table
 
 sub_getcfiltered            .FILL GETCFILTERED-GETCFILTERED
 sub_fromhex                 .FILL FROMHEX-FROMHEX
@@ -411,11 +426,11 @@ main_menu_call_op_exec
     ST R1 main_menu_aux_1               ;   [aux_0, aux_1] result = node.subrutina(value_a, value_b)
 
     LD R0 main_menu_op_verbose          ;
-    BRz main_menu_call_op_incr_cursor   ;
+    BRz main_menu_call_op_save_result   ;
 
 main_menu_call_op_show_res              ;
     LD R0 main_menu_aux_4               ;
-    BRn main_menu_call_op_incr_cursor   ;
+    BRn main_menu_call_op_save_result   ;
 
     LD R0 main_menu_prompt_q_vec        ;
     LD R1 main_menu_aux_4               ;
@@ -429,31 +444,21 @@ main_menu_call_op_show_res              ;
     LD R3 sub_outval                    ;
     JSRR R3                             ;   outval(resultado, n_salida)
 
-main_menu_call_op_incr_cursor           ;
-    LD R0 main_menu_aux_2               ;
-    BRn main_menu_call_op_next_sk1      ;   if n_entrada1 >= 0:
-    ADD R4 R4 #1                        ;       cursor_de_op.incr()
-    ADD R0 R0 #-16                      ;
-    BRnp main_menu_call_op_next_sk1     ;       if n_entrada1 == 16:
-    ADD R4 R4 #1                        ;           cursor_de_op.incr()
-main_menu_call_op_next_sk1              ;
-    LD R0 main_menu_aux_3               ;
-    BRn main_menu_call_op_next_sk2      ;   if n_entrada2 >= 0:
-    ADD R4 R4 #1                        ;       cursor_de_op.incr()
-main_menu_call_op_next_sk2              ;
+main_menu_call_op_save_result           ;
     LD R0 main_menu_aux_4               ;
-    BRn main_menu_call_op_next_sk3      ;   if n_salida >= 0:
-    LD R1 main_menu_aux_0               ;
-    STR R1 R4 #0                        ;       [resultado_h] = aux_0
-    ADD R4 R4 #1                        ;       cursor_de_op.incr()
     ADD R0 R0 #-16                      ;
-    BRnp main_menu_call_op_next_sk3     ;       if n_salida == 16:
-    LD R1 main_menu_aux_1               ;
-    STR R1 R4 #0                        ;           [resultado_l] = aux_1
-    ADD R4 R4 #1                        ;           cursor_de_op.incr()
+    BRz main_menu_call_op_save_sk1     ;
+    AND R0 R0 #0                        ;
+    ST R0 main_menu_aux_1               ;
 
-main_menu_call_op_next_sk3              ;
-    ST R4 main_menu_op_cursor           ;   cursor_de_op.incr(contador)
+main_menu_call_op_save_sk1              ;
+    LD R0 main_menu_aux_0               ;
+    LD R1 main_menu_aux_1               ;
+    STR R0 R4 #2                        ;
+    STR R1 R4 #3                        ;
+
+    ADD R4 R4 #4                        ;  
+    ST R4 main_menu_op_cursor           ;   cursor_de_op.incr(4)
 
     AND R0 R0 #0                        ;
     LD R1 main_menu_swap_node_ads       ; 
@@ -568,6 +573,32 @@ main_menu_prompt_q14_text       .STRINGZ "(Q1.14) "
 main_menu_prompt_q15_text       .STRINGZ "(Q0.15) "
 main_menu_prompt_q16_text       .STRINGZ "(Q15.16) "
 
+;   ============================================================================
+;   ==- TABLA DEL VECTOR DE OPERACIONES -=======================================
+main_menu_op_table          .FILL main_menu_end
+                            .FILL main_menu_argrd
+                            .FILL main_menu_sin_taylor
+                            .FILL main_menu_sin_table
+                            .FILL main_menu_sin_cheb
+                            .FILL main_menu_cos
+                            .FILL main_menu_base_hex
+                            .FILL main_menu_base_bin
+                            .FILL main_menu_sqrt_nonres
+                            .FILL main_menu_sqrt_nr
+                            .FILL main_menu_exp
+                            .FILL main_menu_pow_mults
+                            .FILL main_menu_pow_expbin
+                            .FILL main_menu_mult_cordic
+                            .FILL main_menu_mult_basic
+                            .FILL main_menu_mult_booth
+                            .FILL main_menu_div_long
+                            .FILL main_menu_div_nr
+                            .FILL main_menu_div_cordic
+                            .FILL main_menu_log_borch
+                            .FILL main_menu_log_cordic
+                            .FILL main_menu_mcd
+                            .FILL main_menu_mcm
+                            .FILL main_menu_qtoq
 
 ;   ============================================================================
 ;   ==- NODOS -=================================================================
@@ -620,7 +651,7 @@ main_menu_sin_next          .FILL main_menu_sin_taylor
                             .FILL main_menu_sin_table
                             .FILL main_menu_sin_cheb
 ;   ----------------------------------------------------------------------------
-main_menu_sin_taylor        .FILL main_menu_one_q12
+main_menu_sin_taylor        .FILL main_menu_one_int_result_q12
                             .FILL main_menu_sin_taylor_text
                             .FILL #0
                             .FILL main_menu_sin_taylor_next
