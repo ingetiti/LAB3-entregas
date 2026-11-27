@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulador Apex-3X</title>
+<meta name="description" content="Simulador funcional, ensamblador y banco de pruebas de módulos para la arquitectura Apex-3X.">
+<meta property="og:title" content="Simulador Apex-3X">
+<meta property="og:description" content="Simulador funcional, ensamblador y banco de pruebas de módulos para la arquitectura Apex-3X.">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <span class="brand">Simulador Apex-3X</span>
+  <nav class="top-links" aria-label="Archivo e informes">
+    <button type="button" class="nav-link" id="bLoad">Cargar .bin/.hex</button>
+    <button type="button" class="nav-link" id="bBin">Bajar .bin</button>
+    <button type="button" class="nav-link" id="bHex">Bajar .hex</button>
+    <button type="button" class="nav-link" id="bRep">Informe JSON</button>
+  </nav>
+  <div class="top-actions">
+    <button type="button" id="bHelp" class="btn-subtle" title="Guía de sintaxis Apex-3X y atajos de teclado (F1)">Guía Apex-3X</button>
+    <button type="button" id="bTheme" class="btn-subtle" title="Cambiar entre tema Carbón y Papel">Tema: Carbón</button>
+    <input type="file" id="fLoad" accept=".bin,.hex,.txt" hidden>
+  </div>
+</header>
+
+<section class="toolbar" aria-label="Controles de ejecución y paneles">
+  <div class="toolbar-group">
+    <button type="button" class="btn-primary" id="bAsm" title="Ensamblar programa (Ctrl+Enter)">Ensamblar</button>
+    <button type="button" id="bStep" title="Ejecutar una instrucción (F10)">Paso</button>
+    <button type="button" class="btn-run" id="bRun" title="Ejecutar o pausar (F9)">Ejecutar</button>
+    <button type="button" id="bRst" title="Reiniciar CPU (F8)">Reiniciar</button>
+    <button type="button" id="bTestMode" class="btn-mode">Modo Prueba y Benchmark</button>
+  </div>
+
+  <div class="toolbar-panels" id="panelBar" aria-label="Visibilidad de paneles">
+    <span class="toolbar-lbl">Paneles</span>
+    <button type="button" class="panel-toggle on" data-toggle-panel="src" aria-pressed="true">Código fuente</button>
+    <button type="button" class="panel-toggle on" data-toggle-panel="lst" aria-pressed="true">Listado</button>
+    <button type="button" class="panel-toggle on" data-toggle-panel="regs" aria-pressed="true">Registros</button>
+    <button type="button" class="panel-toggle on" data-toggle-panel="metrics" aria-pressed="true">Métricas</button>
+    <button type="button" class="panel-toggle on" data-toggle-panel="mem" aria-pressed="true">Memoria</button>
+    <button type="button" class="panel-toggle on" data-toggle-panel="con" aria-pressed="true">Consola</button>
+    <span class="toolbar-sep" aria-hidden="true"></span>
+    <label class="toolbar-lbl" for="selLayoutPreset">Distribución</label>
+    <select id="selLayoutPreset" class="preset-select" title="Cambiar distribución predefinida de los 6 paneles">
+      <option value="estandar">Estándar</option>
+      <option value="programacion">Programación</option>
+      <option value="depuracion">Depuración</option>
+      <option value="personalizada" disabled>Personalizada</option>
+    </select>
+    <button type="button" id="bResetLayout" class="btn-subtle" title="Restaurar visibilidad, orden y tamaños de paneles">Restaurar diseño</button>
+  </div>
+</section>
+
+<section id="testPanel" class="card panel test-panel hidden" data-panel="test">
+  <div class="panel-head">
+    <div class="panel-title-wrap">
+      <h2>Banco de pruebas y Benchmark Apex-3X</h2>
+      <span class="panel-meta">38 módulos · medición de instrucciones, datos, pila e histograma</span>
+    </div>
+    <div class="panel-actions">
+      <button type="button" id="bLoadBench" class="btn-primary">Cargar Benchmark</button>
+      <button type="button" id="bCloseTest" title="Cerrar modo prueba">Cerrar</button>
+    </div>
+  </div>
+
+  <div class="panel-body">
+    <div class="bench-bar">
+      <div class="bar" style="margin:0;flex:1">
+        <label class="lbl" for="selBenchMode" style="margin:0">Suite:</label>
+        <select id="selBenchMode" title="Modo de ejecución del benchmark">
+          <option value="ambos">Completo (main_grupo27) + desglose 23 operaciones</option>
+          <option value="completo">Solo programa completo (programa_del_menu_completo)</option>
+          <option value="reducido">Solo prueba reducida (programa_del_menu · 3 ops)</option>
+          <option value="subrutinas">Solo 23 subrutinas aisladas (cómputo puro)</option>
+        </select>
+        <button type="button" id="bRunBench" class="btn-run">Correr Benchmark</button>
+        <button type="button" id="bExportBench">Exportar JSON</button>
+      </div>
+      <div id="benchStatus" class="help" style="margin:0">Presioná «Correr Benchmark» para enlazar los 38 módulos y medir métricas.</div>
+    </div>
+
+    <div class="test-grid">
+      <div class="test-box">
+        <label class="lbl">1. Subrutina destino (prueba unitaria)</label>
+        <div class="bar">
+          <select id="selEntry" title="Etiqueta de entrada de la subrutina"></select>
+          <input id="inpEntryCustom" placeholder="etiqueta o x3000" size="16">
+        </div>
+        <div id="testModsInfo" class="help">Usando el código del editor principal.</div>
+        <div class="bar" style="margin-top:8px">
+          <label for="tMaxSteps">Máx. pasos:</label>
+          <input id="tMaxSteps" size="8" value="500000">
+          <label for="tRetAddr">Dir. retorno:</label>
+          <input id="tRetAddr" size="6" value="FF00" title="Dirección trampa donde cae el RET">
+        </div>
+      </div>
+
+      <div class="test-box">
+        <label class="lbl">2. Registros iniciales (hex x... o decimal)</label>
+        <div class="reg-inputs">
+          <label>R0 <input id="tr0" value="0"></label>
+          <label>R1 <input id="tr1" value="0"></label>
+          <label>R2 <input id="tr2" value="0"></label>
+          <label>R3 <input id="tr3" value="0"></label>
+          <label>R4 <input id="tr4" value="0"></label>
+          <label>R5 <input id="tr5" value="0"></label>
+          <label>R6 (SP) <input id="tr6" value="xFE00"></label>
+        </div>
+        <div class="bar" style="margin-top:8px;margin-bottom:0">
+          <input id="tMemInit" style="flex:1" placeholder="Memoria previa opcional, ej: x4000=x000A, x4002=#25">
+        </div>
+      </div>
+
+      <div class="test-box">
+        <label class="lbl">3. Ejecución unitaria y aserción opcional</label>
+        <div class="bar">
+          <input id="tExpectReg" size="5" value="R0" placeholder="Reg">
+          <input id="tExpectVal" size="12" placeholder="Valor esperado">
+          <button type="button" id="bRunTest" class="btn-run">Probar Subrutina</button>
+        </div>
+        <div id="testResult" class="test-res m">Listo para probar.</div>
+      </div>
+    </div>
+
+    <div id="benchMetrics" class="bench-metrics hidden">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-lbl">Instrucciones (Total)</span>
+          <strong id="bmInstr" class="kpi-val m">—</strong>
+          <div class="kpi-split m">
+            <span>Usuario: <b id="bmInstrUser">—</b></span>
+            <span>SO: <b id="bmInstrSo">—</b></span>
+          </div>
+          <small id="bmCyclesSub" class="kpi-sub" style="display:block;margin-top:2px">Ciclos: <b id="bmCycles">—</b></small>
+          <small id="bmInstrSub" class="kpi-sub"></small>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-lbl">Tamaño del programa</span>
+          <strong id="bmSize" class="kpi-val m">—</strong>
+          <small id="bmSizeSub" class="kpi-sub"></small>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-lbl">Datos accedidos</span>
+          <strong id="bmData" class="kpi-val m">—</strong>
+          <small id="bmDataSub" class="kpi-sub"></small>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-lbl">Pico de pila (R6)</span>
+          <strong id="bmStack" class="kpi-val m">—</strong>
+          <small id="bmStackSub" class="kpi-sub"></small>
+        </div>
+      </div>
+
+      <div class="bench-split">
+        <div class="test-box">
+          <label class="lbl">Histograma de instrucciones</label>
+          <div id="bmNewOps" class="help" style="margin:0 0 8px"></div>
+          <div id="bmHist" class="bm-hist"></div>
+        </div>
+        <div class="test-box">
+          <label class="lbl">Salida de consola de la prueba</label>
+          <pre id="bmOut" class="bm-out m"></pre>
+        </div>
+      </div>
+
+      <div id="bmOpsWrap" class="test-box hidden">
+        <div class="bm-table-head">
+          <label class="lbl" style="margin:0">Desglose por operación del benchmark (cómputo puro por subrutina)</label>
+          <span id="bmOpsSummary" class="help" style="margin:0"></span>
+        </div>
+        <div class="bar" style="margin-bottom:8px">
+          <input id="bmOpsFilter" placeholder="Filtrar operación, módulo o subrutina..." style="flex:1;min-width:180px">
+          <select id="bmOpsStatusFilter" title="Filtrar por estado">
+            <option value="all">Todas</option>
+            <option value="ok">Solo PASS</option>
+            <option value="fail">Solo FAIL / ERR</option>
+          </select>
+        </div>
+        <div id="benchDiff" class="help hidden" style="margin:0 0 8px"></div>
+        <div class="tbl-wrap">
+          <table class="bm-tbl m">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Operación</th>
+                <th>Módulo : Subrutina</th>
+                <th class="num">Tam. (B)</th>
+                <th class="num">Usuario</th>
+                <th class="num">SO</th>
+                <th class="num">Total</th>
+                <th class="num">Datos (B)</th>
+                <th class="num">Pila (B)</th>
+                <th>Esperado</th>
+                <th>Obtenido</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="bmOpsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="bmModProfWrap" class="test-box hidden">
+        <div class="bm-table-head">
+          <label class="lbl" style="margin:0">Perfil por módulo (instrucciones de usuario)</label>
+          <span id="bmModProfSummary" class="help" style="margin:0"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table class="bm-tbl m">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Módulo</th>
+                <th class="num">Instrucciones</th>
+                <th class="num">% del total</th>
+                <th class="num">Llamadas</th>
+              </tr>
+            </thead>
+            <tbody id="bmModProfBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <details id="bmModsWrap" class="test-box hidden">
+        <summary class="lbl" style="margin:0;cursor:pointer">Tamaño por módulo enlazado (<span id="bmModsCount">0</span> módulos)</summary>
+        <div id="bmModsGrid" class="bm-mods-grid m"></div>
+      </details>
+    </div>
+  </div>
+  <div class="panel-resizer" data-resize-panel="test" title="Arrastrar para alargar o achicar"></div>
+</section>
+
+<main id="workspace">
+  <div id="emptyWorkspace" class="empty-workspace hidden">
+    <p>Todos los paneles están ocultos.</p>
+    <button type="button" id="bRestoreFromEmpty" class="btn-primary">Restaurar diseño</button>
+  </div>
+  <div class="col" id="col0" data-col="0">
+    <section class="card panel" data-panel="src">
+      <div class="panel-head" draggable="true">
+        <div class="panel-title-wrap">
+          <span class="panel-grip" aria-hidden="true" title="Arrastrar para reordenar">⋮⋮</span>
+          <h2>Código fuente</h2>
+        </div>
+        <div class="panel-actions">
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="left" data-target="src" title="Mover a la columna izquierda" aria-label="Mover Código fuente a la columna izquierda">←</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="up" data-target="src" title="Subir panel" aria-label="Subir Código fuente">↑</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="down" data-target="src" title="Bajar panel" aria-label="Bajar Código fuente">↓</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="right" data-target="src" title="Mover a la columna derecha" aria-label="Mover Código fuente a la columna derecha">→</button>
+          <button type="button" class="icon-btn" data-collapse-panel="src" title="Plegar o desplegar">−</button>
+          <button type="button" class="icon-btn" data-hide-panel="src" title="Ocultar panel">×</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="bar panel-subbar">
+          <select id="selExample" title="Programas de ejemplo Apex-3X" style="flex:1;min-width:160px">
+            <option value="demo">Ejemplo: Demo Q7.8, pila y bytes</option>
+            <option value="muldiv">Ejemplo: Punto fijo MULQ12 / DIVQ12</option>
+            <option value="bytes">Ejemplo: Arreglo por bytes (LDXB / STBL / STBH)</option>
+            <option value="subrutina">Ejemplo: Subrutina JSR con PUSHM / POPM</option>
+            <option value="consola">Ejemplo: Eco de caracteres (GETC / OUT / PUTS)</option>
+          </select>
+          <button type="button" id="bLoadExample" class="btn-subtle">Cargar</button>
+          <span class="toolbar-sep" aria-hidden="true"></span>
+          <button type="button" id="bFontDec" class="icon-btn" title="Reducir tamaño de fuente del editor" aria-label="Reducir tamaño de fuente">A−</button>
+          <span id="fontSizeLbl" class="panel-meta m">12.5px</span>
+          <button type="button" id="bFontInc" class="icon-btn" title="Aumentar tamaño de fuente del editor" aria-label="Aumentar tamaño de fuente">A+</button>
+        </div>
+        <textarea id="src" spellcheck="false" aria-label="Código assembly"></textarea>
+        <div id="msg"></div>
+        <p id="srcHint" class="help">LDR/STR toman desplazamiento en bytes (par, −32 a 30); LDBL/LDBH/STBL/STBH en bytes (−16 a 15). Saltos y LD/ST/LEA usan etiquetas.</p>
+      </div>
+      <div class="panel-resizer" data-resize-panel="src" title="Arrastrar para alargar o achicar (doble clic para auto)"></div>
+    </section>
+
+    <section class="card panel" data-panel="lst">
+      <div class="panel-head" draggable="true">
+        <div class="panel-title-wrap">
+          <span class="panel-grip" aria-hidden="true" title="Arrastrar para reordenar">⋮⋮</span>
+          <h2>Listado ensamblado</h2>
+        </div>
+        <div class="panel-actions">
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="left" data-target="lst" title="Mover a la columna izquierda" aria-label="Mover Listado a la columna izquierda">←</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="up" data-target="lst" title="Subir panel" aria-label="Subir Listado">↑</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="down" data-target="lst" title="Bajar panel" aria-label="Bajar Listado">↓</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="right" data-target="lst" title="Mover a la columna derecha" aria-label="Mover Listado a la columna derecha">→</button>
+          <button type="button" class="icon-btn" data-collapse-panel="lst" title="Plegar o desplegar">−</button>
+          <button type="button" class="icon-btn" data-hide-panel="lst" title="Ocultar panel">×</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="bar panel-subbar">
+          <div class="seg-group" role="tablist" aria-label="Vista del código ensamblado">
+            <button type="button" class="seg-btn on" data-lst-view="asm" role="tab" aria-selected="true">ASM</button>
+            <button type="button" class="seg-btn" data-lst-view="hex" role="tab" aria-selected="false">HEX</button>
+            <button type="button" class="seg-btn" data-lst-view="bin" role="tab" aria-selected="false">BIN</button>
+          </div>
+          <span id="bpSummary" class="panel-meta m">0 BP</span>
+          <button type="button" id="bScrollToPc" class="btn-subtle" title="Desplazar listado a la instrucción actual (PC)">Ver PC</button>
+          <button type="button" id="bClearBp" class="btn-subtle" title="Quitar todos los breakpoints">Limpiar BP</button>
+          <button type="button" id="bCopyLst" class="btn-subtle" title="Copiar vista actual">Copiar</button>
+        </div>
+        <div id="lstCurInfo" class="panel-meta m lst-cur-info"></div>
+        <div id="lst" class="m"></div>
+        <details id="execHistoryWrap" class="sub-box">
+          <summary class="sub-summary">Historial de ejecución (<span id="histCount">0</span>)</summary>
+          <div id="execHistory" class="exec-hist m"></div>
+        </details>
+      </div>
+      <div class="panel-resizer" data-resize-panel="lst" title="Arrastrar para alargar o achicar (doble clic para auto)"></div>
+    </section>
+  </div>
+
+  <div class="col-resizer" id="split01" data-split="0" title="Arrastrar para ajustar ancho de columna"></div>
+
+  <div class="col" id="col1" data-col="1">
+    <section class="card panel" data-panel="regs">
+      <div class="panel-head" draggable="true">
+        <div class="panel-title-wrap">
+          <span class="panel-grip" aria-hidden="true" title="Arrastrar para reordenar">⋮⋮</span>
+          <h2>Registros</h2>
+        </div>
+        <div class="panel-actions">
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="left" data-target="regs" title="Mover a la columna izquierda" aria-label="Mover Registros a la columna izquierda">←</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="up" data-target="regs" title="Subir panel" aria-label="Subir Registros">↑</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="down" data-target="regs" title="Bajar panel" aria-label="Bajar Registros">↓</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="right" data-target="regs" title="Mover a la columna derecha" aria-label="Mover Registros a la columna derecha">→</button>
+          <button type="button" class="icon-btn" data-collapse-panel="regs" title="Plegar o desplegar">−</button>
+          <button type="button" class="icon-btn" data-hide-panel="regs" title="Ocultar panel">×</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="regs" class="m"></div>
+        <div id="flags"></div>
+        <div id="regsCopyMsg" class="help" style="margin-top:8px">Clic en un registro para copiar su valor hexadecimal.</div>
+      </div>
+      <div class="panel-resizer" data-resize-panel="regs" title="Arrastrar para alargar o achicar (doble clic para auto)"></div>
+    </section>
+
+    <section class="card panel" data-panel="metrics">
+      <div class="panel-head" draggable="true">
+        <div class="panel-title-wrap">
+          <span class="panel-grip" aria-hidden="true" title="Arrastrar para reordenar">⋮⋮</span>
+          <h2>Métricas de ejecución</h2>
+        </div>
+        <div class="panel-actions">
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="left" data-target="metrics" title="Mover a la columna izquierda" aria-label="Mover Métricas a la columna izquierda">←</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="up" data-target="metrics" title="Subir panel" aria-label="Subir Métricas">↑</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="down" data-target="metrics" title="Bajar panel" aria-label="Bajar Métricas">↓</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="right" data-target="metrics" title="Mover a la columna derecha" aria-label="Mover Métricas a la columna derecha">→</button>
+          <button type="button" class="icon-btn" data-collapse-panel="metrics" title="Plegar o desplegar">−</button>
+          <button type="button" class="icon-btn" data-hide-panel="metrics" title="Ocultar panel">×</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="kv">
+          <span>Instrucciones de usuario</span><span id="sCnt" class="m"></span>
+          <span>Instrucciones de SO</span><span id="sSo" class="m"></span>
+          <span>Total instrucciones</span><span id="sTot" class="m"></span>
+          <span>Ciclos de reloj</span><span id="sCycles" class="m"></span>
+          <span>Tamaño del programa</span><span id="sSize" class="m"></span>
+          <span>Datos accedidos</span><span id="sDat" class="m"></span>
+          <span>Accesos a memoria (L/E)</span><span id="sMemAcc" class="m"></span>
+          <span>Pico de pila</span><span id="sStk" class="m"></span>
+          <span>Tiempo simulado (<select id="selSimClk" class="mini-select" title="Reloj teórico simulado"><option value="1">1 MHz</option><option value="4">4 MHz</option><option value="10" selected>10 MHz</option><option value="25">25 MHz</option></select>)</span><span id="sSimTime" class="m"></span>
+          <span>Límite de pasos</span><span><input id="lim" size="9" value="5000000"></span>
+          <span>Estado</span><span id="sSt"></span>
+        </div>
+        <p class="help" style="margin-top:6px">El tiempo simulado es una estimación teórica (~1 ciclo/instr. al reloj elegido), no tiempo real del hardware.</p>
+        <div id="opBreakdown" class="op-breakdown"></div>
+      </div>
+      <div class="panel-resizer" data-resize-panel="metrics" title="Arrastrar para alargar o achicar (doble clic para auto)"></div>
+    </section>
+  </div>
+
+  <div class="col-resizer" id="split12" data-split="1" title="Arrastrar para ajustar ancho de columna"></div>
+
+  <div class="col" id="col2" data-col="2">
+    <section class="card panel" data-panel="mem">
+      <div class="panel-head" draggable="true">
+        <div class="panel-title-wrap">
+          <span class="panel-grip" aria-hidden="true" title="Arrastrar para reordenar">⋮⋮</span>
+          <h2>Memoria por byte</h2>
+        </div>
+        <div class="panel-actions">
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="left" data-target="mem" title="Mover a la columna izquierda" aria-label="Mover Memoria a la columna izquierda">←</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="up" data-target="mem" title="Subir panel" aria-label="Subir Memoria">↑</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="down" data-target="mem" title="Bajar panel" aria-label="Bajar Memoria">↓</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="right" data-target="mem" title="Mover a la columna derecha" aria-label="Mover Memoria a la columna derecha">→</button>
+          <button type="button" class="icon-btn" data-collapse-panel="mem" title="Plegar o desplegar">−</button>
+          <button type="button" class="icon-btn" data-hide-panel="mem" title="Ocultar panel">×</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="bar">
+          <label for="maddr">Desde x</label>
+          <input id="maddr" size="5" value="3000">
+          <button type="button" id="bGo">Ver</button>
+          <button type="button" id="bPc">Ir al PC</button>
+          <button type="button" id="bCopyMem" class="btn-subtle" title="Copiar bloque de memoria visible">Copiar</button>
+        </div>
+        <div class="bar">
+          <input id="memSearch" placeholder="Buscar xValor, #dec, texto o etiqueta" style="flex:1;min-width:130px">
+          <button type="button" id="bMemFind">Buscar</button>
+          <button type="button" id="bMemNext" title="Siguiente coincidencia">Sig.</button>
+        </div>
+        <div id="memSearchStatus" class="panel-meta" style="margin-bottom:6px"></div>
+        <div id="mem" class="m"></div>
+      </div>
+      <div class="panel-resizer" data-resize-panel="mem" title="Arrastrar para alargar o achicar (doble clic para auto)"></div>
+    </section>
+
+    <section class="card panel" data-panel="con">
+      <div class="panel-head" draggable="true">
+        <div class="panel-title-wrap">
+          <span class="panel-grip" aria-hidden="true" title="Arrastrar para reordenar">⋮⋮</span>
+          <h2>Consola</h2>
+        </div>
+        <div class="panel-actions">
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="left" data-target="con" title="Mover a la columna izquierda" aria-label="Mover Consola a la columna izquierda">←</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="up" data-target="con" title="Subir panel" aria-label="Subir Consola">↑</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="down" data-target="con" title="Bajar panel" aria-label="Bajar Consola">↓</button>
+          <button type="button" class="icon-btn panel-move-btn" data-move-panel="right" data-target="con" title="Mover a la columna derecha" aria-label="Mover Consola a la columna derecha">→</button>
+          <button type="button" class="icon-btn" data-collapse-panel="con" title="Plegar o desplegar">−</button>
+          <button type="button" class="icon-btn" data-hide-panel="con" title="Ocultar panel">×</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <pre id="con" class="m"></pre>
+        <div class="bar" style="margin:8px 0 0">
+          <input id="inp" placeholder="Entrada para GETC o IN, Enter para enviar" style="flex:1">
+          <button type="button" id="bScrollCon" class="btn-subtle" title="Desplazar consola al final">Al final</button>
+          <button type="button" id="bCopyCon" class="btn-subtle" title="Copiar salida de consola">Copiar</button>
+          <button type="button" id="bClearCon" class="btn-subtle" title="Limpiar consola">Limpiar</button>
+        </div>
+      </div>
+      <div class="panel-resizer" data-resize-panel="con" title="Arrastrar para alargar o achicar (doble clic para auto)"></div>
+    </section>
+  </div>
+</main>
+
+<dialog id="helpDialog" class="help-dialog" aria-labelledby="helpDialogTitle">
+  <div class="help-dialog-head">
+    <h2 id="helpDialogTitle">Guía rápida Apex-3X y atajos de teclado</h2>
+    <button type="button" id="bCloseHelp" class="icon-btn" title="Cerrar guía">×</button>
+  </div>
+  <div class="help-dialog-body">
+    <div class="help-cols">
+      <div class="test-box">
+        <label class="lbl">Atajos de teclado</label>
+        <div class="kv m" style="font-size:12px">
+          <span>Ensamblar código</span><span>Ctrl + Enter</span>
+          <span>Ejecutar / Pausar</span><span>F9</span>
+          <span>Ejecutar paso (Step)</span><span>F10</span>
+          <span>Reiniciar CPU</span><span>F8</span>
+          <span>Abrir / cerrar guía</span><span>F1</span>
+        </div>
+      </div>
+      <div class="test-box">
+        <label class="lbl">Directivas y literales</label>
+        <p class="help" style="margin-top:0">
+          <code>.ORIG x3000</code>, <code>.END</code>, <code>.FILL valor</code>, <code>.BLKW n</code>, <code>.STRINGZ "..."</code>, <code>.BYTE a, b</code>, <code>.EXTERNAL MOD-ETIQ</code>.
+          Números: decimal (<code>#15</code> o <code>15</code>) o hex (<code>x3000</code>, <code>#xFF</code>, <code>0x10</code>).
+        </p>
+      </div>
+    </div>
+    <div class="test-box" style="margin-top:10px">
+      <label class="lbl">Instrucciones y extensiones Apex-3X</label>
+      <div class="help-ref-grid m">
+        <div><b>Aritmética / Lógica:</b> ADD, SUB, AND, ADC, SBC, MUL, MULH, MULHU, DIV, REM, DIVU, REMU</div>
+        <div><b>Punto fijo Q:</b> MULQ8/12/14/15, DIVQ8/12/14/15</div>
+        <div><b>Unarias / Bits:</b> NOT, NEG, ABS, SXT, SWAB, CLZ, SHL/LSL, ROL, SHR/LSR, ASR</div>
+        <div><b>Constantes:</b> MOVI Rd, imm8 · MOVH Rd, imm8</div>
+        <div><b>Memoria (16 bits):</b> LD, ST, LEA, LDR/STR (offset bytes par −32..30), LDXW</div>
+        <div><b>Memoria (bytes):</b> LDBL, LDBH, STBL, STBH (offset −16..15), LDXB, LDXSB</div>
+        <div><b>Control / Pila:</b> BR[nzp], BRC, BRNC, JMP, JSR, JSRR, RET, PUSHM máscara, POPM máscara</div>
+        <div><b>Traps E/S:</b> GETC (x20), OUT (x21), PUTS (x22), IN (x23), HALT (x25)</div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script src="apex3x_assembler.js"></script>
+<script src="apex3x_cpu.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
