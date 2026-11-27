@@ -39,7 +39,7 @@ for name, obj in [('menu_automatico', 'calculadora_automatica.obj'),
     traffic = re.search(r'TRAFICO (.+)', run.stdout).group(1)
     programs[name] = {k: int(v) for k, v in re.findall(r'(\w+)=(\d+)', metric + ' ' + traffic)}
     programs[name]['objeto_bytes'] = (ROOT / 'build' / obj).stat().st_size
-assert programs['menu_automatico']['instrucciones'] == 12706
+assert programs['menu_automatico']['instrucciones'] == 365469
 assert programs['exp_demo']['instrucciones'] == 2204
 
 rows = list(csv.DictReader((ROOT / 'build/exp_comparacion.csv').open(encoding='utf-8')))
@@ -63,9 +63,15 @@ for row in rows:
     if minimum is None or error < minimum['error_absoluto']: minimum = sample
     if relative is None or sample['error_relativo'] > relative['error_relativo']: relative = sample
 
+import shutil
+g27_rows=list(csv.DictReader((ROOT/'build/benchmark_grupo27.csv').open(encoding='utf-8')))
+assert len(g27_rows)==23 and [int(r['operacion']) for r in g27_rows]==list(range(1,24))
+assert all(r['resultado']=='OK' for r in g27_rows)
+shutil.copyfile(ROOT/'build/benchmark_grupo27.csv',OUT/'benchmark_grupo27.csv')
+programs['menu_automatico']['operaciones']=23
 summary = {
-    'fecha': '2026-11-26',
-    'version': 'ISA3C integrada 1.1 con EXP optimizada e interfaz Windows',
+    'fecha': '2026-11-27',
+    'version': 'ISA3C integrada 1.2 con benchmark completo del Grupo 27',
     'criterio': 'Misma entrada y salida binaria. Banco: solo llamada, sin impresión ni HALT del llamador. Menú: incluye sistema. No son ciclos físicos.',
     'banco': {'casos': len(bank), 'instrucciones_estable': sum(int(r['estable']) for r in previous),
               'instrucciones_experimental': sum(int(r['experimental']) for r in previous),
@@ -84,7 +90,7 @@ summary = {
         ROOT / 'build/exp_comparacion.csv', ROOT / 'build/benchmark.csv',
         ROOT / 'benchmark/modulos/g6_EXP.asm', ROOT / 'tests/test_exp_optimized.c']}
 }
-assert summary['banco']['instrucciones_integrada'] == 25206
+assert summary['banco']['instrucciones_integrada'] == 25202
 assert summary['exp']['instrucciones_despues'] == 68450717
 (OUT / 'resumen.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 print(json.dumps(summary, ensure_ascii=False, indent=2))

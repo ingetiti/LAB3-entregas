@@ -103,10 +103,18 @@ main_menu_return                        ;
 main_menu_show_menu                     ;
     LD R1 main_menu_op_cursor           ;
     BRz main_menu_show_menu_sk1         ;   if [cursor_de_op]:
-    LDR R0 R1 #0                        ;       [R0] valor
+    LDR R0 R1 #0                        ;       [R0] indice
     ADD R1, R1, #2                        ; ; ISA3C: direccion en bytes
     ST R1 main_menu_op_cursor           ;       [cursor_de_op].incr()
-    BR main_menu_swap_node              ;       # Cambio de nodo (offset = valor)
+    
+    LD R5 main_menu_op_table_ads        ;
+    ADD R5, R5, R0
+    ADD R5, R5, R0                        ; ; ISA3C: indice de palabras a bytes
+    LDR R5 R5 #0                        ;
+    ST R5 main_menu_state               ;       [estado] = tabla_de_nodos.peek(indice)
+
+    LDR R0 R5 #0                        ;
+    JMP R0                              ;       goto nodo.controlador
 
 main_menu_show_menu_sk1
     LD R5 main_menu_state               ;   [R5] nodo = [estado]
@@ -133,6 +141,13 @@ main_menu_one_int_noresult
     LD R0 main_menu_0
     LD R1 main_menu_neg_1
     LD R2 main_menu_neg_1
+    BR main_menu_call
+
+;   ==- Controlador subrutinas de un entero resultado en Q3.12 -================
+main_menu_one_int_result_q12
+    LD R0 main_menu_0
+    LD R1 main_menu_neg_1
+    LD R2 main_menu_12
     BR main_menu_call
 
 ;   ==- Controlador subrutinas de dos enteros  -================================
@@ -338,6 +353,7 @@ main_menu_aux_3             .FILL #0
 main_menu_aux_4             .FILL #0
 
 main_menu_swap_node_ads     .FILL main_menu_swap_node
+main_menu_op_table_ads      .FILL main_menu_op_table
 
 sub_getcfiltered            .FILL getcfiltered-GETCFILTERED
 sub_fromhex                 .FILL fromhex-FROMHEX
@@ -418,11 +434,11 @@ main_menu_call_op_exec
     ST R1 main_menu_aux_1               ;   [aux_0, aux_1] result = node.subrutina(value_a, value_b)
 
     LD R0 main_menu_op_verbose          ;
-    BRz main_menu_call_op_incr_cursor   ;
+    BRz main_menu_call_op_save_result   ;
 
 main_menu_call_op_show_res              ;
     LD R0 main_menu_aux_4               ;
-    BRn main_menu_call_op_incr_cursor   ;
+    BRn main_menu_call_op_save_result   ;
 
     LD R0 main_menu_prompt_q_vec        ;
     LD R1 main_menu_aux_4               ;
@@ -437,31 +453,21 @@ main_menu_call_op_show_res              ;
     LD R3 sub_outval                    ;
     JSRR R3                             ;   outval(resultado, n_salida)
 
-main_menu_call_op_incr_cursor           ;
-    LD R0 main_menu_aux_2               ;
-    BRn main_menu_call_op_next_sk1      ;   if n_entrada1 >= 0:
-    ADD R4, R4, #2                        ;       cursor_de_op.incr() ; ISA3C: direccion en bytes
-    ADD R0 R0 #-16                      ;
-    BRnp main_menu_call_op_next_sk1     ;       if n_entrada1 == 16:
-    ADD R4, R4, #2                        ;           cursor_de_op.incr() ; ISA3C: direccion en bytes
-main_menu_call_op_next_sk1              ;
-    LD R0 main_menu_aux_3               ;
-    BRn main_menu_call_op_next_sk2      ;   if n_entrada2 >= 0:
-    ADD R4, R4, #2                        ;       cursor_de_op.incr() ; ISA3C: direccion en bytes
-main_menu_call_op_next_sk2              ;
+main_menu_call_op_save_result           ;
     LD R0 main_menu_aux_4               ;
-    BRn main_menu_call_op_next_sk3      ;   if n_salida >= 0:
-    LD R1 main_menu_aux_0               ;
-    STR R1 R4 #0                        ;       [resultado_h] = aux_0
-    ADD R4, R4, #2                        ;       cursor_de_op.incr() ; ISA3C: direccion en bytes
     ADD R0 R0 #-16                      ;
-    BRnp main_menu_call_op_next_sk3     ;       if n_salida == 16:
-    LD R1 main_menu_aux_1               ;
-    STR R1 R4 #0                        ;           [resultado_l] = aux_1
-    ADD R4, R4, #2                        ;           cursor_de_op.incr() ; ISA3C: direccion en bytes
+    BRz main_menu_call_op_save_sk1     ;
+    AND R0 R0 #0                        ;
+    ST R0 main_menu_aux_1               ;
 
-main_menu_call_op_next_sk3              ;
-    ST R4 main_menu_op_cursor           ;   cursor_de_op.incr(contador)
+main_menu_call_op_save_sk1              ;
+    LD R0 main_menu_aux_0               ;
+    LD R1 main_menu_aux_1               ;
+    STR R0 R4 #2                        ;
+    STR R1 R4 #3                        ;
+
+    ADD R4, R4, #8                        ;   ; ISA3C: direccion en bytes
+    ST R4 main_menu_op_cursor           ;   cursor_de_op.incr(4)
 
     AND R0 R0 #0                        ;
     LD R1 main_menu_swap_node_ads       ; 
@@ -576,6 +582,32 @@ main_menu_prompt_q14_text       .STRINGZ "(Q1.14) "
 main_menu_prompt_q15_text       .STRINGZ "(Q0.15) "
 main_menu_prompt_q16_text       .STRINGZ "(Q15.16) "
 
+;   ============================================================================
+;   ==- TABLA DEL VECTOR DE OPERACIONES -=======================================
+main_menu_op_table          .FILL main_menu_end
+                            .FILL main_menu_argrd
+                            .FILL main_menu_sin_taylor
+                            .FILL main_menu_sin_table
+                            .FILL main_menu_sin_cheb
+                            .FILL main_menu_cos
+                            .FILL main_menu_base_hex
+                            .FILL main_menu_base_bin
+                            .FILL main_menu_sqrt_nonres
+                            .FILL main_menu_sqrt_nr
+                            .FILL main_menu_exp
+                            .FILL main_menu_pow_mults
+                            .FILL main_menu_pow_expbin
+                            .FILL main_menu_mult_cordic
+                            .FILL main_menu_mult_basic
+                            .FILL main_menu_mult_booth
+                            .FILL main_menu_div_long
+                            .FILL main_menu_div_nr
+                            .FILL main_menu_div_cordic
+                            .FILL main_menu_log_borch
+                            .FILL main_menu_log_cordic
+                            .FILL main_menu_mcd
+                            .FILL main_menu_mcm
+                            .FILL main_menu_qtoq
 
 ;   ============================================================================
 ;   ==- NODOS -=================================================================
@@ -628,7 +660,7 @@ main_menu_sin_next          .FILL main_menu_sin_taylor
                             .FILL main_menu_sin_table
                             .FILL main_menu_sin_cheb
 ;   ----------------------------------------------------------------------------
-main_menu_sin_taylor        .FILL main_menu_one_q12
+main_menu_sin_taylor        .FILL main_menu_one_int_result_q12
                             .FILL main_menu_sin_taylor_text
                             .FILL #0
                             .FILL main_menu_sin_taylor_next
@@ -899,12 +931,12 @@ main_menu_qtoq_next         .FILL main_menu_init
 .EXTERNAL g18_booth-MULT_BOOTH                                  ; MULT BOOTH (Q8, Q8 -> Q8)
 .EXTERNAL g19_cordic_multiplicacion-CORDIC_MUL                  ; MULT CORDIC (Q8, Q8 -> Q8)
 .EXTERNAL g20_Cordic_reduccion_de_argumento-Reduccion_Argumento ; REDUCCION DE ARGUMENTO (CORDIC) (Q12 -> Q12)
-;.EXTERNAL g21_                                                  ; SIN TAYLOR (Q12 -> ? ) (?) ERROR: no hay subrutina? (esta el programa, pero no como subrutina)
+.EXTERNAL g21_senotaylor_subrutina-CALCULAR_SENO                ; SIN TAYLOR (int -> Q12)  (?) toman el angulo en: grados * 0.1 ?
 .EXTERNAL g22_Tabla_SIN_y_COS-SENO_TABLA                        ; SIN TABLE (Q12 -> Q14)
 .EXTERNAL g22_Tabla_SIN_y_COS-COSENO_TABLA                      ; COS TABLE (Q12 -> Q14)
 .EXTERNAL g23_modulo_sqrt_nr-SQRT_NR                            ; SQRT NONRES (Q8 -> Q9)
-;.EXTERNAL g24_                                                  ; BASE HEX (int -> noresult)
-;.EXTERNAL g24_                                                  ; BASE BIN (int -> noresult) (?) ERROR: no hay subrutinas? (esta el programa, pero no como subrutina)
+.EXTERNAL g24_conversor_lc3_max-SUB_BASE_HEX                    ; BASE HEX (int -> noresult)
+.EXTERNAL g24_conversor_lc3_max-SUB_BASE_BIN                    ; BASE BIN (int -> noresult)
 ; [GRUPO 27 MAIN MENU]                                          ;
 .EXTERNAL g30_seno_cheb_pade-SEN_CHEB_PADE                      ; SIN CHEBYSHEV-PADE (Q12 -> Q14)
 
@@ -921,12 +953,12 @@ main_menu_sub_sqrt_nr       .FILL g9_sqrt_nr_dq16-SQRT_NR_DQ16
 main_menu_sub_exp           .FILL g6_EXP-EXP_Q3_12
 main_menu_sub_pow_mults     .FILL g5_Mul_Sucesiva_POW-Mul_Sucesiva_POW
 main_menu_sub_pow_expbin    .FILL g4_potencia-EXP_RAPIDA
-main_menu_sub_sin_taylor    .FILL NULL_SUBRUTINE        ; <- SIN_TAYLOR
+main_menu_sub_sin_taylor    .FILL g21_senotaylor_subrutina-CALCULAR_SENO
 main_menu_sub_sin_table     .FILL g22_Tabla_SIN_y_COS-SENO_TABLA
 main_menu_sub_sin_cheb      .FILL g30_seno_cheb_pade-SEN_CHEB_PADE
 main_menu_sub_cos           .FILL g22_Tabla_SIN_y_COS-COSENO_TABLA
-main_menu_sub_base_hex      .FILL NULL_SUBRUTINE        ; <- BASE_HEX
-main_menu_sub_base_bin      .FILL NULL_SUBRUTINE        ; <- BASE_BIN
+main_menu_sub_base_hex      .FILL g24_conversor_lc3_max-SUB_BASE_HEX
+main_menu_sub_base_bin      .FILL g24_conversor_lc3_max-SUB_BASE_BIN
 main_menu_sub_mcd           .FILL g7_mcd-MCD
 main_menu_sub_mcm           .FILL g7_mcm-MCM
 main_menu_sub_argrd         .FILL g20_Cordic_reduccion_de_argumento-Reduccion_Argumento
@@ -947,4 +979,3 @@ null_subrutine_r7   .FILL #0
 null_subrutine_text .STRINGZ "(opcion sin subrutina implementada en la version de origen)\n"
 
 .END
-

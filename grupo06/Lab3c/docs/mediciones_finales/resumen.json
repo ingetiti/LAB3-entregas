@@ -1,25 +1,26 @@
 {
-  "fecha": "2026-11-26",
-  "version": "ISA3C integrada 1.1 con EXP optimizada e interfaz Windows",
+  "fecha": "2026-11-27",
+  "version": "ISA3C integrada 1.2 con benchmark completo del Grupo 27",
   "criterio": "Misma entrada y salida binaria. Banco: solo llamada, sin impresión ni HALT del llamador. Menú: incluye sistema. No son ciclos físicos.",
   "banco": {
     "casos": 37,
     "instrucciones_estable": 60225,
     "instrucciones_experimental": 38299,
-    "instrucciones_integrada": 25206,
-    "imagen_bytes": 7468
+    "instrucciones_integrada": 25202,
+    "imagen_bytes": 7464
   },
   "programas": {
     "menu_automatico": {
-      "instrucciones": 12706,
+      "instrucciones": 365469,
       "interrupciones": 0,
-      "programa_bytes": 14558,
-      "accedidos_bytes": 2866,
-      "escritos_bytes": 282,
+      "programa_bytes": 15932,
+      "accedidos_bytes": 9584,
+      "escritos_bytes": 774,
       "excepcion": 0,
-      "lecturas_bytes": 32308,
-      "escrituras_bytes": 3668,
-      "objeto_bytes": 14560
+      "lecturas_bytes": 820684,
+      "escrituras_bytes": 40042,
+      "objeto_bytes": 15934,
+      "operaciones": 23
     },
     "exp_demo": {
       "instrucciones": 2204,
@@ -70,10 +71,10 @@
     "vueltas_rutas_rapidas": 0
   },
   "sha256_evidencia": {
-    "build/funciones.obj": "0e59e187ae737f14f3e1c67205cb4d61e0de7e0212e8b782528f31ab49feb0d2",
-    "build/calculadora_automatica.obj": "c10e9e6cdde3ab1bb07fb5f79415a280086bdbca781d66e159e32e1fef66cd13",
+    "build/funciones.obj": "0eba1de6b8a2aa4bf8c77d5cb261765b4ae8f9e183dd8d663cce716045e64094",
+    "build/calculadora_automatica.obj": "530c8efc534d0b0df1ad636c93848d633002afe009e34fef23f205595e794a18",
     "build/exp_comparacion.csv": "cbb5179407e3d466535b205e38c84c4064885bb9551397f83f393cee0c336a6a",
-    "build/benchmark.csv": "33f5a84f1fab0330393b03e827b75af22575106c0c0424d3aed4966f06bc7b64",
+    "build/benchmark.csv": "411336d6f1b77367d65eb4778572c959bfc21410aac3228e2380c82875ce2378",
     "benchmark/modulos/g6_EXP.asm": "494ef27071b1b6c3725ad236eadb8aab6b1c139251d9af522f695dd7cb5fade0",
     "tests/test_exp_optimized.c": "0593de11f6ec6ff064c95f995bb3e941dde988364323026a365231eac418161c"
   }

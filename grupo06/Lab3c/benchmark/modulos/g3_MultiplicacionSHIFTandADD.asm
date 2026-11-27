@@ -68,9 +68,7 @@ Q8_BUCLE:
 
         ADD     R3, R3, #0
         BRn     Q8_SUMANDO_BAJO_NEGATIVO
-        ADD     R0, R0, #0
-        BRn     Q8_ACARREO
-        BR      Q8_DESPLAZAR
+        BR      Q8_DESPLAZAR ; sin acarreo para dos bajos positivos
 
 Q8_SUMANDO_BAJO_NEGATIVO:
         ADD     R0, R0, #0

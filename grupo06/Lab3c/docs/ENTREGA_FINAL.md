@@ -1,3 +1,5 @@
+> Actualización del 27/11/2026: el benchmark vigente recorre las 23 operaciones del main recibido, con 365.469 instrucciones y excepción 0. Los conteos de tres operaciones y las opciones pendientes mencionados abajo describen la versión anterior.
+
 # Entrega de ISA3C del 26 de noviembre de 2026
 
 La entrega incluye el simulador funcional, ensamblador independiente, editor de consola, interfaz Win32, bibliotecas, ejemplos y pruebas. La interfaz abre con `interfaz.bat`. La biblioteca EXP para esta ISA es distinta del módulo LC-3 que se publica en el simulador del Grupo 8.

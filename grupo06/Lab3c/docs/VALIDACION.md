@@ -1,3 +1,5 @@
+> Actualización del 27/11/2026: el benchmark vigente recorre las 23 operaciones del main recibido, con 365.469 instrucciones y excepción 0. Los conteos de tres operaciones y las opciones pendientes mencionados abajo describen la versión anterior.
+
 # Validación de ISA3C integrada 1.1
 
 ## Interfaz gráfica — 26/11/2026

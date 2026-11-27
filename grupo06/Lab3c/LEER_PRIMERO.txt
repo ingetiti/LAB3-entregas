@@ -32,14 +32,16 @@ d sale. No hace falta pausar entre los ingresos.
 Para ejecutar el benchmark automático, abrir CMD en esta carpeta:
     build\simulador.exe build\calculadora_automatica.obj
 
-Debe finalizar sin excepción con 12.706 instrucciones totales. El tamaño
-de imagen es 14.558 bytes; el archivo OBJ agrega dos bytes de origen.
+Debe recorrer las 23 operaciones y finalizar con excepcion=0 y 365.469
+instrucciones totales. La imagen ocupa 15.932 bytes; el OBJ ocupa 15.934
+bytes porque agrega dos bytes de origen. El último caso es Q3.12 -> Q7.8.
 benchmark.bat ejecuta también el banco de funciones y muestra sus métricas.
 
 3. ARCHIVOS ASSEMBLY UTILIZADOS
 
 - benchmark\calculadora.asm
-- benchmark\calculadora_automatica.asm
+- benchmark\calculadora_automatica.asm: selecciona el bloque completo.
+- benchmark\main_grupo27.asm: archivo recibido, sin cambios en sus valores.
 - benchmark\funciones.asm
 - benchmark\modulos: bibliotecas adaptadas y enlazadas por EXTERNAL.
 - ejemplos\sistema.asm: servicios del sistema utilizados por el núcleo.
@@ -87,8 +89,9 @@ RECOMPILACIÓN Y VERIFICACIÓN
   Python 3. No se necesita Python para ejecutar la ISA.
 
 Se conservan tests y benchmark\originales porque se usan para validar y
-regenerar los módulos. Las tres opciones sin conectar del menú original
-quedan declaradas en el informe. Se trata de un simulador funcional.
+regenerar los módulos. Las 23 operaciones del menú están conectadas.
+Los resultados del benchmark completo están en docs\mediciones_finales.
+Es un simulador funcional.
 
 Esta copia excluye temporales de build, registros duplicados, respaldos
 y documentos Word editables. La carpeta de trabajo original se conserva.

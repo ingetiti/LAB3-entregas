@@ -335,69 +335,51 @@
   },
   {
     "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 245,
+    "linea_original": 109,
+    "antes": "    ADD R5 R5 R0                        ;",
+    "despues": "    ADD R5, R5, R0\n    ADD R5, R5, R0                        ; ; ISA3C: indice de palabras a bytes"
+  },
+  {
+    "archivo": "MAIN_MENU_PROGRESO.asm",
+    "linea_original": 259,
     "antes": "    ADD R0 R0 R1                        ;",
     "despues": "    ADD R0, R0, R1\n    ADD R0, R0, R1                        ; ; ISA3C: indice de palabras a bytes"
   },
   {
     "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 261,
+    "linea_original": 275,
     "antes": "    ADD R0 R0 R1                        ;",
     "despues": "    ADD R0, R0, R1\n    ADD R0, R0, R1                        ; ; ISA3C: indice de palabras a bytes"
   },
   {
     "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 285,
+    "linea_original": 299,
     "antes": "    ADD R0 R0 R1                        ;",
     "despues": "    ADD R0, R0, R1\n    ADD R0, R0, R1                        ; ; ISA3C: indice de palabras a bytes"
   },
   {
     "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 378,
+    "linea_original": 393,
     "antes": "    ADD R0 R0 R1                        ;",
     "despues": "    ADD R0, R0, R1\n    ADD R0, R0, R1                        ; ; ISA3C: indice de palabras a bytes"
   },
   {
     "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 394,
+    "linea_original": 409,
     "antes": "    ADD R0 R0 R1                        ;",
     "despues": "    ADD R0, R0, R1\n    ADD R0, R0, R1                        ; ; ISA3C: indice de palabras a bytes"
   },
   {
     "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 422,
+    "linea_original": 437,
     "antes": "    ADD R0 R0 R1                        ;",
     "despues": "    ADD R0, R0, R1\n    ADD R0, R0, R1                        ; ; ISA3C: indice de palabras a bytes"
   },
   {
     "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 435,
-    "antes": "    ADD R4 R4 #1                        ;       cursor_de_op.incr()",
-    "despues": "    ADD R4, R4, #2                        ;       cursor_de_op.incr() ; ISA3C: direccion en bytes"
-  },
-  {
-    "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 438,
-    "antes": "    ADD R4 R4 #1                        ;           cursor_de_op.incr()",
-    "despues": "    ADD R4, R4, #2                        ;           cursor_de_op.incr() ; ISA3C: direccion en bytes"
-  },
-  {
-    "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 442,
-    "antes": "    ADD R4 R4 #1                        ;       cursor_de_op.incr()",
-    "despues": "    ADD R4, R4, #2                        ;       cursor_de_op.incr() ; ISA3C: direccion en bytes"
-  },
-  {
-    "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 448,
-    "antes": "    ADD R4 R4 #1                        ;       cursor_de_op.incr()",
-    "despues": "    ADD R4, R4, #2                        ;       cursor_de_op.incr() ; ISA3C: direccion en bytes"
-  },
-  {
-    "archivo": "MAIN_MENU_PROGRESO.asm",
-    "linea_original": 453,
-    "antes": "    ADD R4 R4 #1                        ;           cursor_de_op.incr()",
-    "despues": "    ADD R4, R4, #2                        ;           cursor_de_op.incr() ; ISA3C: direccion en bytes"
+    "linea_original": 460,
+    "antes": "    ADD R4 R4 #4                        ;  ",
+    "despues": "    ADD R4, R4, #8                        ;   ; ISA3C: direccion en bytes"
   },
   {
     "archivo": "todec.asm",

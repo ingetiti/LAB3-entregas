@@ -2,7 +2,7 @@
 
 Esta es la copia preparada para entregar del Grupo 6. Empezar por `LEER_PRIMERO.txt`. Los informes originales, los Word editables y los respaldos se conservan en la carpeta de trabajo.
 
-Versión 1.1, con EXP optimizada el 26/11/2026. Combina nuestra ISA y su calculadora con operaciones aritméticas inspiradas en el RAR compartido. Conserva memoria de 65.536 bytes, instrucciones de 16 bits, opcode fijo de cinco bits, alineación automática, `.EXTERNAL`, ensamblador independiente, núcleo independiente y editor/depurador. La optimización de EXP no modifica la ISA.
+Versión 1.2, con el benchmark completo del Grupo 27 actualizado el 27/11/2026 y EXP optimizada. Combina nuestra ISA y su calculadora con operaciones aritméticas inspiradas en el RAR compartido. Conserva memoria de 65.536 bytes, instrucciones de 16 bits, opcode fijo de cinco bits, alineación automática, `.EXTERNAL`, ensamblador independiente, núcleo independiente y editor/depurador. La optimización de EXP no modifica la ISA.
 
 También incluye una **interfaz gráfica para Windows con temas claro y oscuro**, agregada el 26/11/2026. Abrir **interfaz.bat**: permite editar ASM, abrir objetos, ensamblar, ejecutar, pausar, avanzar paso a paso, poner breakpoints y ver registros, memoria y consola. El botón de arriba a la derecha alterna el tema durante la sesión y conserva el estado de ejecución. No requiere instalar Python, un navegador ni bibliotecas adicionales.
 
@@ -17,7 +17,7 @@ Los ejecutables Windows x64 ya están compilados. Descargar la carpeta completa 
 - **interfaz.bat:** interfaz gráfica con editor, consola, depurador y selector del conteo de instrucciones.
 - **ejecutar.bat:** calculadora interactiva. Para EXP(3): elegir `5`, ingresar `3`, Enter; debe mostrar `20.0859375`. Una tecla vuelve al menú y `d` sale.
 - **editor.bat:** menú de edición, registros, memoria, paso a paso y breakpoints.
-- **benchmark.bat:** ejemplo automático del Grupo 27 y métricas por función.
+- **benchmark.bat:** las 23 operaciones del benchmark recibido del Grupo 27 y el banco adicional de pruebas por función.
 - **probar.bat:** suite de pruebas completa.
 
 Para ensamblar y ejecutar otro programa desde CMD, situado en esta carpeta:
@@ -50,10 +50,14 @@ Todas las operaciones anteriores actualizan NZP. MUL y MULU permiten conservar e
 
 | Medición | Estable original | Experimental anterior | Integrada |
 |---|---:|---:|---:|
-| Menú automático de tres operaciones | 20.532 | 15.960 | **12.706 instrucciones** |
+| Prueba corta anterior de tres operaciones (histórico) | 20.532 | 15.960 | **12.706 instrucciones** |
 | Raíz Newton(2), sin interfaz | 4.283 | 4.283 | **1.029 instrucciones** |
 | Raíz Newton(4), sin interfaz | 3.786 | 3.786 | **588 instrucciones** |
-| Imagen de la calculadora | 14.720 | 14.642 | **14.558 bytes** |
+| Imagen de la calculadora anterior (histórico) | 14.720 | 14.642 | **14.558 bytes** |
+
+El benchmark completo actual ejecuta **23 operaciones**, termina con **365.469 instrucciones totales**, una imagen de **15.932 bytes** y `excepcion=0`. Estos conteos incluyen impresión y sistema. La prueba corta de la tabla anterior no representa el benchmark completo y no debe usarse para comparar su rendimiento.
+
+`benchmark/calculadora_automatica.asm` conserva todos los valores `.FILL` de `benchmark/main_grupo27.asm` y selecciona `programa_del_menu_completo`. El archivo recibido se conserva sin cambios. Su modo inicial es interactivo; para seleccionar manualmente el benchmark se reemplaza su `AND R0 R0 #0` por `LEA R0 programa_del_menu_completo`. El alias `G27_MAIN_MENU_PROGRESO` permite conservar su nombre de importación.
 
 ## EXP optimizada para esta ISA
 
@@ -88,7 +92,7 @@ Los nombres SUB y ASR pasan a ser palabras reservadas. Se renombraron etiquetas 
 
 Este ensamblador no es el del RAR: sus objetos y fuentes no son intercambiables directamente. Se conservan nuestro TRAP con pila supervisora/RTI, LDBL que preserva la mitad alta y LDBS para extensión de signo. `.STRINGZ` conserva caracteres por palabra para la interfaz. Los módulos para esta ISA local no reemplazan a los módulos LC-3 publicados en el simulador del Grupo 8.
 
-La interfaz de origen conserva avisos para tres opciones sin subrutina conectada: seno Taylor y salida en bases hexadecimal/binaria. Las veinte operaciones disponibles sí están enlazadas. Los módulos matemáticos estáticos mantienen sus límites de reentrancia y precisión.
+La versión actual conecta las 23 operaciones, incluidos seno Taylor y las salidas hexadecimal/binaria. Se actualizó el protocolo automático del menú y se corrigió un acarreo incorrecto de Shift+Add que apareció con los operandos del benchmark completo. Los módulos matemáticos estáticos mantienen sus límites de reentrancia y precisión.
 
 Ver `docs/ISA.md`, `docs/CAMBIOS.md`, `docs/VALIDACION.md` y los CSV de resultados. Las carpetas anteriores y el RAR original se conservaron.
 

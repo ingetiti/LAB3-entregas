@@ -1,6 +1,6 @@
 caso,estable,experimental,integrada,salida_R0,salida_R1,integrada_pre_exp
 cordic_div_0.25_0.5,141,141,141,16383,16384,141
-shift_add_2_3,262,262,262,6,0,262
+shift_add_2_3,262,262,258,6,0,262
 pow_bin_2_3,105,105,105,8,3,105
 pow_sucesiva_2_3,185,185,185,2048,3,185
 exp_0,4936,24,24,256,0,24

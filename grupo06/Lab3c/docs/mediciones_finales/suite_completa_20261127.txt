@@ -1,0 +1,56 @@
+764 checks, 0 failures
+OK cordic_div_0.25_0.5        R0=16383 R1=16384 instrucciones=141 pc=x3000 excepcion=0
+OK shift_add_2_3              R0=6 R1=0 instrucciones=258 pc=x3000 excepcion=0
+OK pow_bin_2_3                R0=8 R1=3 instrucciones=105 pc=x3000 excepcion=0
+OK pow_sucesiva_2_3           R0=2048 R1=3 instrucciones=185 pc=x3000 excepcion=0
+OK exp_0                      R0=256 R1=0 instrucciones=24 pc=x3000 excepcion=0
+OK exp_1                      R0=696 R1=0 instrucciones=1527 pc=x3000 excepcion=0
+OK exp_3                      R0=5142 R1=0 instrucciones=1755 pc=x3000 excepcion=0
+OK exp_menos8                 R0=0 R1=0 instrucciones=28 pc=x3000 excepcion=0
+OK exp_saturada               R0=32767 R1=0 instrucciones=37 pc=x3000 excepcion=0
+OK mcm_12_18                  R0=36 R1=18 instrucciones=61 pc=x3000 excepcion=0
+OK mcd_48_18                  R0=6 R1=18 instrucciones=41 pc=x3000 excepcion=0
+OK sqrt_newton_4              R0=1 R1=64512 instrucciones=588 pc=x3000 excepcion=0
+OK division_larga_6_2         R0=768 R1=512 instrucciones=261 pc=x3000 excepcion=0
+OK log_cordic_1               R0=0 R1=0 instrucciones=556 pc=x3000 excepcion=0
+OK division_newton_6_2        R0=768 R1=512 instrucciones=2213 pc=x3000 excepcion=0
+OK ln_borchardt_1             R0=0 R1=0 instrucciones=2296 pc=x3000 excepcion=0
+OK conversion_1.5             R0=384 R1=0 instrucciones=164 pc=x3000 excepcion=0
+OK booth_2_3                  R0=1536 R1=768 instrucciones=904 pc=x3000 excepcion=0
+OK cordic_mul_2_3             R0=1536 R1=0 instrucciones=843 pc=x3000 excepcion=0
+OK reduccion_1                R0=4096 R1=0 instrucciones=12 pc=x3000 excepcion=0
+OK seno_tabla_0               R0=0 R1=0 instrucciones=930 pc=x3000 excepcion=0
+OK seno_tabla_pi2             R0=16384 R1=0 instrucciones=936 pc=x3000 excepcion=0
+OK coseno_tabla_0             R0=16384 R1=0 instrucciones=929 pc=x3000 excepcion=0
+OK sqrt_nonrest_4             R0=1024 R1=0 instrucciones=282 pc=x3000 excepcion=0
+OK seno_cheb_0                R0=0 R1=0 instrucciones=30 pc=x3000 excepcion=0
+OK seno_cheb_pi2              R0=16382 R1=0 instrucciones=932 pc=x3000 excepcion=0
+OK cordic_div_negativa        R0=-16385 R1=16384 instrucciones=141 pc=x3000 excepcion=0
+OK sqrt_newton_2              R0=1 R1=27648 instrucciones=1029 pc=x3000 excepcion=0
+OK log_cordic_2               R0=2840 R1=0 instrucciones=565 pc=x3000 excepcion=0
+OK ln_borchardt_2             R0=89 R1=0 instrucciones=2403 pc=x3000 excepcion=0
+OK conversion_negativa        R0=-384 R1=0 instrucciones=191 pc=x3000 excepcion=0
+OK cordic_mul_negativa        R0=-1536 R1=0 instrucciones=843 pc=x3000 excepcion=0
+OK reduccion_3                R0=-579 R1=0 instrucciones=20 pc=x3000 excepcion=0
+OK seno_tabla_pi4             R0=11585 R1=0 instrucciones=980 pc=x3000 excepcion=0
+OK coseno_tabla_pi4           R0=11585 R1=0 instrucciones=979 pc=x3000 excepcion=0
+OK seno_tabla_negativo        R0=-11585 R1=0 instrucciones=1007 pc=x3000 excepcion=0
+OK coseno_tabla_negativo      R0=11585 R1=0 instrucciones=1006 pc=x3000 excepcion=0
+37 casos, 0 fallos. Metricas: build\benchmark.csv
+OK automatico G27 (OBJ entregado, verboso=1): 23 operaciones, 365469 instrucciones, 0 fallos
+OK automatico G27 (OBJ entregado, verboso=0): 23 operaciones, 241990 instrucciones, 0 fallos
+OK automatico G27 (main recibido, verboso=1): 23 operaciones, 365467 instrucciones, 0 fallos
+OK interactivo (Q7.8) 20.0859375: 12494 instrucciones
+OK interactivo (Q3.12) 0.865966796: 237965 instrucciones
+OK interactivo Hexadecimal: 053E: 8745 instrucciones
+OK interactivo Binario: 1111101111001010: 8840 instrucciones
+Shift+Add: 4292 productos con signo y preservacion de registros, 0 fallos
+Taylor: 11 entradas, 4 cuadrantes, limites y preservacion R1-R7, 0 fallos
+EXP: 65536 entradas, 0 fallos; 68450717 instrucciones simuladas. R1-R7 preservados.
+EXP: 65536 entradas, REDONDEA: 23144 casos, producto: 17544 casos, fallos: 0.
+Instrucciones: 222466798 -> 68450717; reduccion 69.23%. Mas lentas: 0.
+SHL/SHR/SAR: 3145728 combinaciones, 0 fallos.
+ALU integrada: 4542415 comprobaciones, 0 fallos.
+SQRT: 5181 llamadas con preservacion de registros.
+Interfaz: 121 comprobaciones, 0 fallos.
+Editor Windows: 44 comprobaciones, 0 fallos.

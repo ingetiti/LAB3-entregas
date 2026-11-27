@@ -117,3 +117,12 @@ Hora no registrada.
 ## 26 de noviembre de 2026 con corrección del pegado
 
 Hora no registrada. Objetivo: conservar los renglones al pegar código nuevo. Se identificó que la apertura de archivos convertía LF a CRLF, mientras el portapapeles llegaba directamente al control EDIT. Se unificó esa conversión y se conservó el pegado sobre la selección como una sola operación de Deshacer. Se comprobó en un control real de Windows y en la interfaz visible, incluyendo líneas vacías y acentos. La suite completa y las 44 regresiones del editor terminaron sin fallos. El programa pegado dejó 7 en R0 y RESULTADO. Se actualizó el ejecutable y los paquetes; el núcleo y los algoritmos se conservan.
+
+
+## 27/11/2026 — Benchmark completo del Grupo 27
+
+**Problema detectado.** La prueba automática entregada solo recorría tres operaciones. El main recibido utiliza un contrato nuevo de 23 operaciones con cinco palabras por registro. Con el menú anterior se reprodujo una excepción de acceso tras 353 instrucciones.
+
+**Corrección.** Se conservó el main recibido y todos sus valores; se actualizó el menú y su direccionamiento por bytes, se añadió el alias G27, se conectaron Taylor y HEX/BIN y se corrigió el acarreo falso en Shift+Add. No cambió la codificación de la ISA ni el núcleo.
+
+**Verificación.** El benchmark recorre las 23 operaciones hasta Q3.12 -> Q7.8 y termina sin excepción: 365.469 instrucciones en modo verboso y 241.990 en silencioso. Las pruebas verifican datos y resultados en memoria, coincidencia fuente/OBJ, funcionamiento interactivo, 4.292 productos y 11 entradas de Taylor. Los conteos anteriores de 12.706 instrucciones corresponden a la prueba histórica corta.

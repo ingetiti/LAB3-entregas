@@ -18,8 +18,11 @@ register={
  'g14_log_borchardt_q8_7':{219},
  'g22_Tabla_SIN_y_COS':{738,761},
 }
-immediate['MAIN_MENU']=immediate['MAIN_MENU_PROGRESO']
-register['MAIN_MENU']=register['MAIN_MENU_PROGRESO']
+immediate['MAIN_MENU']=set(immediate['MAIN_MENU_PROGRESO'])
+register['MAIN_MENU']=set(register['MAIN_MENU_PROGRESO'])
+# Menu G27 actualizado: indice unico + dos operandos + dos resultados.
+immediate['MAIN_MENU_PROGRESO']={65,105,460}
+register['MAIN_MENU_PROGRESO']={81,109,259,275,299,393,409,437}
 changes=[]
 for f in sorted((root/'originales').glob('*.asm')):
  name=f.stem; lines=f.read_text(encoding='utf-8-sig').splitlines(); out=[]
@@ -66,8 +69,28 @@ for f in sorted((root/'originales').glob('*.asm')):
   prefix+=''.join(f'ADAPT_R{i} .FILL #0\n' for i in range(1,8))
   out=(prefix+body).splitlines()
   changes.append({'archivo':f.name,'nota':'Adaptador SENO_TABLA/COSENO_TABLA, entrada R0, retorno R0 y RET; literales locales para LEA fuera de alcance. Estas cargas internas actualizan NZP; se valida el resultado con casos de prueba.'})
+ if name=='g21_senotaylor_subrutina':
+  # Literales locales: LD/ST no alcanzan todas las variables de este programa.
+  # LDI/STI conservan la operacion y NZP, sin usar un registro auxiliar.
+  mapped=[]; literal=0
+  for line in out:
+   m=re.match(r'^(\s*)(LD|ST)\s+(R[0-7])[, ]+\s*(\w+)(.*)$',line,re.I)
+   if m:
+    literal+=1; indent,op,regname,target,tail=m.groups()
+    mapped.extend([f'{indent}{op}I {regname}, SENO_PTR_{literal}{tail}',
+                   f'    BR SENO_SKIP_{literal}',
+                   f'SENO_PTR_{literal} .FILL {target}',
+                   f'SENO_SKIP_{literal}'])
+   else:mapped.append(line)
+  out=mapped
  # La version sin modulos no se usa como calculadora integrada.
  body='\n'.join(out)
+ if name=='g3_MultiplicacionSHIFTandADD':
+  # Dos sumandos con bit 15 a cero no generan acarreo de 16 bits.
+  # Que el resultado tenga signo negativo solo indica el cruce de 32767.
+  old='        ADD     R0, R0, #0\n        BRn     Q8_ACARREO\n        BR      Q8_DESPLAZAR'
+  assert body.count(old)==1
+  body=body.replace(old,'        BR      Q8_DESPLAZAR ; sin acarreo para dos bajos positivos',1)
  if name=='MAIN_MENU_PROGRESO':body=body.replace('(se ejecutaria una subrutina...)','(opcion sin subrutina implementada en la version de origen)')
  # Rutas con la misma capitalizacion en sistemas de archivos sensibles a mayusculas.
  aliases={x.stem.lower():x.stem for x in (root/'originales').glob('*.asm')}

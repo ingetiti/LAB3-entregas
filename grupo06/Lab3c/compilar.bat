@@ -25,7 +25,7 @@ gcc %FLAGS% %ASM% src\lc3.c src\os.c tests\test_isa.c -o build\lc3_tests.exe
 if errorlevel 1 exit /b 1
 gcc %FLAGS% %CPU% tests\benchmark.c -o build\benchmark.exe
 if errorlevel 1 exit /b 1
-gcc %FLAGS% %CPU% tests\test_calculadora.c -o build\test_calculadora.exe
+gcc %FLAGS% %ASM% src\lc3.c src\os.c tests\test_calculadora.c -o build\test_calculadora.exe
 if errorlevel 1 exit /b 1
 gcc %FLAGS% %CPU% tests\test_exp_exhaustive.c -lm -o build\test_exp_exhaustive.exe
 if errorlevel 1 exit /b 1
