@@ -1,4 +1,11 @@
-# Instructivo de Uso — Simulador y Ensamblador Skynet (Grupo 30)
+# Grupo 30
+
+**Integrantes:**
+- Meretz, Eliana Marife
+- Meretz, Mariana Belén
+- Batista Da Silva, Dante Samuel
+
+## Instructivo de Uso — Simulador y Ensamblador Skynet
 
 ## 1. Requisitos
 
