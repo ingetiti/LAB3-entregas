@@ -10,6 +10,7 @@ Garcia, Franco (@Mekkii088)
 -Simulador LC3: programa actual de assembly para el simulador del grupo 8
 -Web LC3: Betas del programa assembly hecho para Web LC3
 -C: Codigo de Web LC3 adaptado a C para mayor comprensión de su funcionamiento
+- Simulador Apex-3X: nuestro propio simulador de LC3.
 
 ## 1. Verificación de la función
 
