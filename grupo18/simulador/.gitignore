@@ -1,0 +1,34 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Archivos de configuración y secretos
+.env
+.env.*
+
+# Herramientas y caché
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# Archivos auxiliares de recuperación
+*.zip
+lab3c_sync/
+test_assembler_recovery/
+# Binarios generados por el assembler
+*.bin
+
+# Respaldos locales de programas
+*.asm.save
+*.asm.orig
+
+# Consigna original (referencia local)
+Lab3 2026_c.pdf
+06_booth_B1_validado.asm
