@@ -12,7 +12,7 @@ El panel muestra **instrucciones del programa, del sistema y totales**. La casil
 
 ## Ejecutar en Windows
 
-Los ejecutables Windows x64 ya están compilados. Extraer el ZIP completo y abrir:
+Los ejecutables Windows x64 ya están compilados. Descargar la carpeta completa y abrir:
 
 - **interfaz.bat:** interfaz gráfica con editor, consola, depurador y selector del conteo de instrucciones.
 - **ejecutar.bat:** calculadora interactiva. Para EXP(3): elegir `5`, ingresar `3`, Enter; debe mostrar `20.0859375`. Una tecla vuelve al menú y `d` sale.

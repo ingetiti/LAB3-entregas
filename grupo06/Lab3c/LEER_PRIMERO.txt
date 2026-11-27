@@ -1,6 +1,6 @@
 ENTREGA DEL LABORATORIO 3C - GRUPO 6
 
-Esta carpeta contiene la entrega para Windows x64. Extraerla completa antes
+Esta carpeta contiene la entrega para Windows x64. Descargarla completa antes
 de ejecutar. Los programas ya están compilados: no hace falta instalar GCC
 ni Python para usarlos. La interfaz muestra el título ISA Grupo 6.
 
