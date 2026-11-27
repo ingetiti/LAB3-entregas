@@ -1,6 +1,6 @@
 # ISA3C integrada
 
-Esta es la copia preparada para entregar del Grupo 6. Empezar por `LEER_PRIMERO.txt`. Los PDF son las versiones entregadas; los Word editables y los respaldos se conservan en la carpeta de trabajo original.
+Esta es la copia preparada para entregar del Grupo 6. Empezar por `LEER_PRIMERO.txt`. Los informes originales, los Word editables y los respaldos se conservan en la carpeta de trabajo.
 
 Versión 1.1, con EXP optimizada el 26/11/2026. Combina nuestra ISA y su calculadora con operaciones aritméticas inspiradas en el RAR compartido. Conserva memoria de 65.536 bytes, instrucciones de 16 bits, opcode fijo de cinco bits, alineación automática, `.EXTERNAL`, ensamblador independiente, núcleo independiente y editor/depurador. La optimización de EXP no modifica la ISA.
 
@@ -92,9 +92,9 @@ La interfaz de origen conserva avisos para tres opciones sin subrutina conectada
 
 Ver `docs/ISA.md`, `docs/CAMBIOS.md`, `docs/VALIDACION.md` y los CSV de resultados. Las carpetas anteriores y el RAR original se conservaron.
 
-## Informe bitácora y mediciones finales
+## Documentación y mediciones finales
 
-La revisión del 26/11/2026 incluye el informe actualizado y la bitácora en PDF dentro de `docs/informes/`. El informe explica cada instrucción, EXP optimizada, los temas de la ventana, los contadores y la corrección del teclado. `docs/BITACORA.md` conserva además el registro en texto.
+La documentación de la ISA y sus instrucciones está en `docs/ISA.md`; el uso de la ventana se explica en `docs/INTERFAZ_GRAFICA.md`. `docs/BITACORA.md` conserva el registro del trabajo en texto.
 
 La suite completa volvió a terminar sin fallos, incluidas las 121 comprobaciones de sesión. Para repetir el resumen de instrucciones, memoria y precisión después de `probar.bat`, ejecutar `python tools/medir_entrega.py`. Requiere Python 3 solo para esa medición. Los resultados están en `docs/mediciones_finales/`: resumen JSON, CSV comparado y salida completa de pruebas.
 

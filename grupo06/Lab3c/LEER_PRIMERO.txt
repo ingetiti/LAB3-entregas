@@ -65,8 +65,6 @@ opcode. El núcleo independiente recibe OBJ, no Assembly directo.
 - README.md: descripción general, ejecución, compilación y resultados.
 - LEEME_INTERFAZ.txt: controles y primeros pasos de la ventana.
 - docs\INTERFAZ_GRAFICA.md: teclado, pegado, contadores y depuración.
-- docs\informes\Informe_ISA3C_integrada.pdf: informe técnico actualizado.
-- docs\informes\Bitacora_Laboratorio_3.pdf: registro del proceso.
 - docs\BITACORA.md: incluye las correcciones más recientes del editor.
 - docs\guia\Guia_de_uso_ISA3C.pdf: guía de uso y prácticas de consola.
 - docs\mediciones_finales: métricas, precisión y registro de pruebas.

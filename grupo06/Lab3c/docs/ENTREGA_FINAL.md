@@ -4,8 +4,6 @@ La entrega incluye el simulador funcional, ensamblador independiente, editor de 
 
 ## Documentación
 
-- `informes/Informe_ISA3C_integrada.pdf`: arquitectura, catálogo completo de instrucciones, EXP optimizada, precisión, interfaz, contadores y correspondencia con las consignas.
-- `informes/Bitacora_Laboratorio_3.pdf`: proceso y problemas documentados. Las horas antiguas no se inventan; el registro se identifica como retrospectivo.
 - `BITACORA.md`: el mismo registro de sesiones en texto.
 - `INTERFAZ_GRAFICA.md`: uso detallado de la ventana y medición con breakpoints.
 - `mediciones_finales/`: resultados, comparación por caso y registro de la suite completa.
