@@ -1,7 +1,0 @@
-$ python bench/equivalencia_todec.py RUTA
-# TODEC de la cátedra contra el modelo de sus cuentas
-# código de salida: 0   duración: 6 s
-
-casos: 5011 | distintos del modelo: 0 | instrucciones LC-3 por llamada: prom 2225, máx 4621
-fracciones (de 65536) donde el cálculo exacto floor(f*10^9/2^16) daría otro noveno decimal: 52736
-fórmula cerrada 1953125*(f>>7) + tabla de 7 constantes: 0 diferencias de 65536

@@ -1,6 +1,0 @@
-$ python bench/equivalencia_todec_lc10.py
-# TODEC en LC10: 328.160 llamadas contra ese modelo
-# código de salida: 0   duración: 93 s
-
-parte 0/1 | llamadas probadas: 328160 | distintas del modelo exacto: 0 | registros sin preservar: 0 | escrituras fuera del buffer de 17 bytes: 0
-instrucciones por llamada (TODEC ... RET): mín 30, máx 175, promedio 122

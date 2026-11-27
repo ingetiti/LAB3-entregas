@@ -1,6 +1,0 @@
-$ python bench/equivalencia_seno.py RUTA
-# seno de Taylor de la cátedra contra el modelo de sus cuentas
-# código de salida: 0   duración: 297 s
-
-casos: 3704 | distintos del modelo exacto: 0 | R1 a R5 preservados: True
-instrucciones LC-3 por llamada: mín 22, prom 179932, máx 641686
