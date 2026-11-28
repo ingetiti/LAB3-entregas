@@ -1,0 +1,63 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3412          ST R2, #18   ; -> x3013          | ST R2 SQH_SAVE2
+3001  3612          ST R3, #18   ; -> x3014          | ST R3 SQH_SAVE3
+3002  14A0          ADD R2, R2, #0                   | ADD R2 R2 #0
+3003  0C0C          BRnz #12   ; -> x3010            | BRnz SQH_DONE
+3004  56E0          AND R3, R3, #0                   | AND R3 R3 #0
+3005  1020          ADD R0, R0, #0                   | ADD R0 R0 #0
+3006  0601          BRzp #1   ; -> x3008             | BRzp SQH_HI_ZERO
+3007  16E1          ADD R3, R3, #1                   | ADD R3 R3 #1
+3008  1000          ADD R0, R0, R0                   | ADD R0 R0 R0
+3009  1260          ADD R1, R1, #0                   | ADD R1 R1 #0
+300A  0601          BRzp #1   ; -> x300C             | BRzp SQH_LO_ZERO
+300B  1021          ADD R0, R0, #1                   | ADD R0 R0 #1
+300C  1241          ADD R1, R1, R1                   | ADD R1 R1 R1
+300D  1243          ADD R1, R1, R3                   | ADD R1 R1 R3
+300E  14BF          ADD R2, R2, #-1                  | ADD R2 R2 #-1
+300F  0FF2          BRnzp #-14   ; -> x3002          | BRnzp SQH_LOOP
+3010  2402          LD R2, #2   ; -> x3013           | LD R2 SQH_SAVE2
+3011  2602          LD R3, #2   ; -> x3014           | LD R3 SQH_SAVE3
+3012  C1C0          RET                              | RET
+3013  0000                                           | SQH_SAVE2 .BLKW #1
+3014  0000                                           | SQH_SAVE3 .BLKW #1
+3015  320C          ST R1, #12   ; -> x3022          | ST R1 SQH_CIN_R1
+3016  340C          ST R2, #12   ; -> x3023          | ST R2 SQH_CIN_R2
+3017  3E0C          ST R7, #12   ; -> x3024          | ST R7 SQH_CIN_R7
+3018  54A0          AND R2, R2, #0                   | AND R2 R2 #0
+3019  14A8          ADD R2, R2, #8                   | ADD R2 R2 #8
+301A  4FE5          JSR #-27   ; -> x3000            | JSR SQ9_ROTL32
+301B  1260          ADD R1, R1, #0                   | ADD R1 R1 #0
+301C  0601          BRzp #1   ; -> x301E             | BRzp SQH_CIN_OK
+301D  1021          ADD R0, R0, #1                   | ADD R0 R0 #1
+301E  2203          LD R1, #3   ; -> x3022           | LD R1 SQH_CIN_R1
+301F  2403          LD R2, #3   ; -> x3023           | LD R2 SQH_CIN_R2
+3020  2E03          LD R7, #3   ; -> x3024           | LD R7 SQH_CIN_R7
+3021  C1C0          RET                              | RET
+3022  0000                                           | SQH_CIN_R1 .BLKW #1
+3023  0000                                           | SQH_CIN_R2 .BLKW #1
+3024  0000                                           | SQH_CIN_R7 .BLKW #1
+3025  340F          ST R2, #15   ; -> x3035          | ST R2 SQH_COUT_R2
+3026  3E0F          ST R7, #15   ; -> x3036          | ST R7 SQH_COUT_R7
+3027  1220          ADD R1, R0, #0                   | ADD R1 R0 #0
+3028  5020          AND R0, R0, #0                   | AND R0 R0 #0
+3029  1260          ADD R1, R1, #0                   | ADD R1 R1 #0
+302A  0601          BRzp #1   ; -> x302C             | BRzp SQH_COUT_POS
+302B  903F          NOT R0, R0                       | NOT R0 R0
+302C  54A0          AND R2, R2, #0                   | AND R2 R2 #0
+302D  14A8          ADD R2, R2, #8                   | ADD R2 R2 #8
+302E  4FD1          JSR #-47   ; -> x3000            | JSR SQ9_ROTL32
+302F  2404          LD R2, #4   ; -> x3034           | LD R2 SQH_FF00
+3030  5242          AND R1, R1, R2                   | AND R1 R1 R2
+3031  2403          LD R2, #3   ; -> x3035           | LD R2 SQH_COUT_R2
+3032  2E03          LD R7, #3   ; -> x3036           | LD R7 SQH_COUT_R7
+3033  C1C0          RET                              | RET
+3034  FF00                                           | SQH_FF00 .FILL xFF00
+3035  0000                                           | SQH_COUT_R2 .BLKW #1
+3036  0000                                           | SQH_COUT_R7 .BLKW #1

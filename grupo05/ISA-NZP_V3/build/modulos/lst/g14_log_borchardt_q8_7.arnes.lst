@@ -1,0 +1,464 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3E19          ST R7, #25   ; -> x301A          | ST R7, MAIN_SAVE_R7
+3001  3219          ST R1, #25   ; -> x301B          | ST R1, MAIN_SAVE_R1
+3002  3419          ST R2, #25   ; -> x301C          | ST R2, MAIN_SAVE_R2
+3003  3619          ST R3, #25   ; -> x301D          | ST R3, MAIN_SAVE_R3
+3004  3819          ST R4, #25   ; -> x301E          | ST R4, MAIN_SAVE_R4
+3005  1420          ADD R2, R0, #0                   | ADD R2, R0, #0          ; Guarda temporalmente el valor x en el registro R2
+3006  0C0B          BRnz #11   ; -> x3012            | BRnz MAIN_DIV_ZERO      ; Si x <= 0 -> dominio inválido, devuelve -1
+3007  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3008  0C09          BRnz #9   ; -> x3012             | BRnz MAIN_DIV_ZERO      ; Si b <= 0 -> base inválida, devuelve -1
+3009  1060          ADD R0, R1, #0                   | ADD R0, R1, #0                  ; Carga el balor de la base a R0
+300A  4814          JSR #20   ; -> x301F             | JSR LN_GENERAL_Q8_7
+300B  1220          ADD R1, R0, #0                   | ADD R1, R0, #0                  ; Está para que la división tenga los valores correctos
+300C  10A0          ADD R0, R2, #0                   | ADD R0, R2, #0                  ; Se carga el valor x que estaba en R2
+300D  4811          JSR #17   ; -> x301F             | JSR LN_GENERAL_Q8_7
+300E  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+300F  0402          BRz #2   ; -> x3012              | BRz MAIN_DIV_ZERO
+3010  4887          JSR #135   ; -> x3098            | JSR CALC_LOG_BASE_Q8_7
+3011  0E02          BRnzp #2   ; -> x3014            | BR MAIN_FINISH
+3012  5020          AND R0, R0, #0                   | AND R0, R0, #0
+3013  103F          ADD R0, R0, #-1                  | ADD R0, R0, #-1
+3014  2E05          LD R7, #5   ; -> x301A           | LD R7, MAIN_SAVE_R7
+3015  2205          LD R1, #5   ; -> x301B           | LD R1, MAIN_SAVE_R1
+3016  2405          LD R2, #5   ; -> x301C           | LD R2, MAIN_SAVE_R2
+3017  2605          LD R3, #5   ; -> x301D           | LD R3, MAIN_SAVE_R3
+3018  2805          LD R4, #5   ; -> x301E           | LD R4, MAIN_SAVE_R4
+3019  C1C0          RET                              | RET
+301A  0000                                           | MAIN_SAVE_R7        .BLKW #1
+301B  0000                                           | MAIN_SAVE_R1        .BLKW #1
+301C  0000                                           | MAIN_SAVE_R2        .BLKW #1
+301D  0000                                           | MAIN_SAVE_R3        .BLKW #1
+301E  0000                                           | MAIN_SAVE_R4        .BLKW #1
+301F  3E20          ST R7, #32   ; -> x3040          | ST R7, LNG_SAVE_R7
+3020  3220          ST R1, #32   ; -> x3041          | ST R1, LNG_SAVE_R1
+3021  3420          ST R2, #32   ; -> x3042          | ST R2, LNG_SAVE_R2              ; Mantener para que LOG_BORCHARDT_Q8_7 funcione
+3022  3820          ST R4, #32   ; -> x3043          | ST R4, LNG_SAVE_R4
+3023  1220          ADD R1, R0, #0                   | ADD R1, R0, #0              ; R1 = x_norm
+3024  54A0          AND R2, R2, #0                   | AND R2, R2, #0              ; R2 = k = 0
+3025  2821          LD R4, #33   ; -> x3047          | LD R4, VAL_NEG_Q_TWO        ; R4 = -256
+3026  1044          ADD R0, R1, R4                   | ADD R0, R1, R4              ; x_norm - 256
+3027  0805          BRn #5   ; -> x302D              | BRn LNG_CHECK_DOWN          ;Si la resta da negativo significa que es menor a 2
+3028  1060          ADD R0, R1, #0                   | ADD R0, R1, #0
+3029  48AC          JSR #172   ; -> x30D6            | JSR SHIFT_RIGHT_1
+302A  1220          ADD R1, R0, #0                   | ADD R1, R0, #0
+302B  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1              ; k++
+302C  0FF9          BRnzp #-7   ; -> x3026           | BR LNG_LOOP_UP
+302D  2818          LD R4, #24   ; -> x3046          | LD R4, VAL_NEG_Q_ONE              ; R4 = -128
+302E  1044          ADD R0, R1, R4                   | ADD R0, R1, R4
+302F  0603          BRzp #3   ; -> x3033             | BRzp LNG_EVAL_KERNEL
+3030  1241          ADD R1, R1, R1                   | ADD R1, R1, R1              ; x_norm <<= 1
+3031  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1             ; k--
+3032  0FFB          BRnzp #-5   ; -> x302E           | BR LNG_LOOP_DOWN
+3033  1060          ADD R0, R1, #0                   | ADD R0, R1, #0
+3034  4814          JSR #20   ; -> x3049             | JSR BORCHARDT_KERNEL
+3035  300E          ST R0, #14   ; -> x3044          | ST R0, LNG_TEMP_LNM
+3036  10A0          ADD R0, R2, #0                   | ADD R0, R2, #0
+3037  2210          LD R1, #16   ; -> x3048          | LD R1, CONST_LN2            ; 89 en Q8.7 (~ln(2))
+3038  48D6          JSR #214   ; -> x310F            | JSR MULT_SIGNED
+3039  220A          LD R1, #10   ; -> x3044          | LD R1, LNG_TEMP_LNM
+303A  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+303B  2E04          LD R7, #4   ; -> x3040           | LD R7, LNG_SAVE_R7
+303C  2204          LD R1, #4   ; -> x3041           | LD R1, LNG_SAVE_R1
+303D  2404          LD R2, #4   ; -> x3042           | LD R2, LNG_SAVE_R2
+303E  2804          LD R4, #4   ; -> x3043           | LD R4, LNG_SAVE_R4
+303F  C1C0          RET                              | RET
+3040  0000                                           | LNG_SAVE_R7     .BLKW #1
+3041  0000                                           | LNG_SAVE_R1     .BLKW #1
+3042  0000                                           | LNG_SAVE_R2     .BLKW #1
+3043  0000                                           | LNG_SAVE_R4     .BLKW #1
+3044  0000                                           | LNG_TEMP_LNM    .BLKW #1
+3045  0080                                           | VAL_Q_ONE       .FILL #128
+3046  FF80                                           | VAL_NEG_Q_ONE   .FILL #-128
+3047  FF00                                           | VAL_NEG_Q_TWO    .FILL #-256
+3048  0059                                           | CONST_LN2       .FILL #89
+3049  3E31          ST R7, #49   ; -> x307B          | ST R7, BK_SAVE_R7
+304A  3231          ST R1, #49   ; -> x307C          | ST R1, BK_SAVE_R1
+304B  3831          ST R4, #49   ; -> x307D          | ST R4, BK_SAVE_R4
+304C  3A31          ST R5, #49   ; -> x307E          | ST R5, BK_SAVE_R5
+304D  3031          ST R0, #49   ; -> x307F          | ST R0, BK_X_NORM
+304E  23F6          LD R1, #-10   ; -> x3045         | LD R1, VAL_Q_ONE
+304F  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+3050  4885          JSR #133   ; -> x30D6            | JSR SHIFT_RIGHT_1
+3051  302E          ST R0, #46   ; -> x3080          | ST R0, BK_A
+3052  202C          LD R0, #44   ; -> x307F          | LD R0, BK_X_NORM
+3053  4831          JSR #49   ; -> x3085             | JSR LEER_RAIZ_NORM_Q8_7
+3054  302C          ST R0, #44   ; -> x3081          | ST R0, BK_B
+3055  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+3056  197C          ADD R4, R5, #-4                  | ADD R4, R5, #-4
+3057  060D          BRzp #13   ; -> x3065            | BRzp BK_LOOP_END
+3058  2027          LD R0, #39   ; -> x3080          | LD R0, BK_A
+3059  2227          LD R1, #39   ; -> x3081          | LD R1, BK_B
+305A  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+305B  487A          JSR #122   ; -> x30D6            | JSR SHIFT_RIGHT_1
+305C  3023          ST R0, #35   ; -> x3080          | ST R0, BK_A
+305D  489B          JSR #155   ; -> x30F9            | JSR MULT_UNSIGNED
+305E  2225          LD R1, #37   ; -> x3084          | LD R1, CONST_64
+305F  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+3060  4887          JSR #135   ; -> x30E8            | JSR SHIFT_RIGHT_7
+3061  4823          JSR #35   ; -> x3085             | JSR LEER_RAIZ_NORM_Q8_7
+3062  301E          ST R0, #30   ; -> x3081          | ST R0, BK_B
+3063  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+3064  0FF1          BRnzp #-15   ; -> x3056          | BR BK_FOR_LOOP
+3065  201A          LD R0, #26   ; -> x3080          | LD R0, BK_A
+3066  221A          LD R1, #26   ; -> x3081          | LD R1, BK_B
+3067  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+3068  486D          JSR #109   ; -> x30D6            | JSR SHIFT_RIGHT_1
+3069  3018          ST R0, #24   ; -> x3082          | ST R0, BK_M
+306A  2014          LD R0, #20   ; -> x307F          | LD R0, BK_X_NORM
+306B  23DA          LD R1, #-38   ; -> x3046         | LD R1, VAL_NEG_Q_ONE
+306C  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+306D  4883          JSR #131   ; -> x30F1            | JSR SHIFT_LEFT_7
+306E  2213          LD R1, #19   ; -> x3082          | LD R1, BK_M
+306F  3013          ST R0, #19   ; -> x3083          | ST R0, BK_TEMP_NUM
+3070  1060          ADD R0, R1, #0                   | ADD R0, R1, #0
+3071  4864          JSR #100   ; -> x30D6            | JSR SHIFT_RIGHT_1
+3072  2210          LD R1, #16   ; -> x3083          | LD R1, BK_TEMP_NUM
+3073  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+3074  220D          LD R1, #13   ; -> x3082          | LD R1, BK_M
+3075  48B0          JSR #176   ; -> x3126            | JSR DIV_UNSIGNED
+3076  2E04          LD R7, #4   ; -> x307B           | LD R7, BK_SAVE_R7
+3077  2204          LD R1, #4   ; -> x307C           | LD R1, BK_SAVE_R1
+3078  2804          LD R4, #4   ; -> x307D           | LD R4, BK_SAVE_R4
+3079  2A04          LD R5, #4   ; -> x307E           | LD R5, BK_SAVE_R5
+307A  C1C0          RET                              | RET
+307B  0000                                           | BK_SAVE_R7      .BLKW #1
+307C  0000                                           | BK_SAVE_R1      .BLKW #1
+307D  0000                                           | BK_SAVE_R4      .BLKW #1
+307E  0000                                           | BK_SAVE_R5      .BLKW #1
+307F  0000                                           | BK_X_NORM       .BLKW #1
+3080  0000                                           | BK_A            .BLKW #1
+3081  0000                                           | BK_B            .BLKW #1
+3082  0000                                           | BK_M            .BLKW #1
+3083  0000                                           | BK_TEMP_NUM     .BLKW #1
+3084  0040                                           | CONST_64        .FILL #64
+3085  320F          ST R1, #15   ; -> x3095          | ST R1, LR_SAVE_R1
+3086  340F          ST R2, #15   ; -> x3096          | ST R2, LR_SAVE_R2
+3087  23BE          LD R1, #-66   ; -> x3046         | LD R1, VAL_NEG_Q_ONE
+3088  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+3089  0202          BRp #2   ; -> x308C              | BRp LR_CHECK_MAX
+308A  21BA          LD R0, #-70   ; -> x3045         | LD R0, VAL_Q_ONE
+308B  0E06          BRnzp #6   ; -> x3092            | BR LR_DONE
+308C  1281          ADD R1, R2, R1                   | ADD R1, R2, R1
+308D  0801          BRn #1   ; -> x308F              | BRn LR_LOOKUP
+308E  2408          LD R2, #8   ; -> x3097           | LD R2, CONST_127
+308F  E2B8          LEA R1, #184   ; -> x3148        | LEA R1, TABLA_SQRT
+3090  1242          ADD R1, R1, R2                   | ADD R1, R1, R2
+3091  6040          LDR R0, R1, #0                   | LDR R0, R1, #0
+3092  2202          LD R1, #2   ; -> x3095           | LD R1, LR_SAVE_R1
+3093  2402          LD R2, #2   ; -> x3096           | LD R2, LR_SAVE_R2
+3094  C1C0          RET                              | RET
+3095  0000                                           | LR_SAVE_R1      .BLKW #1
+3096  0000                                           | LR_SAVE_R2      .BLKW #1
+3097  007F                                           | CONST_127       .FILL #127
+3098  3E37          ST R7, #55   ; -> x30D0          | ST R7, CLB_SAVE_R7
+3099  3237          ST R1, #55   ; -> x30D1          | ST R1, CLB_SAVE_R1
+309A  3437          ST R2, #55   ; -> x30D2          | ST R2, CLB_SAVE_R2
+309B  3637          ST R3, #55   ; -> x30D3          | ST R3, CLB_SAVE_R3
+309C  3837          ST R4, #55   ; -> x30D4          | ST R4, CLB_SAVE_R4
+309D  3A37          ST R5, #55   ; -> x30D5          | ST R5, CLB_SAVE_R5
+309E  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+309F  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+30A0  0603          BRzp #3   ; -> x30A4             | BRzp CLB_NUM_POS
+30A1  903F          NOT R0, R0                       | NOT R0, R0
+30A2  1021          ADD R0, R0, #1                   | ADD R0, R0, #1          ; R0 = |ln(x)|
+30A3  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1          ; marcamos signo negativo
+30A4  1660          ADD R3, R1, #0                   | ADD R3, R1, #0              ; R3 = den = ln(b)
+30A5  0421          BRz #33   ; -> x30C7             | BRz CLB_ZERO_DIV
+30A6  0203          BRp #3   ; -> x30AA              | BRp CLB_DEN_POS
+30A7  96FF          NOT R3, R3                       | NOT R3, R3
+30A8  16E1          ADD R3, R3, #1                   | ADD R3, R3, #1          ; R3 = |ln(b)|
+30A9  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1         ; invierte la bandera de signo
+30AA  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30AB  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30AC  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30AD  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30AE  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30AF  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30B0  1820          ADD R4, R0, #0                   | ADD R4, R0, #0          ; R4 = |ln(x)| * 64
+30B1  12E0          ADD R1, R3, #0                   | ADD R1, R3, #0
+30B2  4873          JSR #115   ; -> x3126            | JSR DIV_UNSIGNED
+30B3  1A20          ADD R5, R0, #0                   | ADD R5, R0, #0          ; R5 = q1
+30B4  12E0          ADD R1, R3, #0                   | ADD R1, R3, #0
+30B5  4843          JSR #67   ; -> x30F9             | JSR MULT_UNSIGNED
+30B6  903F          NOT R0, R0                       | NOT R0, R0
+30B7  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+30B8  1100          ADD R0, R4, R0                   | ADD R0, R4, R0          ; R0 = r1
+30B9  1000          ADD R0, R0, R0                   | ADD R0, R0, R0          ; 2 * r1
+30BA  1820          ADD R4, R0, #0                   | ADD R4, R0, #0
+30BB  10E0          ADD R0, R3, #0                   | ADD R0, R3, #0
+30BC  4819          JSR #25   ; -> x30D6             | JSR SHIFT_RIGHT_1       ; |ln(b)| / 2
+30BD  1100          ADD R0, R4, R0                   | ADD R0, R4, R0
+30BE  12E0          ADD R1, R3, #0                   | ADD R1, R3, #0
+30BF  4866          JSR #102   ; -> x3126            | JSR DIV_UNSIGNED        ; R0 = q2
+30C0  1B45          ADD R5, R5, R5                   | ADD R5, R5, R5
+30C1  1140          ADD R0, R5, R0                   | ADD R0, R5, R0
+30C2  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+30C3  0405          BRz #5   ; -> x30C9              | BRz CLB_EXIT
+30C4  903F          NOT R0, R0                       | NOT R0, R0
+30C5  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+30C6  0E02          BRnzp #2   ; -> x30C9            | BR CLB_EXIT
+30C7  5020          AND R0, R0, #0                   | AND R0, R0, #0
+30C8  103F          ADD R0, R0, #-1                  | ADD R0, R0, #-1
+30C9  2E06          LD R7, #6   ; -> x30D0           | LD R7, CLB_SAVE_R7
+30CA  2206          LD R1, #6   ; -> x30D1           | LD R1, CLB_SAVE_R1
+30CB  2406          LD R2, #6   ; -> x30D2           | LD R2, CLB_SAVE_R2
+30CC  2606          LD R3, #6   ; -> x30D3           | LD R3, CLB_SAVE_R3
+30CD  2806          LD R4, #6   ; -> x30D4           | LD R4, CLB_SAVE_R4
+30CE  2A06          LD R5, #6   ; -> x30D5           | LD R5, CLB_SAVE_R5
+30CF  C1C0          RET                              | RET
+30D0  0000                                           | CLB_SAVE_R7     .BLKW #1
+30D1  0000                                           | CLB_SAVE_R1     .BLKW #1
+30D2  0000                                           | CLB_SAVE_R2     .BLKW #1
+30D3  0000                                           | CLB_SAVE_R3     .BLKW #1
+30D4  0000                                           | CLB_SAVE_R4     .BLKW #1
+30D5  0000                                           | CLB_SAVE_R5     .BLKW #1
+30D6  320F          ST R1, #15   ; -> x30E6          | ST R1, SR1_R1
+30D7  340F          ST R2, #15   ; -> x30E7          | ST R2, SR1_R2           ; Contador
+30D8  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+30D9  14AF          ADD R2, R2, #15                  | ADD R2, R2, #15
+30DA  5260          AND R1, R1, #0                   | AND R1, R1, #0
+30DB  1241          ADD R1, R1, R1                   | ADD R1, R1, R1
+30DC  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+30DD  0601          BRzp #1   ; -> x30DF             | BRzp CONTINUA
+30DE  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+30DF  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30E0  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+30E1  03F9          BRp #-7   ; -> x30DB             | BRp BUCLE_FOR
+30E2  1060          ADD R0, R1, #0                   | ADD R0, R1, #0
+30E3  2202          LD R1, #2   ; -> x30E6           | LD R1, SR1_R1
+30E4  2402          LD R2, #2   ; -> x30E7           | LD R2, SR1_R2
+30E5  C1C0          RET                              | RET
+30E6  0000                                           | SR1_R1          .BLKW #1
+30E7  0000                                           | SR1_R2          .BLKW #1
+30E8  3206          ST R1, #6   ; -> x30EF           | ST R1, SR7_R1
+30E9  3E06          ST R7, #6   ; -> x30F0           | ST R7, SR7_R7
+30EA  235A          LD R1, #-166   ; -> x3045        | LD R1, VAL_Q_ONE
+30EB  483A          JSR #58   ; -> x3126             | JSR DIV_UNSIGNED
+30EC  2202          LD R1, #2   ; -> x30EF           | LD R1, SR7_R1
+30ED  2E02          LD R7, #2   ; -> x30F0           | LD R7, SR7_R7
+30EE  C1C0          RET                              | RET
+30EF  0000                                           | SR7_R1          .BLKW #1
+30F0  0000                                           | SR7_R7          .BLKW #1
+30F1  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30F2  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30F3  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30F4  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30F5  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30F6  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30F7  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30F8  C1C0          RET                              | RET
+30F9  3412          ST R2, #18   ; -> x310C          | ST R2, MU_R2
+30FA  3612          ST R3, #18   ; -> x310D          | ST R3, MU_R3
+30FB  3812          ST R4, #18   ; -> x310E          | ST R4, MU_R4
+30FC  1420          ADD R2, R0, #0                   | ADD R2, R0, #0          ; R2 = multiplicando
+30FD  1660          ADD R3, R1, #0                   | ADD R3, R1, #0          ; R3 = multiplicador (se lee bit a bit)
+30FE  5020          AND R0, R0, #0                   | AND R0, R0, #0          ; R0 = acumulador en 0
+30FF  5920          AND R4, R4, #0                   | AND R4, R4, #0
+3100  1930          ADD R4, R4, #-16                 | ADD R4, R4, #-16        ; Contador de 16 bits (-16 hasta 0)
+3101  1000          ADD R0, R0, R0                   | ADD R0, R0, R0          ; Desplaza el acumulador 1 bit a la izquierda
+3102  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0          ; Evalúa el bit más significativo (bit 15) de R3
+3103  0601          BRzp #1   ; -> x3105             | BRzp MU_SKIP            ; Si el bit 15 es 0 (positivo/cero), no suma
+3104  1002          ADD R0, R0, R2                   | ADD R0, R0, R2          ; Si el bit 15 es 1 (negativo), suma el multiplicando
+3105  16C3          ADD R3, R3, R3                   | ADD R3, R3, R3          ; Desplaza R3 a la izquierda para traer el siguiente bit
+3106  1921          ADD R4, R4, #1                   | ADD R4, R4, #1          ; Avanza el contador
+3107  09F9          BRn #-7   ; -> x3101             | BRn MU_LOOP             ; Repite mientras R4 < 0 (16 vueltas exactas)
+3108  2403          LD R2, #3   ; -> x310C           | LD R2, MU_R2
+3109  2603          LD R3, #3   ; -> x310D           | LD R3, MU_R3
+310A  2803          LD R4, #3   ; -> x310E           | LD R4, MU_R4
+310B  C1C0          RET                              | RET
+310C  0000                                           | MU_R2   .BLKW #1
+310D  0000                                           | MU_R3   .BLKW #1
+310E  0000                                           | MU_R4   .BLKW #1
+310F  3E14          ST R7, #20   ; -> x3124          | ST R7, MS_R7
+3110  3814          ST R4, #20   ; -> x3125          | ST R4, MS_R4
+3111  5920          AND R4, R4, #0                   | AND R4, R4, #0          ; Contador de signos negativos
+3112  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+3113  0603          BRzp #3   ; -> x3117             | BRzp MS_CHECK_R1
+3114  903F          NOT R0, R0                       | NOT R0, R0
+3115  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3116  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3117  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3118  0603          BRzp #3   ; -> x311C             | BRzp MS_DO_MULT
+3119  927F          NOT R1, R1                       | NOT R1, R1
+311A  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+311B  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+311C  4FDC          JSR #-36   ; -> x30F9            | JSR MULT_UNSIGNED
+311D  5921          AND R4, R4, #1                   | AND R4, R4, #1
+311E  0402          BRz #2   ; -> x3121              | BRz MS_DONE
+311F  903F          NOT R0, R0                       | NOT R0, R0
+3120  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3121  2E02          LD R7, #2   ; -> x3124           | LD R7, MS_R7
+3122  2802          LD R4, #2   ; -> x3125           | LD R4, MS_R4
+3123  C1C0          RET                              | RET
+3124  0000                                           | MS_R7   .BLKW #1
+3125  0000                                           | MS_R4   .BLKW #1
+3126  341D          ST R2, #29   ; -> x3144          | ST R2, DU_R2
+3127  361D          ST R3, #29   ; -> x3145          | ST R3, DU_R3            ; Antes era R6
+3128  381D          ST R4, #29   ; -> x3146          | ST R4, DU_R4
+3129  3A1D          ST R5, #29   ; -> x3147          | ST R5, DU_R5
+312A  1420          ADD R2, R0, #0                   | ADD R2, R0, #0          ; R2 = dividendo
+312B  5020          AND R0, R0, #0                   | AND R0, R0, #0          ; R0 = cociente = 0
+312C  1260          ADD R1, R1, #0                   | ADD R1, R1, #0          ; Verifica divisor == 0
+312D  0411          BRz #17   ; -> x313F             | BRz DU_DONE
+312E  927F          NOT R1, R1                       | NOT R1, R1
+312F  1261          ADD R1, R1, #1                   | ADD R1, R1, #1          ; R1 = -divisor
+3130  5920          AND R4, R4, #0                   | AND R4, R4, #0          ; R4 = resto = 0
+3131  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+3132  1B70          ADD R5, R5, #-16                 | ADD R5, R5, #-16        ; Contador de 16 bits (-16 hasta 0)
+3133  1904          ADD R4, R4, R4                   | ADD R4, R4, R4
+3134  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+3135  0601          BRzp #1   ; -> x3137             | BRzp DU_NO_BIT
+3136  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3137  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3138  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+3139  1701          ADD R3, R4, R1                   | ADD R3, R4, R1          ; Antes era R6 (R3 = resto - divisor)
+313A  0802          BRn #2   ; -> x313D              | BRn DU_NEXT
+313B  18E0          ADD R4, R3, #0                   | ADD R4, R3, #0          ; Antes era R6
+313C  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+313D  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+313E  09F4          BRn #-12   ; -> x3133            | BRn DU_LOOP
+313F  2404          LD R2, #4   ; -> x3144           | LD R2, DU_R2
+3140  2604          LD R3, #4   ; -> x3145           | LD R3, DU_R3            ; Antes era R6
+3141  2804          LD R4, #4   ; -> x3146           | LD R4, DU_R4
+3142  2A04          LD R5, #4   ; -> x3147           | LD R5, DU_R5
+3143  C1C0          RET                              | RET
+3144  0000                                           | DU_R2   .BLKW #1
+3145  0000                                           | DU_R3   .BLKW #1            ; Antes era DU_R6
+3146  0000                                           | DU_R4   .BLKW #1
+3147  0000                                           | DU_R5   .BLKW #1
+3148  0080                                           | .FILL #128
+3149  0080                                           | .FILL #128
+314A  0081                                           | .FILL #129
+314B  0081                                           | .FILL #129
+314C  0082                                           | .FILL #130
+314D  0082                                           | .FILL #130
+314E  0083                                           | .FILL #131
+314F  0083                                           | .FILL #131
+3150  0084                                           | .FILL #132
+3151  0084                                           | .FILL #132
+3152  0085                                           | .FILL #133
+3153  0085                                           | .FILL #133
+3154  0086                                           | .FILL #134
+3155  0086                                           | .FILL #134
+3156  0087                                           | .FILL #135
+3157  0087                                           | .FILL #135
+3158  0088                                           | .FILL #136
+3159  0088                                           | .FILL #136
+315A  0089                                           | .FILL #137
+315B  0089                                           | .FILL #137
+315C  008A                                           | .FILL #138
+315D  008A                                           | .FILL #138
+315E  008A                                           | .FILL #138
+315F  008B                                           | .FILL #139
+3160  008B                                           | .FILL #139
+3161  008C                                           | .FILL #140
+3162  008C                                           | .FILL #140
+3163  008D                                           | .FILL #141
+3164  008D                                           | .FILL #141
+3165  008E                                           | .FILL #142
+3166  008E                                           | .FILL #142
+3167  008F                                           | .FILL #143
+3168  008F                                           | .FILL #143
+3169  0090                                           | .FILL #144
+316A  0090                                           | .FILL #144
+316B  0090                                           | .FILL #144
+316C  0091                                           | .FILL #145
+316D  0091                                           | .FILL #145
+316E  0092                                           | .FILL #146
+316F  0092                                           | .FILL #146
+3170  0093                                           | .FILL #147
+3171  0093                                           | .FILL #147
+3172  0094                                           | .FILL #148
+3173  0094                                           | .FILL #148
+3174  0094                                           | .FILL #148
+3175  0095                                           | .FILL #149
+3176  0095                                           | .FILL #149
+3177  0096                                           | .FILL #150
+3178  0096                                           | .FILL #150
+3179  0097                                           | .FILL #151
+317A  0097                                           | .FILL #151
+317B  0097                                           | .FILL #151
+317C  0098                                           | .FILL #152
+317D  0098                                           | .FILL #152
+317E  0099                                           | .FILL #153
+317F  0099                                           | .FILL #153
+3180  009A                                           | .FILL #154
+3181  009A                                           | .FILL #154
+3182  009A                                           | .FILL #154
+3183  009B                                           | .FILL #155
+3184  009B                                           | .FILL #155
+3185  009C                                           | .FILL #156
+3186  009C                                           | .FILL #156
+3187  009C                                           | .FILL #156
+3188  009D                                           | .FILL #157
+3189  009D                                           | .FILL #157
+318A  009E                                           | .FILL #158
+318B  009E                                           | .FILL #158
+318C  009E                                           | .FILL #158
+318D  009F                                           | .FILL #159
+318E  009F                                           | .FILL #159
+318F  00A0                                           | .FILL #160
+3190  00A0                                           | .FILL #160
+3191  00A0                                           | .FILL #160
+3192  00A1                                           | .FILL #161
+3193  00A1                                           | .FILL #161
+3194  00A2                                           | .FILL #162
+3195  00A2                                           | .FILL #162
+3196  00A2                                           | .FILL #162
+3197  00A3                                           | .FILL #163
+3198  00A3                                           | .FILL #163
+3199  00A4                                           | .FILL #164
+319A  00A4                                           | .FILL #164
+319B  00A4                                           | .FILL #164
+319C  00A5                                           | .FILL #165
+319D  00A5                                           | .FILL #165
+319E  00A6                                           | .FILL #166
+319F  00A6                                           | .FILL #166
+31A0  00A6                                           | .FILL #166
+31A1  00A7                                           | .FILL #167
+31A2  00A7                                           | .FILL #167
+31A3  00A8                                           | .FILL #168
+31A4  00A8                                           | .FILL #168
+31A5  00A8                                           | .FILL #168
+31A6  00A9                                           | .FILL #169
+31A7  00A9                                           | .FILL #169
+31A8  00A9                                           | .FILL #169
+31A9  00AA                                           | .FILL #170
+31AA  00AA                                           | .FILL #170
+31AB  00AB                                           | .FILL #171
+31AC  00AB                                           | .FILL #171
+31AD  00AB                                           | .FILL #171
+31AE  00AC                                           | .FILL #172
+31AF  00AC                                           | .FILL #172
+31B0  00AC                                           | .FILL #172
+31B1  00AD                                           | .FILL #173
+31B2  00AD                                           | .FILL #173
+31B3  00AE                                           | .FILL #174
+31B4  00AE                                           | .FILL #174
+31B5  00AE                                           | .FILL #174
+31B6  00AF                                           | .FILL #175
+31B7  00AF                                           | .FILL #175
+31B8  00AF                                           | .FILL #175
+31B9  00B0                                           | .FILL #176
+31BA  00B0                                           | .FILL #176
+31BB  00B0                                           | .FILL #176
+31BC  00B1                                           | .FILL #177
+31BD  00B1                                           | .FILL #177
+31BE  00B2                                           | .FILL #178
+31BF  00B2                                           | .FILL #178
+31C0  00B2                                           | .FILL #178
+31C1  00B3                                           | .FILL #179
+31C2  00B3                                           | .FILL #179
+31C3  00B3                                           | .FILL #179
+31C4  00B4                                           | .FILL #180
+31C5  00B4                                           | .FILL #180
+31C6  00B4                                           | .FILL #180
+31C7  00B5                                           | .FILL #181

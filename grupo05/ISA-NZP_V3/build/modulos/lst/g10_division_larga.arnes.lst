@@ -1,0 +1,114 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3262          ST R1, #98   ; -> x3063          | DIVIDIR     ST  R1, GUARDADO_R1      ; guardar R1..R5 (R0 es la salida)
+3001  3462          ST R2, #98   ; -> x3064          | ST  R2, GUARDADO_R2
+3002  3662          ST R3, #98   ; -> x3065          | ST  R3, GUARDADO_R3
+3003  3862          ST R4, #98   ; -> x3066          | ST  R4, GUARDADO_R4
+3004  3A62          ST R5, #98   ; -> x3067          | ST  R5, GUARDADO_R5
+3005  5B60          AND R5, R5, #0                   | AND R5, R5, #0           ; R5 = cuenta de operandos negativos
+3006  3A5A          ST R5, #90   ; -> x3061          | ST  R5, ESTADO           ; estado = 0 (ok)
+3007  1260          ADD R1, R1, #0                   | ADD R1, R1, #0           ; divisor = 0 ?
+3008  0446          BRz #70   ; -> x304F             | BRz ERR_DIV0
+3009  0203          BRp #3   ; -> x300D              | BRp B_POS
+300A  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1           ; divisor negativo
+300B  927F          NOT R1, R1                       | NOT R1, R1
+300C  1261          ADD R1, R1, #1                   | ADD R1, R1, #1           ; R1 = |b|  (x8000 queda x8000 = 32768 sin signo)
+300D  967F          NOT R3, R1                       | B_POS       NOT R3, R1
+300E  16E1          ADD R3, R3, #1                   | ADD R3, R3, #1           ; R3 = -|b|
+300F  1020          ADD R0, R0, #0                   | ADD R0, R0, #0           ; dividendo negativo ?
+3010  0603          BRzp #3   ; -> x3014             | BRzp A_POS
+3011  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+3012  903F          NOT R0, R0                       | NOT R0, R0
+3013  1021          ADD R0, R0, #1                   | ADD R0, R0, #1           ; R0 = |a|  (x8000 queda x8000 = 32768 sin signo)
+3014  1B7F          ADD R5, R5, #-1                  | A_POS       ADD R5, R5, #-1          ; cuenta 0 -> -1, 1 -> 0, 2 -> 1
+3015  0402          BRz #2   ; -> x3018              | BRz SIGNO_NEG            ; exactamente un operando negativo
+3016  5B60          AND R5, R5, #0                   | AND R5, R5, #0           ; cociente positivo: R5 = 0
+3017  0E01          BRnzp #1   ; -> x3019            | BRnzp SIGNO_FIN
+3018  1B61          ADD R5, R5, #1                   | SIGNO_NEG   ADD R5, R5, #1           ; cociente negativo: R5 = 1
+3019  5260          AND R1, R1, #0                   | SIGNO_FIN   AND R1, R1, #0           ; palabra alta = 0 (|b| ya esta en R3)
+301A  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+301B  0407          BRz #7   ; -> x3023              | BRz PRE_FIN
+301C  1241          ADD R1, R1, R1                   | PRE         ADD R1, R1, R1           ; (R1:R0) <<= 1
+301D  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+301E  0601          BRzp #1   ; -> x3020             | BRzp PRE_SIN
+301F  1261          ADD R1, R1, #1                   | ADD R1, R1, #1           ; el bit 15 de R0 pasa a R1
+3020  1000          ADD R0, R0, R0                   | PRE_SIN     ADD R0, R0, R0
+3021  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+3022  03F9          BRp #-7   ; -> x301C             | BRp PRE
+3023  1843          ADD R4, R1, R3                   | PRE_FIN     ADD R4, R1, R3           ; palabra alta - |b|
+3024  0622          BRzp #34   ; -> x3047            | BRzp OVERFLOW            ; alta >= |b|: el cociente no entra en 16 bits
+3025  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+3026  14A8          ADD R2, R2, #8                   | ADD R2, R2, #8
+3027  14A8          ADD R2, R2, #8                   | ADD R2, R2, #8           ; R2 = 16
+3028  1020          ADD R0, R0, #0                   | LAZO        ADD R0, R0, #0
+3029  0604          BRzp #4   ; -> x302E             | BRzp L_BIT0
+302A  1000          ADD R0, R0, R0                   | ADD R0, R0, R0           ; sale un 1 de R0 ...
+302B  1241          ADD R1, R1, R1                   | ADD R1, R1, R1
+302C  1261          ADD R1, R1, #1                   | ADD R1, R1, #1           ; ... y entra al resto
+302D  0E02          BRnzp #2   ; -> x3030            | BRnzp L_CMP
+302E  1000          ADD R0, R0, R0                   | L_BIT0      ADD R0, R0, R0
+302F  1241          ADD R1, R1, R1                   | ADD R1, R1, R1
+3030  1260          ADD R1, R1, #0                   | L_CMP       ADD R1, R1, #0
+3031  0805          BRn #5   ; -> x3037              | BRn L_SIEMPRE            ; resto >= x8000 (>= |b| seguro)
+3032  1843          ADD R4, R1, R3                   | ADD R4, R1, R3           ; resto - |b|  (no desborda: resto <= x7FFF)
+3033  0805          BRn #5   ; -> x3039              | BRn L_SEGUIR             ; resto < |b|: bit 0
+3034  1320          ADD R1, R4, #0                   | ADD R1, R4, #0           ; resto = resto - |b|
+3035  1021          ADD R0, R0, #1                   | ADD R0, R0, #1           ; bit del cociente = 1
+3036  0E02          BRnzp #2   ; -> x3039            | BRnzp L_SEGUIR
+3037  1243          ADD R1, R1, R3                   | L_SIEMPRE   ADD R1, R1, R3           ; resto - |b| (aritmetica modular de 16 bits)
+3038  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3039  14BF          ADD R2, R2, #-1                  | L_SEGUIR    ADD R2, R2, #-1
+303A  03ED          BRp #-19   ; -> x3028            | BRp LAZO
+303B  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+303C  0203          BRp #3   ; -> x3040              | BRp POST_NEG
+303D  1020          ADD R0, R0, #0                   | ADD R0, R0, #0           ; positivo: debe ser <= x7FFF
+303E  0808          BRn #8   ; -> x3047              | BRn OVERFLOW
+303F  0E13          BRnzp #19   ; -> x3053           | BRnzp EPILOGO
+3040  1020          ADD R0, R0, #0                   | POST_NEG    ADD R0, R0, #0           ; negativo: debe ser <= x8000
+3041  0602          BRzp #2   ; -> x3044             | BRzp NEG_APLIC
+3042  1800          ADD R4, R0, R0                   | ADD R4, R0, R0           ; si R0 >= x8000 solo vale x8000 (R0+R0 = 0)
+3043  0A03          BRnp #3   ; -> x3047             | BRnp OVERFLOW
+3044  903F          NOT R0, R0                       | NEG_APLIC   NOT R0, R0
+3045  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3046  0E0C          BRnzp #12   ; -> x3053           | BRnzp EPILOGO
+3047  5920          AND R4, R4, #0                   | OVERFLOW    AND R4, R4, #0
+3048  1922          ADD R4, R4, #2                   | ADD R4, R4, #2
+3049  3817          ST R4, #23   ; -> x3061          | ST  R4, ESTADO           ; estado = 2
+304A  2017          LD R0, #23   ; -> x3062          | LD  R0, K_X8000
+304B  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+304C  0206          BRp #6   ; -> x3053              | BRp EPILOGO              ; negativo: x8000 (-32768)
+304D  903F          NOT R0, R0                       | NOT R0, R0               ; positivo: x7FFF (32767)
+304E  0E04          BRnzp #4   ; -> x3053            | BRnzp EPILOGO
+304F  5020          AND R0, R0, #0                   | ERR_DIV0    AND R0, R0, #0           ; divisor 0: resultado 0
+3050  5920          AND R4, R4, #0                   | AND R4, R4, #0
+3051  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3052  380E          ST R4, #14   ; -> x3061          | ST  R4, ESTADO           ; estado = 1
+3053  220F          LD R1, #15   ; -> x3063          | EPILOGO     LD  R1, GUARDADO_R1      ; restaurar R1..R5
+3054  240F          LD R2, #15   ; -> x3064          | LD  R2, GUARDADO_R2
+3055  260F          LD R3, #15   ; -> x3065          | LD  R3, GUARDADO_R3
+3056  280F          LD R4, #15   ; -> x3066          | LD  R4, GUARDADO_R4
+3057  2A0F          LD R5, #15   ; -> x3067          | LD  R5, GUARDADO_R5
+3058  C1C0          RET                              | RET
+3059  340E          ST R2, #14   ; -> x3068          | DIV_LONG    ST  R2, GUARDADO_DL_R2   ; guardar R2 y R7 (aca se llama a DIVIDIR)
+305A  3E0E          ST R7, #14   ; -> x3069          | ST  R7, GUARDADO_DL_R7
+305B  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+305C  14A8          ADD R2, R2, #8                   | ADD R2, R2, #8           ; s = 8
+305D  4FA2          JSR #-94   ; -> x3000            | JSR DIVIDIR              ; R0 = a/b en Q7.8; R1..R5 vuelven intactos
+305E  2409          LD R2, #9   ; -> x3068           | LD  R2, GUARDADO_DL_R2
+305F  2E09          LD R7, #9   ; -> x3069           | LD  R7, GUARDADO_DL_R7
+3060  C1C0          RET                              | RET
+3061  0000                                           | ESTADO      .FILL x0000              ; 0 = ok, 1 = divisor 0, 2 = desborde
+3062  8000                                           | K_X8000     .FILL x8000
+3063  0000                                           | GUARDADO_R1 .FILL #0
+3064  0000                                           | GUARDADO_R2 .FILL #0
+3065  0000                                           | GUARDADO_R3 .FILL #0
+3066  0000                                           | GUARDADO_R4 .FILL #0
+3067  0000                                           | GUARDADO_R5 .FILL #0
+3068  0000                                           | GUARDADO_DL_R2 .FILL #0
+3069  0000                                           | GUARDADO_DL_R7 .FILL #0

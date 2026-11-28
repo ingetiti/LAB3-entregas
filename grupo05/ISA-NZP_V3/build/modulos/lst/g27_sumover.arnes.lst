@@ -1,0 +1,47 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3221          ST R1, #33   ; -> x3022          | ST R1 sumover_r1                    ;
+3001  3621          ST R3, #33   ; -> x3023          | ST R3 sumover_r3                    ;
+3002  3821          ST R4, #33   ; -> x3024          | ST R4 sumover_r4                    ;
+3003  1620          ADD R3, R0, #0                   | ADD R3 R0 #0                        ;   [R3] valor_a
+3004  10A0          ADD R0, R2, #0                   | ADD R0 R2 #0                        ;   [R0] resultado = carry
+3005  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;   [R2] carry = 0
+3006  16E0          ADD R3, R3, #0                   | ADD R3 R3 #0                        ;
+3007  0601          BRzp #1   ; -> x3009             | BRzp sumover_test_b                 ;   if valor_a & 0x8000:
+3008  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+3009  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+300A  0601          BRzp #1   ; -> x300C             | BRzp sumover_sum                    ;   if valor_b & 0x8000:
+300B  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+300C  2818          LD R4, #24   ; -> x3025          | LD R4 sumover_mask                  ;
+300D  56C4          AND R3, R3, R4                   | AND R3 R3 R4                        ;   valor_a = valor_a & 0x7FFF
+300E  5244          AND R1, R1, R4                   | AND R1 R1 R4                        ;   valor_b = valor_b & 0x7FFF
+300F  1003          ADD R0, R0, R3                   | ADD R0 R0 R3                        ;
+3010  1001          ADD R0, R0, R1                   | ADD R0 R0 R1                        ;   resultado = resultado + valor_a + valor_b
+3011  0601          BRzp #1   ; -> x3013             | BRzp sumover_resultant              ;   if resultado & 0x8000:
+3012  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+3013  5004          AND R0, R0, R4                   | AND R0 R0 R4                        ;   resultado = resultado & 0x7FFF
+3014  58A1          AND R4, R2, #1                   | AND R4 R2 #1                        ;
+3015  0402          BRz #2   ; -> x3018              | BRz sumover_test_carry              ;   if carry & 0x0001:
+3016  280F          LD R4, #15   ; -> x3026          | LD R4 sumover_msb                   ;
+3017  1004          ADD R0, R0, R4                   | ADD R0 R0 R4                        ;       resultado = resultado + 0x8000
+3018  58A2          AND R4, R2, #2                   | AND R4 R2 #2                        ;
+3019  0403          BRz #3   ; -> x301D              | BRz sumover_test_carry_else         ;   if carry & 0x0002:
+301A  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+301B  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry = 1
+301C  0E01          BRnzp #1   ; -> x301E            | BRnzp sumover_ret                   ;   else:
+301D  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;       carry = 0
+301E  2203          LD R1, #3   ; -> x3022           | LD R1 sumover_r1                    ;
+301F  2603          LD R3, #3   ; -> x3023           | LD R3 sumover_r3                    ;
+3020  2803          LD R4, #3   ; -> x3024           | LD R4 sumover_r4                    ;
+3021  C1C0          RET                              | RET                                 ;
+3022  0000                                           | sumover_r1          .FILL #0
+3023  0000                                           | sumover_r3          .FILL #0
+3024  0000                                           | sumover_r4          .FILL #0
+3025  7FFF                                           | sumover_mask        .FILL x7FFF
+3026  8000                                           | sumover_msb         .FILL x8000

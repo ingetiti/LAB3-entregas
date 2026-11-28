@@ -1,0 +1,44 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3420          ST R2, #32   ; -> x3021          | ST  R2, guardado_r2
+3001  3620          ST R3, #32   ; -> x3022          | ST  R3, guardado_r3
+3002  3820          ST R4, #32   ; -> x3023          | ST  R4, guardado_r4
+3003  1420          ADD R2, R0, #0                   | ADD R2, R0, #0  ; R2 = P = y0
+3004  5020          AND R0, R0, #0                   | AND R0, R0, #0  ; R0 = Z = 0, el resultado
+3005  967F          NOT R3, R1                       | NOT R3, R1
+3006  16E1          ADD R3, R3, #1                   | ADD R3, R3, #1
+3007  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0  ; Actualizar los CC con el signo de y0 y es tambien P
+3008  0203          BRp #3   ; -> x300C              | BRp INI_NEG
+3009  1481          ADD R2, R2, R1                   | ADD R2, R2, R1  ; y <= 0 : d = + 1 -> P = P + x
+300A  103F          ADD R0, R0, #-1                  | ADD R0, R0, #-1 ; z = -d = -1
+300B  0E02          BRnzp #2   ; -> x300E            | BRnzp INI_LOOP
+300C  1483          ADD R2, R2, R3                   | INI_NEG ADD R2, R2, R3  ; y > 0 : d = -1 -> P = P - x
+300D  1021          ADD R0, R0, #1                   | ADD R0, R0, #1  ; z = -d = +1
+300E  5920          AND R4, R4, #0                   | INI_LOOP AND R4, R4, #0 ; Inicializamos R4 que es nuestro i del for
+300F  192F          ADD R4, R4, #15                  | ADD R4, R4, #15 ; R4 = 15; ya hicimos la iteraciion 0
+3010  14A0          ADD R2, R2, #0                   | LOOP    ADD R2, R2, #0  ; Actualizar los CC con el signo de P
+3011  0205          BRp #5   ; -> x3017              | BRp PPOS
+3012  1482          ADD R2, R2, R2                   | ADD R2, R2, R2  ; P <= 0 : d = +1
+3013  1481          ADD R2, R2, R1                   | ADD R2, R2, R1  ; P = 2P + x
+3014  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+3015  103F          ADD R0, R0, #-1                  | ADD R0, R0, #-1 ; z = 2z - 1
+3016  0E04          BRnzp #4   ; -> x301B            | BRnzp GOON
+3017  1482          ADD R2, R2, R2                   | PPOS    ADD R2, R2, R2  ; P > 0 : d = -1
+3018  1483          ADD R2, R2, R3                   | ADD R2, R2, R3  ; P = 2P - x
+3019  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+301A  1021          ADD R0, R0, #1                   | ADD R0, R0, #1  ; z = 2z + x
+301B  193F          ADD R4, R4, #-1                  | GOON    ADD R4, R4, #-1
+301C  03F3          BRp #-13   ; -> x3010            | BRp LOOP
+301D  2403          LD R2, #3   ; -> x3021           | LD  R2, guardado_r2
+301E  2603          LD R3, #3   ; -> x3022           | LD  R3, guardado_r3
+301F  2803          LD R4, #3   ; -> x3023           | LD  R4, guardado_r4
+3020  C1C0          RET                              | RET
+3021  0000                                           | guardado_r2 .FILL #0
+3022  0000                                           | guardado_r3 .FILL #0
+3023  0000                                           | guardado_r4 .FILL #0

@@ -1,0 +1,8 @@
+GETLINE 3000
+getline_loop 3008
+getline_ret 3011
+getline_buffer_beg 301C
+getline_r1 301D
+getline_r2 301E
+getline_r3 301F
+getline_r7 3020

@@ -1,0 +1,377 @@
+3000  5260          AND R1, R1, #0                   | AND R1, R1, #0       ; Parte entera
+3001  54A0          AND R2, R2, #0                   | AND R2, R2, #0       ; Primer decimal
+3002  5920          AND R4, R4, #0                   | AND R4, R4, #0       ; Estado del punto decimal
+3003  F020          GETC                             | GETC
+3004  1636          ADD R3, R0, #-10                 | ADD R3, R0, #-10
+3005  041E          BRz #30   ; -> x3024             | BRz FIN_LECTURA
+3006  1633          ADD R3, R0, #-13                 | ADD R3, R0, #-13
+3007  041C          BRz #28   ; -> x3024             | BRz FIN_LECTURA
+3008  F021          OUT                              | OUT
+3009  1632          ADD R3, R0, #-14                 | ADD R3, R0, #-14
+300A  16F2          ADD R3, R3, #-14                 | ADD R3, R3, #-14
+300B  16F2          ADD R3, R3, #-14                 | ADD R3, R3, #-14
+300C  16FC          ADD R3, R3, #-4                  | ADD R3, R3, #-4
+300D  0412          BRz #18   ; -> x3020             | BRz PUNTO
+300E  261D          LD R3, #29   ; -> x302C          | LD R3, NEG48
+300F  1003          ADD R0, R0, R3                   | ADD R0, R0, R3
+3010  09F2          BRn #-14   ; -> x3003            | BRn LECTURA
+3011  1636          ADD R3, R0, #-10                 | ADD R3, R0, #-10
+3012  07F0          BRzp #-16   ; -> x3003           | BRzp LECTURA
+3013  1920          ADD R4, R4, #0                   | ADD R4, R4, #0
+3014  0405          BRz #5   ; -> x301A              | BRz PARTE_ENTERA
+3015  173F          ADD R3, R4, #-1                  | ADD R3, R4, #-1
+3016  03EC          BRp #-20   ; -> x3003            | BRp LECTURA
+3017  1420          ADD R2, R0, #0                   | ADD R2, R0, #0
+3018  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3019  0FE9          BRnzp #-23   ; -> x3003          | BRnzp LECTURA
+301A  1641          ADD R3, R1, R1                   | ADD R3, R1, R1
+301B  1AC3          ADD R5, R3, R3                   | ADD R5, R3, R3
+301C  1B45          ADD R5, R5, R5                   | ADD R5, R5, R5
+301D  12C5          ADD R1, R3, R5                   | ADD R1, R3, R5
+301E  1240          ADD R1, R1, R0                   | ADD R1, R1, R0
+301F  0FE3          BRnzp #-29   ; -> x3003          | BRnzp LECTURA
+3020  1920          ADD R4, R4, #0                   | ADD R4, R4, #0
+3021  03E1          BRp #-31   ; -> x3003            | BRp LECTURA
+3022  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3023  0FDF          BRnzp #-33   ; -> x3003          | BRnzp LECTURA
+3024  1641          ADD R3, R1, R1                   | ADD R3, R1, R1
+3025  1AC3          ADD R5, R3, R3                   | ADD R5, R3, R3
+3026  1B45          ADD R5, R5, R5                   | ADD R5, R5, R5
+3027  12C5          ADD R1, R3, R5                   | ADD R1, R3, R5
+3028  1042          ADD R0, R1, R2                   | ADD R0, R1, R2
+3029  4816          JSR #22   ; -> x3040             | JSR CALCULAR_SENO
+302A  300C          ST R0, #12   ; -> x3037          | ST R0, RESULTADO
+302B  F025          HALT                             | HALT
+302C  FFD0                                           | NEG48 .FILL #-48
+302D  4812          JSR #18   ; -> x3040             | JSR CALCULAR_SENO
+302E  3008          ST R0, #8   ; -> x3037           | ST R0, RESULTADO
+302F  F025          HALT                             | HALT
+3030  0384                                           | ANGULO       .FILL #900
+3031  3244                                           | MULTIPLICADOR .FILL #12868
+3032  0E10                                           | LIMITE       .FILL #3600
+3033  0384                                           | LIMITE90     .FILL #900
+3034  0708                                           | LIMITE180    .FILL #1800
+3035  0A8C                                           | LIMITE270    .FILL #2700
+3036  0E10                                           | LIMITE360    .FILL #3600
+3037  0000                                           | RESULTADO .FILL #0
+3038  0000                                           | ENTRADA_ANGULO .FILL #0
+3039  0000                                           | GUARDADO_R1 .FILL #0
+303A  0000                                           | GUARDADO_R2 .FILL #0
+303B  0000                                           | GUARDADO_R3 .FILL #0
+303C  0000                                           | GUARDADO_R4 .FILL #0
+303D  0000                                           | GUARDADO_R5 .FILL #0
+303E  0000                                           | GUARDADO_R7 .FILL #0
+303F  0000                                           | SIGNO_CUADRANTE .FILL #0
+3040  31F7          ST R0, #-9   ; -> x3038          | ST R0, ENTRADA_ANGULO
+3041  E1F7          LEA R0, #-9   ; -> x3039         | LEA R0, GUARDADO_R1
+3042  7602          STR R3, R0, #2                   | STR R3, R0, #2
+3043  E7F5          LEA R3, #-11   ; -> x3039        | LEA R3, GUARDADO_R1
+3044  72C0          STR R1, R3, #0                   | STR R1, R3, #0
+3045  74C1          STR R2, R3, #1                   | STR R2, R3, #1
+3046  78C3          STR R4, R3, #3                   | STR R4, R3, #3
+3047  7AC4          STR R5, R3, #4                   | STR R5, R3, #4
+3048  7EC5          STR R7, R3, #5                   | STR R7, R3, #5
+3049  21EE          LD R0, #-18   ; -> x3038         | LD R0, ENTRADA_ANGULO
+304A  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+304B  0806          BRn #6   ; -> x3052              | BRn ERROR
+304C  23E5          LD R1, #-27   ; -> x3032         | LD R1, LIMITE
+304D  927F          NOT R1, R1                       | NOT R1, R1
+304E  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+304F  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+3050  0201          BRp #1   ; -> x3052              | BRp ERROR
+3051  0E0A          BRnzp #10   ; -> x305C           | BRnzp CONTINUAR
+3052  5020          AND R0, R0, #0                   | AND R0, R0, #0
+3053  103F          ADD R0, R0, #-1                  | ADD R0, R0, #-1
+3054  0E00          BRnzp #0   ; -> x3055            | BRnzp RESTAURAR_ERROR
+3055  62C0          LDR R1, R3, #0                   | LDR R1, R3, #0
+3056  64C1          LDR R2, R3, #1                   | LDR R2, R3, #1
+3057  68C3          LDR R4, R3, #3                   | LDR R4, R3, #3
+3058  6AC4          LDR R5, R3, #4                   | LDR R5, R3, #4
+3059  6EC5          LDR R7, R3, #5                   | LDR R7, R3, #5
+305A  66C2          LDR R3, R3, #2                   | LDR R3, R3, #2
+305B  C1C0          RET                              | RET
+305C  23D6          LD R1, #-42   ; -> x3033         | LD R1, LIMITE90
+305D  927F          NOT R1, R1                       | NOT R1, R1
+305E  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+305F  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+3060  0C0B          BRnz #11   ; -> x306C            | BRnz CUADRANTE1
+3061  23D2          LD R1, #-46   ; -> x3034         | LD R1, LIMITE180
+3062  927F          NOT R1, R1                       | NOT R1, R1
+3063  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3064  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+3065  0C0B          BRnz #11   ; -> x3071            | BRnz CUADRANTE2
+3066  23CE          LD R1, #-50   ; -> x3035         | LD R1, LIMITE270
+3067  927F          NOT R1, R1                       | NOT R1, R1
+3068  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3069  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+306A  0C10          BRnz #16   ; -> x307B            | BRnz CUADRANTE3
+306B  0E17          BRnzp #23   ; -> x3083           | BRnzp CUADRANTE4
+306C  1420          ADD R2, R0, #0                   | ADD R2, R0, #0
+306D  5260          AND R1, R1, #0                   | AND R1, R1, #0
+306E  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+306F  72C6          STR R1, R3, #6                   | STR R1, R3, #6
+3070  0E1B          BRnzp #27   ; -> x308C           | BRnzp CONVERSION
+3071  23C2          LD R1, #-62   ; -> x3034         | LD R1, LIMITE180
+3072  927F          NOT R1, R1                       | NOT R1, R1
+3073  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3074  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+3075  94BF          NOT R2, R2                       | NOT R2, R2
+3076  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3077  5260          AND R1, R1, #0                   | AND R1, R1, #0
+3078  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3079  72C6          STR R1, R3, #6                   | STR R1, R3, #6
+307A  0E11          BRnzp #17   ; -> x308C           | BRnzp CONVERSION
+307B  23B8          LD R1, #-72   ; -> x3034         | LD R1, LIMITE180
+307C  927F          NOT R1, R1                       | NOT R1, R1
+307D  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+307E  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+307F  5260          AND R1, R1, #0                   | AND R1, R1, #0
+3080  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1
+3081  72C6          STR R1, R3, #6                   | STR R1, R3, #6
+3082  0E09          BRnzp #9   ; -> x308C            | BRnzp CONVERSION
+3083  23B2          LD R1, #-78   ; -> x3036         | LD R1, LIMITE360
+3084  927F          NOT R1, R1                       | NOT R1, R1
+3085  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3086  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+3087  94BF          NOT R2, R2                       | NOT R2, R2
+3088  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3089  5260          AND R1, R1, #0                   | AND R1, R1, #0
+308A  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1
+308B  72C6          STR R1, R3, #6                   | STR R1, R3, #6
+308C  5920          AND R4, R4, #0                   | AND R4, R4, #0
+308D  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+308E  23A2          LD R1, #-94   ; -> x3031         | LD R1, MULTIPLICADOR
+308F  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+3090  0409          BRz #9   ; -> x309A              | BRz FIN_MULT
+3091  1901          ADD R4, R4, R1                   | ADD R4, R4, R1
+3092  0802          BRn #2   ; -> x3095              | BRn ACARREO
+3093  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+3094  0FFA          BRnzp #-6   ; -> x308F           | BRnzp BUCLE_MULT
+3095  2ED8          LD R7, #216   ; -> x316E         | LD R7, BASE32768
+3096  1907          ADD R4, R4, R7                   | ADD R4, R4, R7
+3097  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+3098  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+3099  0FF5          BRnzp #-11   ; -> x308F          | BRnzp BUCLE_MULT
+309A  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+309B  22D7          LD R1, #215   ; -> x3173         | LD R1, NEG1800
+309C  1F01          ADD R7, R4, R1                   | ADD R7, R4, R1
+309D  0608          BRzp #8   ; -> x30A6             | BRzp RESTA1800
+309E  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+309F  0409          BRz #9   ; -> x30A9              | BRz FIN_DIV1800
+30A0  1B7F          ADD R5, R5, #-1                  | ADD R5, R5, #-1
+30A1  20CC          LD R0, #204   ; -> x316E         | LD R0, BASE32768
+30A2  1FC0          ADD R7, R7, R0                   | ADD R7, R7, R0
+30A3  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+30A4  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30A5  0FF6          BRnzp #-10   ; -> x309C          | BRnzp BUCLE_DIV1800
+30A6  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+30A7  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30A8  0FF3          BRnzp #-13   ; -> x309C          | BRnzp BUCLE_DIV1800
+30A9  34C0          ST R2, #192   ; -> x316A         | ST R2, ANGULO_Q12
+30AA  24BF          LD R2, #191   ; -> x316A         | LD R2, ANGULO_Q12
+30AB  5920          AND R4, R4, #0                   | AND R4, R4, #0
+30AC  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+30AD  12A0          ADD R1, R2, #0                   | ADD R1, R2, #0
+30AE  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+30AF  0409          BRz #9   ; -> x30B9              | BRz FIN_CUADRADO
+30B0  1901          ADD R4, R4, R1                   | ADD R4, R4, R1
+30B1  0802          BRn #2   ; -> x30B4              | BRn ACARREO_CUADRADO
+30B2  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+30B3  0FFA          BRnzp #-6   ; -> x30AE           | BRnzp BUCLE_CUADRADO
+30B4  2EB9          LD R7, #185   ; -> x316E         | LD R7, BASE32768
+30B5  1907          ADD R4, R4, R7                   | ADD R4, R4, R7
+30B6  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+30B7  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+30B8  0FF5          BRnzp #-11   ; -> x30AE          | BRnzp BUCLE_CUADRADO
+30B9  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+30BA  22B7          LD R1, #183   ; -> x3172         | LD R1, NEG4096
+30BB  1F01          ADD R7, R4, R1                   | ADD R7, R4, R1
+30BC  0608          BRzp #8   ; -> x30C5             | BRzp RESTA4096
+30BD  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+30BE  0409          BRz #9   ; -> x30C8              | BRz FIN_DIV4096
+30BF  1B7F          ADD R5, R5, #-1                  | ADD R5, R5, #-1
+30C0  20AD          LD R0, #173   ; -> x316E         | LD R0, BASE32768
+30C1  1FC0          ADD R7, R7, R0                   | ADD R7, R7, R0
+30C2  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+30C3  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30C4  0FF6          BRnzp #-10   ; -> x30BB          | BRnzp BUCLE_DIV4096
+30C5  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+30C6  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30C7  0FF3          BRnzp #-13   ; -> x30BB          | BRnzp BUCLE_DIV4096
+30C8  34A2          ST R2, #162   ; -> x316B         | ST R2, CUADRADO_Q12
+30C9  22A1          LD R1, #161   ; -> x316B         | LD R1, CUADRADO_Q12
+30CA  249F          LD R2, #159   ; -> x316A         | LD R2, ANGULO_Q12
+30CB  5920          AND R4, R4, #0                   | AND R4, R4, #0
+30CC  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+30CD  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+30CE  0409          BRz #9   ; -> x30D8              | BRz FIN_CUBO
+30CF  1901          ADD R4, R4, R1                   | ADD R4, R4, R1
+30D0  0802          BRn #2   ; -> x30D3              | BRn ACARREO_CUBO
+30D1  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+30D2  0FFA          BRnzp #-6   ; -> x30CD           | BRnzp BUCLE_CUBO
+30D3  2E9A          LD R7, #154   ; -> x316E         | LD R7, BASE32768
+30D4  1907          ADD R4, R4, R7                   | ADD R4, R4, R7
+30D5  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+30D6  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+30D7  0FF5          BRnzp #-11   ; -> x30CD          | BRnzp BUCLE_CUBO
+30D8  389B          ST R4, #155   ; -> x3174         | ST R4, CUBO_BAJO
+30D9  3A9B          ST R5, #155   ; -> x3175         | ST R5, CUBO_ALTO
+30DA  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+30DB  2296          LD R1, #150   ; -> x3172         | LD R1, NEG4096
+30DC  1F01          ADD R7, R4, R1                   | ADD R7, R4, R1
+30DD  0608          BRzp #8   ; -> x30E6             | BRzp RESTA_DIV_X3
+30DE  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+30DF  0409          BRz #9   ; -> x30E9              | BRz FIN_DIV_X3
+30E0  1B7F          ADD R5, R5, #-1                  | ADD R5, R5, #-1
+30E1  208C          LD R0, #140   ; -> x316E         | LD R0, BASE32768
+30E2  1FC0          ADD R7, R7, R0                   | ADD R7, R7, R0
+30E3  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+30E4  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30E5  0FF6          BRnzp #-10   ; -> x30DC          | BRnzp BUCLE_DIV_X3
+30E6  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+30E7  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30E8  0FF3          BRnzp #-13   ; -> x30DC          | BRnzp BUCLE_DIV_X3
+30E9  3482          ST R2, #130   ; -> x316C         | ST R2, CUBO_Q12
+30EA  2284          LD R1, #132   ; -> x316F         | LD R1, NEG6
+30EB  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+30EC  287F          LD R4, #127   ; -> x316C         | LD R4, CUBO_Q12
+30ED  1901          ADD R4, R4, R1                   | ADD R4, R4, R1
+30EE  0802          BRn #2   ; -> x30F1              | BRn FIN_DIV_T2
+30EF  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30F0  0FFC          BRnzp #-4   ; -> x30ED           | BRnzp BUCLE_DIV_T2
+30F1  94BF          NOT R2, R2                       | NOT R2, R2
+30F2  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30F3  3473          ST R2, #115   ; -> x3167         | ST R2, T2_Q12
+30F4  2277          LD R1, #119   ; -> x316C         | LD R1, CUBO_Q12
+30F5  2475          LD R2, #117   ; -> x316B         | LD R2, CUADRADO_Q12
+30F6  5920          AND R4, R4, #0                   | AND R4, R4, #0
+30F7  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+30F8  2075          LD R0, #117   ; -> x316E         | LD R0, BASE32768
+30F9  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+30FA  0408          BRz #8   ; -> x3103              | BRz FIN_QUINTO
+30FB  1901          ADD R4, R4, R1                   | ADD R4, R4, R1
+30FC  0802          BRn #2   ; -> x30FF              | BRn ACARREO_QUINTO
+30FD  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+30FE  0FFA          BRnzp #-6   ; -> x30F9           | BRnzp BUCLE_QUINTO
+30FF  1900          ADD R4, R4, R0                   | ADD R4, R4, R0
+3100  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+3101  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+3102  0FF6          BRnzp #-10   ; -> x30F9          | BRnzp BUCLE_QUINTO
+3103  3872          ST R4, #114   ; -> x3176         | ST R4, QUINTA_BAJO
+3104  3A72          ST R5, #114   ; -> x3177         | ST R5, QUINTA_ALTO
+3105  2870          LD R4, #112   ; -> x3176         | LD R4, QUINTA_BAJO
+3106  2A70          LD R5, #112   ; -> x3177         | LD R5, QUINTA_ALTO
+3107  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+3108  2269          LD R1, #105   ; -> x3172         | LD R1, NEG4096
+3109  1F01          ADD R7, R4, R1                   | ADD R7, R4, R1
+310A  0608          BRzp #8   ; -> x3113             | BRzp RESTA_DIV_X5
+310B  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+310C  0409          BRz #9   ; -> x3116              | BRz FIN_DIV_X5
+310D  1B7F          ADD R5, R5, #-1                  | ADD R5, R5, #-1
+310E  205F          LD R0, #95   ; -> x316E          | LD R0, BASE32768
+310F  1FC0          ADD R7, R7, R0                   | ADD R7, R7, R0
+3110  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+3111  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3112  0FF6          BRnzp #-10   ; -> x3109          | BRnzp BUCLE_DIV_X5
+3113  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+3114  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3115  0FF3          BRnzp #-13   ; -> x3109          | BRnzp BUCLE_DIV_X5
+3116  3456          ST R2, #86   ; -> x316D          | ST R2, QUINTA_Q12
+3117  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+3118  18A0          ADD R4, R2, #0                   | ADD R4, R2, #0
+3119  0604          BRzp #4   ; -> x311E             | BRzp INICIO_DIV_T3
+311A  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+311B  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+311C  2E51          LD R7, #81   ; -> x316E          | LD R7, BASE32768
+311D  1907          ADD R4, R4, R7                   | ADD R4, R4, R7
+311E  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+311F  2251          LD R1, #81   ; -> x3171          | LD R1, NEG120
+3120  1901          ADD R4, R4, R1                   | ADD R4, R4, R1
+3121  0802          BRn #2   ; -> x3124              | BRn PRESTAR_T3
+3122  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3123  0FFC          BRnzp #-4   ; -> x3120           | BRnzp BUCLE_DIV_T3
+3124  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+3125  0405          BRz #5   ; -> x312B              | BRz FIN_DIV_T3
+3126  1B7F          ADD R5, R5, #-1                  | ADD R5, R5, #-1
+3127  2E46          LD R7, #70   ; -> x316E          | LD R7, BASE32768
+3128  1907          ADD R4, R4, R7                   | ADD R4, R4, R7
+3129  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+312A  0FF5          BRnzp #-11   ; -> x3120          | BRnzp BUCLE_DIV_T3
+312B  343C          ST R2, #60   ; -> x3168          | ST R2, T3_Q12
+312C  223B          LD R1, #59   ; -> x3168          | LD R1, T3_Q12
+312D  243D          LD R2, #61   ; -> x316B          | LD R2, CUADRADO_Q12
+312E  5920          AND R4, R4, #0                   | AND R4, R4, #0
+312F  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+3130  203D          LD R0, #61   ; -> x316E          | LD R0, BASE32768
+3131  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+3132  0408          BRz #8   ; -> x313B              | BRz FIN_T4_MULT
+3133  1901          ADD R4, R4, R1                   | ADD R4, R4, R1
+3134  0802          BRn #2   ; -> x3137              | BRn ACARREO_T4
+3135  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+3136  0FFA          BRnzp #-6   ; -> x3131           | BRnzp BUCLE_T4_MULT
+3137  1900          ADD R4, R4, R0                   | ADD R4, R4, R0
+3138  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+3139  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+313A  0FF6          BRnzp #-10   ; -> x3131          | BRnzp BUCLE_T4_MULT
+313B  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+313C  2235          LD R1, #53   ; -> x3172          | LD R1, NEG4096
+313D  1F01          ADD R7, R4, R1                   | ADD R7, R4, R1
+313E  0608          BRzp #8   ; -> x3147             | BRzp RESTA4096_T4
+313F  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+3140  0409          BRz #9   ; -> x314A              | BRz FIN_DIV4096_T4
+3141  1B7F          ADD R5, R5, #-1                  | ADD R5, R5, #-1
+3142  202B          LD R0, #43   ; -> x316E          | LD R0, BASE32768
+3143  1FC0          ADD R7, R7, R0                   | ADD R7, R7, R0
+3144  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+3145  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3146  0FF6          BRnzp #-10   ; -> x313D          | BRnzp BUCLE_DIV4096_T4
+3147  19E0          ADD R4, R7, #0                   | ADD R4, R7, #0
+3148  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3149  0FF3          BRnzp #-13   ; -> x313D          | BRnzp BUCLE_DIV4096_T4
+314A  5260          AND R1, R1, #0                   | AND R1, R1, #0
+314B  2824          LD R4, #36   ; -> x3170          | LD R4, NEG42
+314C  1484          ADD R2, R2, R4                   | ADD R2, R2, R4
+314D  0802          BRn #2   ; -> x3150              | BRn FIN_DIV42
+314E  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+314F  0FFC          BRnzp #-4   ; -> x314C           | BRnzp BUCLE_DIV42
+3150  3218          ST R1, #24   ; -> x3169          | ST R1, T4_Q12
+3151  2018          LD R0, #24   ; -> x316A          | LD R0, ANGULO_Q12
+3152  2214          LD R1, #20   ; -> x3167          | LD R1, T2_Q12
+3153  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+3154  2213          LD R1, #19   ; -> x3168          | LD R1, T3_Q12
+3155  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+3156  2212          LD R1, #18   ; -> x3169          | LD R1, T4_Q12
+3157  927F          NOT R1, R1                       | NOT R1, R1
+3158  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3159  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+315A  62C6          LDR R1, R3, #6                   | LDR R1, R3, #6
+315B  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+315C  0602          BRzp #2   ; -> x315F             | BRzp SIGNO_OK
+315D  903F          NOT R0, R0                       | NOT R0, R0
+315E  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+315F  3018          ST R0, #24   ; -> x3178          | ST R0, SENO_Q12
+3160  62C0          LDR R1, R3, #0                   | LDR R1, R3, #0
+3161  64C1          LDR R2, R3, #1                   | LDR R2, R3, #1
+3162  68C3          LDR R4, R3, #3                   | LDR R4, R3, #3
+3163  6AC4          LDR R5, R3, #4                   | LDR R5, R3, #4
+3164  6EC5          LDR R7, R3, #5                   | LDR R7, R3, #5
+3165  66C2          LDR R3, R3, #2                   | LDR R3, R3, #2
+3166  C1C0          RET                              | RET
+3167  0000                                           | T2_Q12   .FILL #0
+3168  0000                                           | T3_Q12 .FILL #0
+3169  0000                                           | T4_Q12  .FILL #0
+316A  0000                                           | ANGULO_Q12       .FILL #0
+316B  0000                                           | CUADRADO_Q12 .FILL #0
+316C  0000                                           | CUBO_Q12 .FILL #0
+316D  0000                                           | QUINTA_Q12 .FILL #0
+316E  8000                                           | BASE32768 .FILL x8000
+316F  FFFA                                           | NEG6     .FILL #-6
+3170  FFD6                                           | NEG42    .FILL #-42
+3171  FF88                                           | NEG120 .FILL #-120
+3172  F000                                           | NEG4096  .FILL #-4096
+3173  F8F8                                           | NEG1800  .FILL #-1800
+3174  0000                                           | CUBO_BAJO .FILL #0
+3175  0000                                           | CUBO_ALTO .FILL #0
+3176  0000                                           | QUINTA_BAJO .FILL #0
+3177  0000                                           | QUINTA_ALTO .FILL #0
+3178  0000                                           | SENO_Q12 .FILL #0

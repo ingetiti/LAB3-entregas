@@ -1,0 +1,13 @@
+__H_R0 2FC5
+__H_R1 2FC6
+__H_ENT 2FC7
+GETCFILTERED 3000
+getcfiltered_beg 3005
+getcfiltered_loop 3007
+getcfiltered_incr 3014
+getcfiltered_ret 3016
+getcfiltered_filter_beg 301B
+getcfiltered_r1 301C
+getcfiltered_r2 301D
+getcfiltered_r3 301E
+getcfiltered_r7 301F

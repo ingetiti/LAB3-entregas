@@ -1,0 +1,79 @@
+3000  3244          ST R1, #68   ; -> x3045          | ST R1 fromhex_r1                    ;
+3001  3444          ST R2, #68   ; -> x3046          | ST R2 fromhex_r2                    ;
+3002  3644          ST R3, #68   ; -> x3047          | ST R3 fromhex_r3                    ;
+3003  3844          ST R4, #68   ; -> x3048          | ST R4 fromhex_r4                    ;
+3004  303F          ST R0, #63   ; -> x3044          | ST R0 fromhex_str_beg               ;   [str_beg] = texto
+3005  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;   [R0] valor = 0
+3006  223D          LD R1, #61   ; -> x3044          | LD R1 fromhex_str_beg               ;   [R1] texto = [str_beg]
+3007  5B60          AND R5, R5, #0                   | AND R5 R5 #0                        ;   [R5] errores = 0
+3008  6440          LDR R2, R1, #0                   | LDR R2 R1 #0                        ;   [R2] char = texto.peek()
+3009  0A04          BRnp #4   ; -> x300E             | BRnp fromhex_loop                   ;   if char == '\0':
+300A  9B7F          NOT R5, R5                       | NOT R5 R5                           ;
+300B  5B7E          AND R5, R5, #-2                  | AND R5 R5 #-2                       ;
+300C  9B7F          NOT R5, R5                       | NOT R5 R5                           ;       errores = errores | INVALID_INPUT
+300D  0E31          BRnzp #49   ; -> x303F           | BRnzp fromhex_ret                   ;       return
+300E  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;       [R2] offset
+300F  6640          LDR R3, R1, #0                   | LDR R3 R1 #0                        ;       [R3] char = texto.peek()
+3010  0425          BRz #37   ; -> x3036             | BRz fromhex_overflow_chk            ;       if char == '0':
+3011  2837          LD R4, #55   ; -> x3049          | LD R4 fromhex_neg_zero              ;
+3012  1903          ADD R4, R4, R3                   | ADD R4 R4 R3                        ;
+3013  0804          BRn #4   ; -> x3018              | BRn fromhex_lower                   ;
+3014  2835          LD R4, #53   ; -> x304A          | LD R4 fromhex_neg_nine              ;
+3015  1903          ADD R4, R4, R3                   | ADD R4 R4 R3                        ;
+3016  0201          BRp #1   ; -> x3018              | BRp fromhex_lower                   ;       if char >= '0' and char <= '9':
+3017  2431          LD R2, #49   ; -> x3049          | LD R2 fromhex_neg_zero              ;           offset = -ord('0')
+3018  2832          LD R4, #50   ; -> x304B          | LD R4 fromhex_neg_a                 ;
+3019  1903          ADD R4, R4, R3                   | ADD R4 R4 R3                        ;
+301A  0805          BRn #5   ; -> x3020              | BRn fromhex_upper                   ;
+301B  2830          LD R4, #48   ; -> x304C          | LD R4 fromhex_neg_f                 ;
+301C  1903          ADD R4, R4, R3                   | ADD R4 R4 R3                        ;
+301D  0202          BRp #2   ; -> x3020              | BRp fromhex_upper                   ;       if char >= 'a' and char <= 'f':
+301E  242C          LD R2, #44   ; -> x304B          | LD R2 fromhex_neg_a                 ;
+301F  14AA          ADD R2, R2, #10                  | ADD R2 R2 #10                       ;           offset = -ord('a') + 10
+3020  282C          LD R4, #44   ; -> x304D          | LD R4 fromhex_neg_upa               ;
+3021  1903          ADD R4, R4, R3                   | ADD R4 R4 R3                        ;
+3022  0805          BRn #5   ; -> x3028              | BRn fromhex_invalid_chk             ;
+3023  282A          LD R4, #42   ; -> x304E          | LD R4 fromhex_neg_upf               ;
+3024  1903          ADD R4, R4, R3                   | ADD R4 R4 R3                        ;
+3025  0202          BRp #2   ; -> x3028              | BRp fromhex_invalid_chk             ;       if char >= 'A' and char <= 'F':
+3026  2426          LD R2, #38   ; -> x304D          | LD R2 fromhex_neg_upa               ;
+3027  14AA          ADD R2, R2, #10                  | ADD R2 R2 #10                       ;           offset = -ord('A') + 10
+3028  14A0          ADD R2, R2, #0                   | ADD R2 R2 #0                        ;
+3029  0A04          BRnp #4   ; -> x302E             | BRnp fromhex_increment              ;       if offset == 0:
+302A  9B7F          NOT R5, R5                       | NOT R5 R5                           ;
+302B  5B7E          AND R5, R5, #-2                  | AND R5 R5 #-2                       ;
+302C  9B7F          NOT R5, R5                       | NOT R5 R5                           ;           errores = errores | INVALID_INPUT
+302D  0E08          BRnzp #8   ; -> x3036            | BRnzp fromhex_overflow_chk          ;           break
+302E  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+302F  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+3030  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+3031  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;       valor = valor << 4
+3032  1003          ADD R0, R0, R3                   | ADD R0 R0 R3                        ;
+3033  1002          ADD R0, R0, R2                   | ADD R0 R0 R2                        ;       valor = valor + char + offset
+3034  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;       texto.incr()
+3035  0FD8          BRnzp #-40   ; -> x300E          | BRnzp fromhex_loop                  ;
+3036  280D          LD R4, #13   ; -> x3044          | LD R4 fromhex_str_beg               ;
+3037  1924          ADD R4, R4, #4                   | ADD R4 R4 #4                        ;
+3038  993F          NOT R4, R4                       | NOT R4 R4                           ;
+3039  1921          ADD R4, R4, #1                   | ADD R4 R4 #1                        ;
+303A  1901          ADD R4, R4, R1                   | ADD R4 R4 R1                        ;
+303B  0C03          BRnz #3   ; -> x303F             | BRnz fromhex_ret                    ;   if texto >= [text_iter_ini] + 4:
+303C  9B7F          NOT R5, R5                       | NOT R5 R5                           ;
+303D  5B7D          AND R5, R5, #-3                  | AND R5 R5 #-3                       ;
+303E  9B7F          NOT R5, R5                       | NOT R5 R5                           ;       errores = errores | OVERFLOW
+303F  2205          LD R1, #5   ; -> x3045           | LD R1 fromhex_r1                    ;
+3040  2405          LD R2, #5   ; -> x3046           | LD R2 fromhex_r2                    ;
+3041  2605          LD R3, #5   ; -> x3047           | LD R3 fromhex_r3                    ;
+3042  2805          LD R4, #5   ; -> x3048           | LD R4 fromhex_r4                    ;
+3043  C1C0          RET                              | RET                                 ;
+3044  0000                                           | fromhex_str_beg         .FILL #0
+3045  0000                                           | fromhex_r1              .FILL #0
+3046  0000                                           | fromhex_r2              .FILL #0
+3047  0000                                           | fromhex_r3              .FILL #0
+3048  0000                                           | fromhex_r4              .FILL #0
+3049  FFD0                                           | fromhex_neg_zero        .FILL #-48      ;   - ord('0')
+304A  FFC7                                           | fromhex_neg_nine        .FILL #-57      ;   - ord('9')
+304B  FF9F                                           | fromhex_neg_a           .FILL #-97      ;   - ord('a')
+304C  FF9A                                           | fromhex_neg_f           .FILL #-102     ;   - ord('f')
+304D  FFBF                                           | fromhex_neg_upa         .FILL #-65      ;   - ord('A')
+304E  FFBA                                           | fromhex_neg_upf         .FILL #-70      ;   - ord('F')

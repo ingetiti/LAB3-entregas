@@ -1,0 +1,7 @@
+__H_R0 2FC5
+__H_R1 2FC6
+__H_ENT 2FC7
+PAUSE 3000
+pause_r0 300B
+pause_r7 300C
+pause_prompt 300D

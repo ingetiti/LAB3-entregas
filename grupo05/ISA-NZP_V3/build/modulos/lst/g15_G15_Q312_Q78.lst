@@ -1,0 +1,46 @@
+3000  3229          ST R1, #41   ; -> x302A          | ST R1, G15_GUARDADO_R1
+3001  3429          ST R2, #41   ; -> x302B          | ST R2, G15_GUARDADO_R2
+3002  3629          ST R3, #41   ; -> x302C          | ST R3, G15_GUARDADO_R3
+3003  3829          ST R4, #41   ; -> x302D          | ST R4, G15_GUARDADO_R4
+3004  5260          AND R1, R1, #0                   | AND R1, R1, #0
+3005  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+3006  5920          AND R4, R4, #0                   | AND R4, R4, #0
+3007  192F          ADD R4, R4, #15                  | ADD R4, R4, #15
+3008  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3009  1660          ADD R3, R1, #0                   | ADD R3, R1, #0       ; palabra baja anterior
+300A  1240          ADD R1, R1, R0                   | ADD R1, R1, R0
+300B  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+300C  0805          BRn #5   ; -> x3012              | BRn G15_SUMANDO_NEG
+300D  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+300E  0609          BRzp #9   ; -> x3018             | BRzp G15_SIGUIENTE
+300F  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3010  0606          BRzp #6   ; -> x3017             | BRzp G15_ACARREO
+3011  0E06          BRnzp #6   ; -> x3018            | BRnzp G15_SIGUIENTE
+3012  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1      ; extension de signo del sumando
+3013  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+3014  0802          BRn #2   ; -> x3017              | BRn G15_ACARREO
+3015  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3016  0801          BRn #1   ; -> x3018              | BRn G15_SIGUIENTE
+3017  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3018  193F          ADD R4, R4, #-1                  | ADD R4, R4, #-1
+3019  03EF          BRp #-17   ; -> x3009            | BRp G15_MULT16
+301A  10A0          ADD R0, R2, #0                   | ADD R0, R2, #0
+301B  1660          ADD R3, R1, #0                   | ADD R3, R1, #0       ; copia para conservar el intermedio en R2:R1
+301C  1928          ADD R4, R4, #8                   | ADD R4, R4, #8
+301D  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+301E  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+301F  0601          BRzp #1   ; -> x3021             | BRzp G15_BIT_CERO
+3020  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3021  16C3          ADD R3, R3, R3                   | ADD R3, R3, R3
+3022  193F          ADD R4, R4, #-1                  | ADD R4, R4, #-1
+3023  03F9          BRp #-7   ; -> x301D             | BRp G15_LEER_LO
+3024  2205          LD R1, #5   ; -> x302A           | LD R1, G15_GUARDADO_R1
+3025  2405          LD R2, #5   ; -> x302B           | LD R2, G15_GUARDADO_R2
+3026  2605          LD R3, #5   ; -> x302C           | LD R3, G15_GUARDADO_R3
+3027  2805          LD R4, #5   ; -> x302D           | LD R4, G15_GUARDADO_R4
+3028  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+3029  C1C0          RET                              | RET
+302A  0000                                           | G15_GUARDADO_R1 .BLKW #1
+302B  0000                                           | G15_GUARDADO_R2 .BLKW #1
+302C  0000                                           | G15_GUARDADO_R3 .BLKW #1
+302D  0000                                           | G15_GUARDADO_R4 .BLKW #1

@@ -1,0 +1,515 @@
+3000  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3001  7F80          STR R7, R6, #0                   | STR  R7, R6, #0
+3002  4812          JSR #18   ; -> x3015             | JSR  CALCULAR_AMBOS_V3
+3003  6F80          LDR R7, R6, #0                   | LDR  R7, R6, #0
+3004  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3005  C1C0          RET                              | RET
+3006  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3007  7380          STR R1, R6, #0                   | STR  R1, R6, #0
+3008  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3009  7F80          STR R7, R6, #0                   | STR  R7, R6, #0
+300A  480A          JSR #10   ; -> x3015             | JSR  CALCULAR_AMBOS_V3
+300B  E207          LEA R1, #7   ; -> x3013          | LEA  R1, RESULTADO_COSENO
+300C  6040          LDR R0, R1, #0                   | LDR  R0, R1, #0
+300D  6F80          LDR R7, R6, #0                   | LDR  R7, R6, #0
+300E  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+300F  6380          LDR R1, R6, #0                   | LDR  R1, R6, #0
+3010  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3011  C1C0          RET                              | RET
+3012  0000                                           | RESULTADO_SENO   .BLKW #1
+3013  0000                                           | RESULTADO_COSENO .BLKW #1
+3014  0000                                           | TEMP_SENO        .BLKW #1
+3015  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3016  7380          STR R1, R6, #0                   | STR  R1, R6, #0
+3017  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3018  7580          STR R2, R6, #0                   | STR  R2, R6, #0
+3019  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+301A  7780          STR R3, R6, #0                   | STR  R3, R6, #0
+301B  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+301C  7980          STR R4, R6, #0                   | STR  R4, R6, #0
+301D  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+301E  7B80          STR R5, R6, #0                   | STR  R5, R6, #0
+301F  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3020  7F80          STR R7, R6, #0                   | STR  R7, R6, #0
+3021  1220          ADD R1, R0, #0                   | ADD  R1, R0, #0
+3022  EA63          LEA R5, #99   ; -> x3086         | LEA  R5, CONSTANTES_ANGULARES
+3023  6540          LDR R2, R5, #0                   | LDR  R2, R5, #0
+3024  94BF          NOT R2, R2                       | NOT  R2, R2
+3025  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3026  1442          ADD R2, R1, R2                   | ADD  R2, R1, R2
+3027  0815          BRn #21   ; -> x303D             | BRn  CUADRANTE_1_V3
+3028  6541          LDR R2, R5, #1                   | LDR  R2, R5, #1
+3029  94BF          NOT R2, R2                       | NOT  R2, R2
+302A  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+302B  1442          ADD R2, R1, R2                   | ADD  R2, R1, R2
+302C  0816          BRn #22   ; -> x3043             | BRn  CUADRANTE_2_V3
+302D  6542          LDR R2, R5, #2                   | LDR  R2, R5, #2
+302E  94BF          NOT R2, R2                       | NOT  R2, R2
+302F  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3030  1442          ADD R2, R1, R2                   | ADD  R2, R1, R2
+3031  081D          BRn #29   ; -> x304F             | BRn  CUADRANTE_3_V3
+3032  6543          LDR R2, R5, #3                   | LDR  R2, R5, #3
+3033  94BF          NOT R2, R2                       | NOT  R2, R2
+3034  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3035  1442          ADD R2, R1, R2                   | ADD  R2, R1, R2
+3036  94BF          NOT R2, R2                       | NOT  R2, R2
+3037  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3038  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+3039  193F          ADD R4, R4, #-1                  | ADD  R4, R4, #-1
+303A  5B60          AND R5, R5, #0                   | AND  R5, R5, #0
+303B  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1
+303C  0E1B          BRnzp #27   ; -> x3058           | BRnzp REFERENCIAS_LISTAS_V3
+303D  1460          ADD R2, R1, #0                   | ADD  R2, R1, #0
+303E  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+303F  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+3040  5B60          AND R5, R5, #0                   | AND  R5, R5, #0
+3041  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1
+3042  0E15          BRnzp #21   ; -> x3058           | BRnzp REFERENCIAS_LISTAS_V3
+3043  EA42          LEA R5, #66   ; -> x3086         | LEA  R5, CONSTANTES_ANGULARES
+3044  6541          LDR R2, R5, #1                   | LDR  R2, R5, #1
+3045  94BF          NOT R2, R2                       | NOT  R2, R2
+3046  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3047  1442          ADD R2, R1, R2                   | ADD  R2, R1, R2
+3048  94BF          NOT R2, R2                       | NOT  R2, R2
+3049  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+304A  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+304B  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+304C  5B60          AND R5, R5, #0                   | AND  R5, R5, #0
+304D  1B7F          ADD R5, R5, #-1                  | ADD  R5, R5, #-1
+304E  0E09          BRnzp #9   ; -> x3058            | BRnzp REFERENCIAS_LISTAS_V3
+304F  EA36          LEA R5, #54   ; -> x3086         | LEA  R5, CONSTANTES_ANGULARES
+3050  6541          LDR R2, R5, #1                   | LDR  R2, R5, #1
+3051  94BF          NOT R2, R2                       | NOT  R2, R2
+3052  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3053  1442          ADD R2, R1, R2                   | ADD  R2, R1, R2
+3054  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+3055  193F          ADD R4, R4, #-1                  | ADD  R4, R4, #-1
+3056  5B60          AND R5, R5, #0                   | AND  R5, R5, #0
+3057  1B7F          ADD R5, R5, #-1                  | ADD  R5, R5, #-1
+3058  E22D          LEA R1, #45   ; -> x3086         | LEA  R1, CONSTANTES_ANGULARES
+3059  6640          LDR R3, R1, #0                   | LDR  R3, R1, #0
+305A  96FF          NOT R3, R3                       | NOT  R3, R3
+305B  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1
+305C  1683          ADD R3, R2, R3                   | ADD  R3, R2, R3
+305D  96FF          NOT R3, R3                       | NOT  R3, R3
+305E  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1
+305F  10A0          ADD R0, R2, #0                   | ADD  R0, R2, #0
+3060  4829          JSR #41   ; -> x308A             | JSR  INTERPOLAR_PRIMER_CUADRANTE
+3061  E3B2          LEA R1, #-78   ; -> x3014        | LEA  R1, TEMP_SENO
+3062  7040          STR R0, R1, #0                   | STR  R0, R1, #0
+3063  10E0          ADD R0, R3, #0                   | ADD  R0, R3, #0
+3064  4825          JSR #37   ; -> x308A             | JSR  INTERPOLAR_PRIMER_CUADRANTE
+3065  E3AD          LEA R1, #-83   ; -> x3013        | LEA  R1, RESULTADO_COSENO
+3066  7040          STR R0, R1, #0                   | STR  R0, R1, #0
+3067  E3AC          LEA R1, #-84   ; -> x3014        | LEA  R1, TEMP_SENO
+3068  6440          LDR R2, R1, #0                   | LDR  R2, R1, #0
+3069  1920          ADD R4, R4, #0                   | ADD  R4, R4, #0
+306A  0602          BRzp #2   ; -> x306D             | BRzp SENO_POSITIVO_V3
+306B  94BF          NOT R2, R2                       | NOT  R2, R2
+306C  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+306D  E3A4          LEA R1, #-92   ; -> x3012        | LEA  R1, RESULTADO_SENO
+306E  7440          STR R2, R1, #0                   | STR  R2, R1, #0
+306F  E3A3          LEA R1, #-93   ; -> x3013        | LEA  R1, RESULTADO_COSENO
+3070  6440          LDR R2, R1, #0                   | LDR  R2, R1, #0
+3071  1B60          ADD R5, R5, #0                   | ADD  R5, R5, #0
+3072  0602          BRzp #2   ; -> x3075             | BRzp COSENO_POSITIVO_V3
+3073  94BF          NOT R2, R2                       | NOT  R2, R2
+3074  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3075  E39D          LEA R1, #-99   ; -> x3013        | LEA  R1, RESULTADO_COSENO
+3076  7440          STR R2, R1, #0                   | STR  R2, R1, #0
+3077  E39A          LEA R1, #-102   ; -> x3012       | LEA  R1, RESULTADO_SENO
+3078  6040          LDR R0, R1, #0                   | LDR  R0, R1, #0
+3079  6F80          LDR R7, R6, #0                   | LDR  R7, R6, #0
+307A  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+307B  6B80          LDR R5, R6, #0                   | LDR  R5, R6, #0
+307C  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+307D  6980          LDR R4, R6, #0                   | LDR  R4, R6, #0
+307E  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+307F  6780          LDR R3, R6, #0                   | LDR  R3, R6, #0
+3080  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3081  6580          LDR R2, R6, #0                   | LDR  R2, R6, #0
+3082  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3083  6380          LDR R1, R6, #0                   | LDR  R1, R6, #0
+3084  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3085  C1C0          RET                              | RET
+3086  1922                                           | .FILL #6434
+3087  3244                                           | .FILL #12868
+3088  4B66                                           | .FILL #19302
+3089  6488                                           | .FILL #25736
+308A  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+308B  7380          STR R1, R6, #0                   | STR  R1, R6, #0
+308C  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+308D  7580          STR R2, R6, #0                   | STR  R2, R6, #0
+308E  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+308F  7780          STR R3, R6, #0                   | STR  R3, R6, #0
+3090  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3091  7980          STR R4, R6, #0                   | STR  R4, R6, #0
+3092  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3093  7B80          STR R5, R6, #0                   | STR  R5, R6, #0
+3094  1DBF          ADD R6, R6, #-1                  | ADD  R6, R6, #-1
+3095  7F80          STR R7, R6, #0                   | STR  R7, R6, #0
+3096  1220          ADD R1, R0, #0                   | ADD  R1, R0, #0
+3097  E499          LEA R2, #153   ; -> x3131        | LEA  R2, MASCARA_RESTO
+3098  6480          LDR R2, R2, #0                   | LDR  R2, R2, #0
+3099  5602          AND R3, R0, R2                   | AND  R3, R0, R2
+309A  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+309B  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+309C  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+309D  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+309E  0802          BRn #2   ; -> x30A1              | BRn  IDX12_UNO
+309F  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30A0  0E02          BRnzp #2   ; -> x30A3            | BRnzp IDX11
+30A1  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30A2  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30A3  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30A4  0802          BRn #2   ; -> x30A7              | BRn  IDX11_UNO
+30A5  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30A6  0E02          BRnzp #2   ; -> x30A9            | BRnzp IDX10
+30A7  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30A8  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30A9  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30AA  0802          BRn #2   ; -> x30AD              | BRn  IDX10_UNO
+30AB  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30AC  0E02          BRnzp #2   ; -> x30AF            | BRnzp IDX9
+30AD  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30AE  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30AF  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30B0  0802          BRn #2   ; -> x30B3              | BRn  IDX9_UNO
+30B1  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30B2  0E02          BRnzp #2   ; -> x30B5            | BRnzp IDX8
+30B3  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30B4  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30B5  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30B6  0802          BRn #2   ; -> x30B9              | BRn  IDX8_UNO
+30B7  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30B8  0E02          BRnzp #2   ; -> x30BB            | BRnzp IDX7
+30B9  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30BA  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30BB  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30BC  0802          BRn #2   ; -> x30BF              | BRn  IDX7_UNO
+30BD  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30BE  0E02          BRnzp #2   ; -> x30C1            | BRnzp IDX6
+30BF  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30C0  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30C1  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30C2  0802          BRn #2   ; -> x30C5              | BRn  IDX6_UNO
+30C3  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30C4  0E02          BRnzp #2   ; -> x30C7            | BRnzp IDX5
+30C5  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30C6  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30C7  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30C8  0802          BRn #2   ; -> x30CB              | BRn  IDX5_UNO
+30C9  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30CA  0E02          BRnzp #2   ; -> x30CD            | BRnzp FIN_INDICE
+30CB  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30CC  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30CD  EA6A          LEA R5, #106   ; -> x3138        | LEA  R5, TABLA_SENO_203
+30CE  1B44          ADD R5, R5, R4                   | ADD  R5, R5, R4
+30CF  6340          LDR R1, R5, #0                   | LDR  R1, R5, #0
+30D0  6541          LDR R2, R5, #1                   | LDR  R2, R5, #1
+30D1  9E7F          NOT R7, R1                       | NOT  R7, R1
+30D2  1FE1          ADD R7, R7, #1                   | ADD  R7, R7, #1
+30D3  1E87          ADD R7, R2, R7                   | ADD  R7, R2, R7
+30D4  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+30D5  E45D          LEA R2, #93   ; -> x3133         | LEA  R2, MASCARAS_MULT
+30D6  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30D7  6080          LDR R0, R2, #0                   | LDR  R0, R2, #0
+30D8  50C0          AND R0, R3, R0                   | AND  R0, R3, R0
+30D9  0401          BRz #1   ; -> x30DB              | BRz  MUL_16_CERO
+30DA  1907          ADD R4, R4, R7                   | ADD  R4, R4, R7
+30DB  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30DC  6081          LDR R0, R2, #1                   | LDR  R0, R2, #1
+30DD  50C0          AND R0, R3, R0                   | AND  R0, R3, R0
+30DE  0401          BRz #1   ; -> x30E0              | BRz  MUL_8_CERO
+30DF  1907          ADD R4, R4, R7                   | ADD  R4, R4, R7
+30E0  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30E1  6082          LDR R0, R2, #2                   | LDR  R0, R2, #2
+30E2  50C0          AND R0, R3, R0                   | AND  R0, R3, R0
+30E3  0401          BRz #1   ; -> x30E5              | BRz  MUL_4_CERO
+30E4  1907          ADD R4, R4, R7                   | ADD  R4, R4, R7
+30E5  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30E6  6083          LDR R0, R2, #3                   | LDR  R0, R2, #3
+30E7  50C0          AND R0, R3, R0                   | AND  R0, R3, R0
+30E8  0401          BRz #1   ; -> x30EA              | BRz  MUL_2_CERO
+30E9  1907          ADD R4, R4, R7                   | ADD  R4, R4, R7
+30EA  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4
+30EB  6084          LDR R0, R2, #4                   | LDR  R0, R2, #4
+30EC  50C0          AND R0, R3, R0                   | AND  R0, R3, R0
+30ED  0401          BRz #1   ; -> x30EF              | BRz  MUL_1_CERO
+30EE  1907          ADD R4, R4, R7                   | ADD  R4, R4, R7
+30EF  1A60          ADD R5, R1, #0                   | ADD  R5, R1, #0
+30F0  E441          LEA R2, #65   ; -> x3132         | LEA  R2, CONSTANTE_16
+30F1  6080          LDR R0, R2, #0                   | LDR  R0, R2, #0
+30F2  1900          ADD R4, R4, R0                   | ADD  R4, R4, R0
+30F3  1520          ADD R2, R4, #0                   | ADD  R2, R4, #0
+30F4  10A0          ADD R0, R2, #0                   | ADD  R0, R2, #0
+30F5  5260          AND R1, R1, #0                   | AND  R1, R1, #0
+30F6  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+30F7  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+30F8  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+30F9  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+30FA  0603          BRzp #3   ; -> x30FE             | BRzp DIV11_CERO
+30FB  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30FC  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+30FD  0E01          BRnzp #1   ; -> x30FF            | BRnzp DIV10
+30FE  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+30FF  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+3100  0603          BRzp #3   ; -> x3104             | BRzp DIV10_CERO
+3101  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3102  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+3103  0E01          BRnzp #1   ; -> x3105            | BRnzp DIV9
+3104  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3105  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+3106  0603          BRzp #3   ; -> x310A             | BRzp DIV9_CERO
+3107  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3108  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+3109  0E01          BRnzp #1   ; -> x310B            | BRnzp DIV8
+310A  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+310B  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+310C  0603          BRzp #3   ; -> x3110             | BRzp DIV8_CERO
+310D  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+310E  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+310F  0E01          BRnzp #1   ; -> x3111            | BRnzp DIV7
+3110  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3111  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+3112  0603          BRzp #3   ; -> x3116             | BRzp DIV7_CERO
+3113  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3114  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+3115  0E01          BRnzp #1   ; -> x3117            | BRnzp DIV6
+3116  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3117  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+3118  0603          BRzp #3   ; -> x311C             | BRzp DIV6_CERO
+3119  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+311A  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+311B  0E01          BRnzp #1   ; -> x311D            | BRnzp DIV5
+311C  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+311D  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+311E  0603          BRzp #3   ; -> x3122             | BRzp DIV5_CERO
+311F  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3120  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+3121  0E01          BRnzp #1   ; -> x3123            | BRnzp FIN_DIVISION
+3122  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3123  1141          ADD R0, R5, R1                   | ADD  R0, R5, R1
+3124  6F80          LDR R7, R6, #0                   | LDR  R7, R6, #0
+3125  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3126  6B80          LDR R5, R6, #0                   | LDR  R5, R6, #0
+3127  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3128  6980          LDR R4, R6, #0                   | LDR  R4, R6, #0
+3129  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+312A  6780          LDR R3, R6, #0                   | LDR  R3, R6, #0
+312B  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+312C  6580          LDR R2, R6, #0                   | LDR  R2, R6, #0
+312D  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+312E  6380          LDR R1, R6, #0                   | LDR  R1, R6, #0
+312F  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1
+3130  C1C0          RET                              | RET
+3131  001F                                           | MASCARA_RESTO       .FILL x001F
+3132  0010                                           | CONSTANTE_16        .FILL #16
+3133  0010                                           | .FILL x0010
+3134  0008                                           | .FILL x0008
+3135  0004                                           | .FILL x0004
+3136  0002                                           | .FILL x0002
+3137  0001                                           | .FILL x0001
+3138  0000                                           | .FILL #0 ; k=  0, X=   0
+3139  0080                                           | .FILL #128 ; k=  1, X=  32
+313A  0100                                           | .FILL #256 ; k=  2, X=  64
+313B  0180                                           | .FILL #384 ; k=  3, X=  96
+313C  0200                                           | .FILL #512 ; k=  4, X= 128
+313D  0280                                           | .FILL #640 ; k=  5, X= 160
+313E  0300                                           | .FILL #768 ; k=  6, X= 192
+313F  0380                                           | .FILL #896 ; k=  7, X= 224
+3140  03FF                                           | .FILL #1023 ; k=  8, X= 256
+3141  047F                                           | .FILL #1151 ; k=  9, X= 288
+3142  04FF                                           | .FILL #1279 ; k= 10, X= 320
+3143  057E                                           | .FILL #1406 ; k= 11, X= 352
+3144  05FE                                           | .FILL #1534 ; k= 12, X= 384
+3145  067D                                           | .FILL #1661 ; k= 13, X= 416
+3146  06FC                                           | .FILL #1788 ; k= 14, X= 448
+3147  077C                                           | .FILL #1916 ; k= 15, X= 480
+3148  07FB                                           | .FILL #2043 ; k= 16, X= 512
+3149  087A                                           | .FILL #2170 ; k= 17, X= 544
+314A  08F8                                           | .FILL #2296 ; k= 18, X= 576
+314B  0977                                           | .FILL #2423 ; k= 19, X= 608
+314C  09F6                                           | .FILL #2550 ; k= 20, X= 640
+314D  0A74                                           | .FILL #2676 ; k= 21, X= 672
+314E  0AF2                                           | .FILL #2802 ; k= 22, X= 704
+314F  0B70                                           | .FILL #2928 ; k= 23, X= 736
+3150  0BEE                                           | .FILL #3054 ; k= 24, X= 768
+3151  0C6C                                           | .FILL #3180 ; k= 25, X= 800
+3152  0CE9                                           | .FILL #3305 ; k= 26, X= 832
+3153  0D66                                           | .FILL #3430 ; k= 27, X= 864
+3154  0DE3                                           | .FILL #3555 ; k= 28, X= 896
+3155  0E60                                           | .FILL #3680 ; k= 29, X= 928
+3156  0EDD                                           | .FILL #3805 ; k= 30, X= 960
+3157  0F59                                           | .FILL #3929 ; k= 31, X= 992
+3158  0FD5                                           | .FILL #4053 ; k= 32, X=1024
+3159  1051                                           | .FILL #4177 ; k= 33, X=1056
+315A  10CD                                           | .FILL #4301 ; k= 34, X=1088
+315B  1148                                           | .FILL #4424 ; k= 35, X=1120
+315C  11C3                                           | .FILL #4547 ; k= 36, X=1152
+315D  123E                                           | .FILL #4670 ; k= 37, X=1184
+315E  12B9                                           | .FILL #4793 ; k= 38, X=1216
+315F  1333                                           | .FILL #4915 ; k= 39, X=1248
+3160  13AD                                           | .FILL #5037 ; k= 40, X=1280
+3161  1427                                           | .FILL #5159 ; k= 41, X=1312
+3162  14A0                                           | .FILL #5280 ; k= 42, X=1344
+3163  1519                                           | .FILL #5401 ; k= 43, X=1376
+3164  1592                                           | .FILL #5522 ; k= 44, X=1408
+3165  160A                                           | .FILL #5642 ; k= 45, X=1440
+3166  1682                                           | .FILL #5762 ; k= 46, X=1472
+3167  16FA                                           | .FILL #5882 ; k= 47, X=1504
+3168  1771                                           | .FILL #6001 ; k= 48, X=1536
+3169  17E8                                           | .FILL #6120 ; k= 49, X=1568
+316A  185E                                           | .FILL #6238 ; k= 50, X=1600
+316B  18D5                                           | .FILL #6357 ; k= 51, X=1632
+316C  194A                                           | .FILL #6474 ; k= 52, X=1664
+316D  19C0                                           | .FILL #6592 ; k= 53, X=1696
+316E  1A35                                           | .FILL #6709 ; k= 54, X=1728
+316F  1AA9                                           | .FILL #6825 ; k= 55, X=1760
+3170  1B1E                                           | .FILL #6942 ; k= 56, X=1792
+3171  1B91                                           | .FILL #7057 ; k= 57, X=1824
+3172  1C05                                           | .FILL #7173 ; k= 58, X=1856
+3173  1C77                                           | .FILL #7287 ; k= 59, X=1888
+3174  1CEA                                           | .FILL #7402 ; k= 60, X=1920
+3175  1D5C                                           | .FILL #7516 ; k= 61, X=1952
+3176  1DCD                                           | .FILL #7629 ; k= 62, X=1984
+3177  1E3E                                           | .FILL #7742 ; k= 63, X=2016
+3178  1EAF                                           | .FILL #7855 ; k= 64, X=2048
+3179  1F1F                                           | .FILL #7967 ; k= 65, X=2080
+317A  1F8F                                           | .FILL #8079 ; k= 66, X=2112
+317B  1FFE                                           | .FILL #8190 ; k= 67, X=2144
+317C  206C                                           | .FILL #8300 ; k= 68, X=2176
+317D  20DA                                           | .FILL #8410 ; k= 69, X=2208
+317E  2148                                           | .FILL #8520 ; k= 70, X=2240
+317F  21B5                                           | .FILL #8629 ; k= 71, X=2272
+3180  2222                                           | .FILL #8738 ; k= 72, X=2304
+3181  228E                                           | .FILL #8846 ; k= 73, X=2336
+3182  22F9                                           | .FILL #8953 ; k= 74, X=2368
+3183  2364                                           | .FILL #9060 ; k= 75, X=2400
+3184  23CE                                           | .FILL #9166 ; k= 76, X=2432
+3185  2438                                           | .FILL #9272 ; k= 77, X=2464
+3186  24A1                                           | .FILL #9377 ; k= 78, X=2496
+3187  250A                                           | .FILL #9482 ; k= 79, X=2528
+3188  2572                                           | .FILL #9586 ; k= 80, X=2560
+3189  25DA                                           | .FILL #9690 ; k= 81, X=2592
+318A  2641                                           | .FILL #9793 ; k= 82, X=2624
+318B  26A7                                           | .FILL #9895 ; k= 83, X=2656
+318C  270D                                           | .FILL #9997 ; k= 84, X=2688
+318D  2772                                           | .FILL #10098 ; k= 85, X=2720
+318E  27D6                                           | .FILL #10198 ; k= 86, X=2752
+318F  283A                                           | .FILL #10298 ; k= 87, X=2784
+3190  289D                                           | .FILL #10397 ; k= 88, X=2816
+3191  2900                                           | .FILL #10496 ; k= 89, X=2848
+3192  2962                                           | .FILL #10594 ; k= 90, X=2880
+3193  29C3                                           | .FILL #10691 ; k= 91, X=2912
+3194  2A24                                           | .FILL #10788 ; k= 92, X=2944
+3195  2A84                                           | .FILL #10884 ; k= 93, X=2976
+3196  2AE3                                           | .FILL #10979 ; k= 94, X=3008
+3197  2B42                                           | .FILL #11074 ; k= 95, X=3040
+3198  2BA0                                           | .FILL #11168 ; k= 96, X=3072
+3199  2BFD                                           | .FILL #11261 ; k= 97, X=3104
+319A  2C5A                                           | .FILL #11354 ; k= 98, X=3136
+319B  2CB6                                           | .FILL #11446 ; k= 99, X=3168
+319C  2D11                                           | .FILL #11537 ; k=100, X=3200
+319D  2D6C                                           | .FILL #11628 ; k=101, X=3232
+319E  2DC5                                           | .FILL #11717 ; k=102, X=3264
+319F  2E1F                                           | .FILL #11807 ; k=103, X=3296
+31A0  2E77                                           | .FILL #11895 ; k=104, X=3328
+31A1  2ECF                                           | .FILL #11983 ; k=105, X=3360
+31A2  2F26                                           | .FILL #12070 ; k=106, X=3392
+31A3  2F7C                                           | .FILL #12156 ; k=107, X=3424
+31A4  2FD1                                           | .FILL #12241 ; k=108, X=3456
+31A5  3026                                           | .FILL #12326 ; k=109, X=3488
+31A6  307A                                           | .FILL #12410 ; k=110, X=3520
+31A7  30CD                                           | .FILL #12493 ; k=111, X=3552
+31A8  311F                                           | .FILL #12575 ; k=112, X=3584
+31A9  3171                                           | .FILL #12657 ; k=113, X=3616
+31AA  31C2                                           | .FILL #12738 ; k=114, X=3648
+31AB  3212                                           | .FILL #12818 ; k=115, X=3680
+31AC  3261                                           | .FILL #12897 ; k=116, X=3712
+31AD  32B0                                           | .FILL #12976 ; k=117, X=3744
+31AE  32FE                                           | .FILL #13054 ; k=118, X=3776
+31AF  334B                                           | .FILL #13131 ; k=119, X=3808
+31B0  3397                                           | .FILL #13207 ; k=120, X=3840
+31B1  33E2                                           | .FILL #13282 ; k=121, X=3872
+31B2  342D                                           | .FILL #13357 ; k=122, X=3904
+31B3  3476                                           | .FILL #13430 ; k=123, X=3936
+31B4  34BF                                           | .FILL #13503 ; k=124, X=3968
+31B5  3507                                           | .FILL #13575 ; k=125, X=4000
+31B6  354F                                           | .FILL #13647 ; k=126, X=4032
+31B7  3595                                           | .FILL #13717 ; k=127, X=4064
+31B8  35DB                                           | .FILL #13787 ; k=128, X=4096
+31B9  361F                                           | .FILL #13855 ; k=129, X=4128
+31BA  3663                                           | .FILL #13923 ; k=130, X=4160
+31BB  36A6                                           | .FILL #13990 ; k=131, X=4192
+31BC  36E9                                           | .FILL #14057 ; k=132, X=4224
+31BD  372A                                           | .FILL #14122 ; k=133, X=4256
+31BE  376A                                           | .FILL #14186 ; k=134, X=4288
+31BF  37AA                                           | .FILL #14250 ; k=135, X=4320
+31C0  37E9                                           | .FILL #14313 ; k=136, X=4352
+31C1  3827                                           | .FILL #14375 ; k=137, X=4384
+31C2  3863                                           | .FILL #14435 ; k=138, X=4416
+31C3  38A0                                           | .FILL #14496 ; k=139, X=4448
+31C4  38DB                                           | .FILL #14555 ; k=140, X=4480
+31C5  3915                                           | .FILL #14613 ; k=141, X=4512
+31C6  394F                                           | .FILL #14671 ; k=142, X=4544
+31C7  3987                                           | .FILL #14727 ; k=143, X=4576
+31C8  39BF                                           | .FILL #14783 ; k=144, X=4608
+31C9  39F5                                           | .FILL #14837 ; k=145, X=4640
+31CA  3A2B                                           | .FILL #14891 ; k=146, X=4672
+31CB  3A60                                           | .FILL #14944 ; k=147, X=4704
+31CC  3A94                                           | .FILL #14996 ; k=148, X=4736
+31CD  3AC7                                           | .FILL #15047 ; k=149, X=4768
+31CE  3AFA                                           | .FILL #15098 ; k=150, X=4800
+31CF  3B2B                                           | .FILL #15147 ; k=151, X=4832
+31D0  3B5B                                           | .FILL #15195 ; k=152, X=4864
+31D1  3B8B                                           | .FILL #15243 ; k=153, X=4896
+31D2  3BB9                                           | .FILL #15289 ; k=154, X=4928
+31D3  3BE7                                           | .FILL #15335 ; k=155, X=4960
+31D4  3C13                                           | .FILL #15379 ; k=156, X=4992
+31D5  3C3F                                           | .FILL #15423 ; k=157, X=5024
+31D6  3C6A                                           | .FILL #15466 ; k=158, X=5056
+31D7  3C93                                           | .FILL #15507 ; k=159, X=5088
+31D8  3CBC                                           | .FILL #15548 ; k=160, X=5120
+31D9  3CE4                                           | .FILL #15588 ; k=161, X=5152
+31DA  3D0B                                           | .FILL #15627 ; k=162, X=5184
+31DB  3D31                                           | .FILL #15665 ; k=163, X=5216
+31DC  3D56                                           | .FILL #15702 ; k=164, X=5248
+31DD  3D7A                                           | .FILL #15738 ; k=165, X=5280
+31DE  3D9D                                           | .FILL #15773 ; k=166, X=5312
+31DF  3DBF                                           | .FILL #15807 ; k=167, X=5344
+31E0  3DE0                                           | .FILL #15840 ; k=168, X=5376
+31E1  3E01                                           | .FILL #15873 ; k=169, X=5408
+31E2  3E20                                           | .FILL #15904 ; k=170, X=5440
+31E3  3E3E                                           | .FILL #15934 ; k=171, X=5472
+31E4  3E5C                                           | .FILL #15964 ; k=172, X=5504
+31E5  3E78                                           | .FILL #15992 ; k=173, X=5536
+31E6  3E93                                           | .FILL #16019 ; k=174, X=5568
+31E7  3EAE                                           | .FILL #16046 ; k=175, X=5600
+31E8  3EC7                                           | .FILL #16071 ; k=176, X=5632
+31E9  3EDF                                           | .FILL #16095 ; k=177, X=5664
+31EA  3EF7                                           | .FILL #16119 ; k=178, X=5696
+31EB  3F0D                                           | .FILL #16141 ; k=179, X=5728
+31EC  3F23                                           | .FILL #16163 ; k=180, X=5760
+31ED  3F37                                           | .FILL #16183 ; k=181, X=5792
+31EE  3F4B                                           | .FILL #16203 ; k=182, X=5824
+31EF  3F5D                                           | .FILL #16221 ; k=183, X=5856
+31F0  3F6F                                           | .FILL #16239 ; k=184, X=5888
+31F1  3F7F                                           | .FILL #16255 ; k=185, X=5920
+31F2  3F8F                                           | .FILL #16271 ; k=186, X=5952
+31F3  3F9D                                           | .FILL #16285 ; k=187, X=5984
+31F4  3FAB                                           | .FILL #16299 ; k=188, X=6016
+31F5  3FB7                                           | .FILL #16311 ; k=189, X=6048
+31F6  3FC3                                           | .FILL #16323 ; k=190, X=6080
+31F7  3FCD                                           | .FILL #16333 ; k=191, X=6112
+31F8  3FD7                                           | .FILL #16343 ; k=192, X=6144
+31F9  3FE0                                           | .FILL #16352 ; k=193, X=6176
+31FA  3FE7                                           | .FILL #16359 ; k=194, X=6208
+31FB  3FEE                                           | .FILL #16366 ; k=195, X=6240
+31FC  3FF3                                           | .FILL #16371 ; k=196, X=6272
+31FD  3FF8                                           | .FILL #16376 ; k=197, X=6304
+31FE  3FFB                                           | .FILL #16379 ; k=198, X=6336
+31FF  3FFE                                           | .FILL #16382 ; k=199, X=6368
+3200  3FFF                                           | .FILL #16383 ; k=200, X=6400
+3201  4000                                           | .FILL #16384 ; k=201, X=6432
+3202  4000                                           | .FILL #16384 ; k=202, X=6464

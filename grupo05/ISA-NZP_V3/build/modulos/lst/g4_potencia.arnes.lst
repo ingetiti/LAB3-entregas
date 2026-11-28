@@ -1,0 +1,75 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  323D          ST R1, #61   ; -> x303E          | ST R1, GUARDADO_R1
+3001  343D          ST R2, #61   ; -> x303F          | ST R2, GUARDADO_R2
+3002  363D          ST R3, #61   ; -> x3040          | ST R3, GUARDADO_R3
+3003  383D          ST R4, #61   ; -> x3041          | ST R4, GUARDADO_R4
+3004  3A3D          ST R5, #61   ; -> x3042          | ST R5, GUARDADO_R5
+3005  1420          ADD R2, R0, #0                   | ADD R2, R0, #0          ; R2 = base
+3006  1660          ADD R3, R1, #0                   | ADD R3, R1, #0          ; R3 = exponente
+3007  5920          AND R4, R4, #0                   | AND R4, R4, #0
+3008  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3009  50E1          AND R0, R3, #1                   | AND R0, R3, #1
+300A  3032          ST R0, #50   ; -> x303D          | ST R0, PARIDAD
+300B  5B60          AND R5, R5, #0                   | AND R5, R5, #0
+300C  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+300D  0603          BRzp #3   ; -> x3011             | BRzp LOOP_W
+300E  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+300F  94BF          NOT R2, R2                       | NOT R2, R2
+3010  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3011  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+3012  0C1C          BRnz #28   ; -> x302F            | BRnz POST_PROC
+3013  50E1          AND R0, R3, #1                   | AND R0, R3, #1
+3014  0408          BRz #8   ; -> x301D              | BRz L_SHIFT
+3015  5020          AND R0, R0, #0                   | AND R0, R0, #0          ; resultado temporal = 0
+3016  12A0          ADD R1, R2, #0                   | ADD R1, R2, #0          ; contador = base
+3017  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3018  0C03          BRnz #3   ; -> x301C             | BRnz M_END1
+3019  1004          ADD R0, R0, R4                   | ADD R0, R0, R4          ; resultado += acumulador
+301A  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1         ; contador--
+301B  0FFB          BRnzp #-5   ; -> x3017           | BR M_LOOP1
+301C  1820          ADD R4, R0, #0                   | ADD R4, R0, #0          ; R4 = R4 * R2
+301D  5020          AND R0, R0, #0                   | AND R0, R0, #0          ; cociente = 0
+301E  12E0          ADD R1, R3, #0                   | ADD R1, R3, #0          ; R1 = dividendo
+301F  127E          ADD R1, R1, #-2                  | ADD R1, R1, #-2
+3020  0802          BRn #2   ; -> x3023              | BRn D_END
+3021  1021          ADD R0, R0, #1                   | ADD R0, R0, #1          ; cociente++
+3022  0FFC          BRnzp #-4   ; -> x301F           | BR D_LOOP
+3023  1620          ADD R3, R0, #0                   | ADD R3, R0, #0          ; R3 = R3 / 2
+3024  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+3025  0C09          BRnz #9   ; -> x302F             | BRnz POST_PROC
+3026  5020          AND R0, R0, #0                   | AND R0, R0, #0          ; resultado temporal = 0
+3027  12A0          ADD R1, R2, #0                   | ADD R1, R2, #0          ; contador = base
+3028  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3029  0C03          BRnz #3   ; -> x302D             | BRnz M_END2
+302A  1002          ADD R0, R0, R2                   | ADD R0, R0, R2          ; resultado += base
+302B  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1         ; contador--
+302C  0FFB          BRnzp #-5   ; -> x3028           | BR M_LOOP2
+302D  1420          ADD R2, R0, #0                   | ADD R2, R0, #0          ; R2 = R2 * R2
+302E  0FE2          BRnzp #-30   ; -> x3011          | BR LOOP_W
+302F  1120          ADD R0, R4, #0                   | ADD R0, R4, #0
+3030  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+3031  0405          BRz #5   ; -> x3037              | BRz RESTAURAR
+3032  220A          LD R1, #10   ; -> x303D          | LD R1, PARIDAD
+3033  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3034  0402          BRz #2   ; -> x3037              | BRz RESTAURAR
+3035  903F          NOT R0, R0                       | NOT R0, R0
+3036  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3037  2206          LD R1, #6   ; -> x303E           | LD R1, GUARDADO_R1
+3038  2406          LD R2, #6   ; -> x303F           | LD R2, GUARDADO_R2
+3039  2606          LD R3, #6   ; -> x3040           | LD R3, GUARDADO_R3
+303A  2806          LD R4, #6   ; -> x3041           | LD R4, GUARDADO_R4
+303B  2A06          LD R5, #6   ; -> x3042           | LD R5, GUARDADO_R5
+303C  C1C0          RET                              | RET
+303D  0000                                           | PARIDAD        .FILL #0
+303E  0000                                           | GUARDADO_R1    .FILL #0
+303F  0000                                           | GUARDADO_R2    .FILL #0
+3040  0000                                           | GUARDADO_R3    .FILL #0
+3041  0000                                           | GUARDADO_R4    .FILL #0
+3042  0000                                           | GUARDADO_R5    .FILL #0

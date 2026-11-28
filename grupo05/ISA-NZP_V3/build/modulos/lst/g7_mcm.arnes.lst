@@ -1,0 +1,80 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3241          ST R1, #65   ; -> x3042          | ST R1, mcm_guardado_r1
+3001  3441          ST R2, #65   ; -> x3043          | ST R2, mcm_guardado_r2
+3002  3641          ST R3, #65   ; -> x3044          | ST R3, mcm_guardado_r3
+3003  3841          ST R4, #65   ; -> x3045          | ST R4, mcm_guardado_r4
+3004  3A41          ST R5, #65   ; -> x3046          | ST R5, mcm_guardado_r5
+3005  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+3006  0602          BRzp #2   ; -> x3009             | BRzp mcm_a_positivo
+3007  903F          NOT R0, R0                       | NOT R0, R0
+3008  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3009  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+300A  0602          BRzp #2   ; -> x300D             | BRzp mcm_b_positivo
+300B  927F          NOT R1, R1                       | NOT R1, R1
+300C  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+300D  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+300E  042C          BRz #44   ; -> x303B             | BRz mcm_resultado_cero
+300F  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+3010  042A          BRz #42   ; -> x303B             | BRz mcm_resultado_cero
+3011  947F          NOT R2, R1                       | NOT R2, R1
+3012  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3013  1602          ADD R3, R0, R2                   | ADD R3, R0, R2
+3014  0803          BRn #3   ; -> x3018              | BRn mcm_a_es_menor
+3015  1860          ADD R4, R1, #0                   | ADD R4, R1, #0
+3016  1A20          ADD R5, R0, #0                   | ADD R5, R0, #0
+3017  0E02          BRnzp #2   ; -> x301A            | BRnzp mcm_iniciar_mcd
+3018  1820          ADD R4, R0, #0                   | ADD R4, R0, #0
+3019  1A60          ADD R5, R1, #0                   | ADD R5, R1, #0
+301A  1602          ADD R3, R0, R2                   | ADD R3, R0, R2
+301B  0411          BRz #17   ; -> x302D             | BRz mcm_mcd_listo
+301C  0804          BRn #4   ; -> x3021              | BRn mcm_r0_menor_r1
+301D  10E0          ADD R0, R3, #0                   | ADD R0, R3, #0
+301E  1602          ADD R3, R0, R2                   | ADD R3, R0, R2
+301F  03FD          BRp #-3   ; -> x301D             | BRp mcm_restar_r0
+3020  040C          BRz #12   ; -> x302D             | BRz mcm_mcd_listo
+3021  943F          NOT R2, R0                       | NOT R2, R0
+3022  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3023  1242          ADD R1, R1, R2                   | ADD R1, R1, R2
+3024  1642          ADD R3, R1, R2                   | ADD R3, R1, R2
+3025  03FD          BRp #-3   ; -> x3023             | BRp mcm_restar_r1
+3026  0406          BRz #6   ; -> x302D              | BRz mcm_mcd_listo
+3027  947F          NOT R2, R1                       | NOT R2, R1
+3028  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3029  1602          ADD R3, R0, R2                   | ADD R3, R0, R2
+302A  03F2          BRp #-14   ; -> x301D            | BRp mcm_restar_r0
+302B  0401          BRz #1   ; -> x302D              | BRz mcm_mcd_listo
+302C  0FF4          BRnzp #-12   ; -> x3021          | BRnzp mcm_r0_menor_r1
+302D  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+302E  963F          NOT R3, R0                       | NOT R3, R0
+302F  16E1          ADD R3, R3, #1                   | ADD R3, R3, #1
+3030  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3031  1903          ADD R4, R4, R3                   | ADD R4, R4, R3
+3032  03FD          BRp #-3   ; -> x3030             | BRp mcm_dividir
+3033  5020          AND R0, R0, #0                   | AND R0, R0, #0
+3034  1005          ADD R0, R0, R5                   | ADD R0, R0, R5
+3035  0803          BRn #3   ; -> x3039              | BRn mcm_overflow
+3036  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+3037  03FC          BRp #-4   ; -> x3034             | BRp mcm_multiplicar
+3038  0E03          BRnzp #3   ; -> x303C            | BRnzp mcm_fin
+3039  200D          LD R0, #13   ; -> x3047          | LD R0, mcm_menor_valor
+303A  0E01          BRnzp #1   ; -> x303C            | BRnzp mcm_fin
+303B  5020          AND R0, R0, #0                   | AND R0, R0, #0
+303C  2205          LD R1, #5   ; -> x3042           | LD R1, mcm_guardado_r1
+303D  2405          LD R2, #5   ; -> x3043           | LD R2, mcm_guardado_r2
+303E  2605          LD R3, #5   ; -> x3044           | LD R3, mcm_guardado_r3
+303F  2805          LD R4, #5   ; -> x3045           | LD R4, mcm_guardado_r4
+3040  2A05          LD R5, #5   ; -> x3046           | LD R5, mcm_guardado_r5
+3041  C1C0          RET                              | RET
+3042  0000                                           | mcm_guardado_r1    .FILL #0
+3043  0000                                           | mcm_guardado_r2    .FILL #0
+3044  0000                                           | mcm_guardado_r3    .FILL #0
+3045  0000                                           | mcm_guardado_r4    .FILL #0
+3046  0000                                           | mcm_guardado_r5    .FILL #0
+3047  8000                                           | mcm_menor_valor    .FILL x8000

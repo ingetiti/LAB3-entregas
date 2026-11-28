@@ -1,0 +1,54 @@
+3000  3021                                           | sub_circlsh     .FILL CIRCLSH-CIRCLSH
+3001  341A          ST R2, #26   ; -> x301C          | ST R2 from_qm_n_r2
+3002  361A          ST R3, #26   ; -> x301D          | ST R3 from_qm_n_r3
+3003  3E1A          ST R7, #26   ; -> x301E          | ST R7 from_qm_n_r7
+3004  1460          ADD R2, R1, #0                   | ADD R2 R1 #0                        ;   [R2] n
+3005  14B0          ADD R2, R2, #-16                 | ADD R2 R2 #-16
+3006  94BF          NOT R2, R2                       | NOT R2 R2
+3007  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;   [R2] 16 - n
+3008  1220          ADD R1, R0, #0                   | ADD R1 R0 #0                        ;   [R1] qm.n
+3009  5020          AND R0, R0, #0                   | AND R0 R0 #0
+300A  1260          ADD R1, R1, #0                   | ADD R1 R1 #0
+300B  0601          BRzp #1   ; -> x300D             | BRzp from_qm_n_sk1
+300C  903F          NOT R0, R0                       | NOT R0 R0                           ;   ext
+300D  27F2          LD R3, #-14   ; -> x3000         | LD R3 sub_circlsh
+300E  40C0          JSRR R3                          | JSRR R3
+300F  300F          ST R0, #15   ; -> x301F          | ST R0 from_qm_n_entero
+3010  320F          ST R1, #15   ; -> x3020          | ST R1 from_qm_n_fraccion
+3011  5020          AND R0, R0, #0                   | AND R0 R0 #0
+3012  923F          NOT R1, R0                       | NOT R1 R0
+3013  27EC          LD R3, #-20   ; -> x3000         | LD R3 sub_circlsh
+3014  40C0          JSRR R3                          | JSRR R3                             ; [R1] mascara
+3015  2009          LD R0, #9   ; -> x301F           | LD R0 from_qm_n_entero
+3016  2409          LD R2, #9   ; -> x3020           | LD R2 from_qm_n_fraccion
+3017  5242          AND R1, R1, R2                   | AND R1 R1 R2
+3018  2403          LD R2, #3   ; -> x301C           | LD R2 from_qm_n_r2
+3019  2603          LD R3, #3   ; -> x301D           | LD R3 from_qm_n_r3
+301A  2E03          LD R7, #3   ; -> x301E           | LD R7 from_qm_n_r7
+301B  C1C0          RET                              | RET
+301C  0000                                           | from_qm_n_r2        .FILL #0
+301D  0000                                           | from_qm_n_r3        .FILL #0
+301E  0000                                           | from_qm_n_r7        .FILL #0
+301F  0000                                           | from_qm_n_entero    .FILL #0
+3020  0000                                           | from_qm_n_fraccion  .FILL #0
+3021  3412          ST R2, #18   ; -> x3034          | ST R2 circlsh_r2                    ;   [R2] n
+3022  3612          ST R3, #18   ; -> x3035          | ST R3 circlsh_r3                    ;
+3023  56E0          AND R3, R3, #0                   | AND R3 R3 #0                        ;   [R3] carry = 0
+3024  14A0          ADD R2, R2, #0                   | ADD R2 R2 #0                        ;
+3025  0C0B          BRnz #11   ; -> x3031            | BRnz circlsh_ret                    ;   while n > 0:
+3026  1020          ADD R0, R0, #0                   | ADD R0 R0 #0                        ;
+3027  0601          BRzp #1   ; -> x3029             | BRzp circlsh_sk1                    ;       if right & 0x8000:
+3028  16E1          ADD R3, R3, #1                   | ADD R3 R3 #1                        ;           carry = carry + 1
+3029  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;       right = right << 1
+302A  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+302B  0601          BRzp #1   ; -> x302D             | BRzp circlsh_sk2                    ;       if left & 0x8000:
+302C  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;           right = right + 1
+302D  1241          ADD R1, R1, R1                   | ADD R1 R1 R1                        ;       left = left << 1
+302E  1243          ADD R1, R1, R3                   | ADD R1 R1 R3                        ;       left = left + carry
+302F  14BF          ADD R2, R2, #-1                  | ADD R2 R2 #-1                       ;       n -= 1
+3030  0FF2          BRnzp #-14   ; -> x3023          | BRnzp circlsh_loop                  ;
+3031  2402          LD R2, #2   ; -> x3034           | LD R2 circlsh_r2                    ;
+3032  2602          LD R3, #2   ; -> x3035           | LD R3 circlsh_r3                    ;
+3033  C1C0          RET                              | RET                                 ;
+3034  0000                                           | circlsh_r2          .FILL #0
+3035  0000                                           | circlsh_r3          .FILL #0

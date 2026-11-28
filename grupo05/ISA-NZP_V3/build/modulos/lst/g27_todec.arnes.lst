@@ -1,0 +1,283 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3001                                           | __H_ENT   .FILL x3001
+3000  30EC                                           | sub_sumover     .FILL SUMOVER-SUMOVER
+3001  30C0          ST R0, #192   ; -> x30C2         | ST R0 todec_r0                      ;
+3002  32C0          ST R1, #192   ; -> x30C3         | ST R1 todec_r1                      ;
+3003  36C0          ST R3, #192   ; -> x30C4         | ST R3 todec_r3                      ;
+3004  38C0          ST R4, #192   ; -> x30C5         | ST R4 todec_r4                      ;
+3005  3AC0          ST R5, #192   ; -> x30C6         | ST R5 todec_r5                      ;
+3006  3EC0          ST R7, #192   ; -> x30C7         | ST R7 todec_r7                      ;
+3007  30C0          ST R0, #192   ; -> x30C8         | ST R0 todec_entero                  ;   [entero] = entero
+3008  32C0          ST R1, #192   ; -> x30C9         | ST R1 todec_fraccion                ;   [fraccion] = fraccion
+3009  34C0          ST R2, #192   ; -> x30CA         | ST R2 todec_cursor_beg              ;   [cursor_beg] = cursor
+300A  34C0          ST R2, #192   ; -> x30CB         | ST R2 todec_cursor_wr               ;   [cursor_wr] = cursor
+300B  36C0          ST R3, #192   ; -> x30CC         | ST R3 todec_format                  ;   [formato] = formato
+300C  20BB          LD R0, #187   ; -> x30C8         | LD R0 todec_entero                  ;
+300D  060F          BRzp #15   ; -> x301D            | BRzp todec_sig_elif                 ;   if [entero] < 0:
+300E  20C4          LD R0, #196   ; -> x30D3         | LD R0 todec_chr_minus               ;
+300F  22BB          LD R1, #187   ; -> x30CB         | LD R1 todec_cursor_wr               ;
+3010  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+3011  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+3012  32B8          ST R1, #184   ; -> x30CB         | ST R1 todec_cursor_wr               ;       texto = texto + '-'
+3013  20B4          LD R0, #180   ; -> x30C8         | LD R0 todec_entero                  ;
+3014  903F          NOT R0, R0                       | NOT R0 R0                           ;
+3015  22B3          LD R1, #179   ; -> x30C9         | LD R1 todec_fraccion                ;
+3016  0A01          BRnp #1   ; -> x3018             | BRnp todec_sig_sk1                  ;
+3017  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                    ;
+3018  927F          NOT R1, R1                       | NOT R1 R1                           ;
+3019  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+301A  30AD          ST R0, #173   ; -> x30C8         | ST R0 todec_entero                  ;
+301B  32AD          ST R1, #173   ; -> x30C9         | ST R1 todec_fraccion                ;       [entero, decimal] = -[entero, decimal]
+301C  0E08          BRnzp #8   ; -> x3025            | BRnzp todec_int                     ;
+301D  20AE          LD R0, #174   ; -> x30CC         | LD R0 todec_format                  ;
+301E  5021          AND R0, R0, #1                   | AND R0 R0 #1                        ;
+301F  0405          BRz #5   ; -> x3025              | BRz todec_int                       ;   elif [format] & SHOW_PLUS:
+3020  20B1          LD R0, #177   ; -> x30D2         | LD R0 todec_chr_plus                ;
+3021  22A9          LD R1, #169   ; -> x30CB         | LD R1 todec_cursor_wr               ;
+3022  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+3023  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+3024  32A6          ST R1, #166   ; -> x30CB         | ST R1 todec_cursor_wr               ;       texto = texto + '+'
+3025  EAB2          LEA R5, #178   ; -> x30D8        | LEA R5 todec_expr_vec               ;
+3026  1B68          ADD R5, R5, #8                   | ADD R5 R5 #8                        ;   [R5] expresiones    #(+8 por que comenzamos en 5to digito)
+3027  6941          LDR R4, R5, #1                   | LDR R4 R5 #1                        ;   [R4] -expr_actual = -10_000
+3028  269F          LD R3, #159   ; -> x30C8         | LD R3 todec_entero                  ;   [R3] entero = [entero]
+3029  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;   [R2] contador = 0
+302A  10C4          ADD R0, R3, R4                   | ADD R0 R3 R4                        ;       [R0] aux = entero + -expr_actual
+302B  0803          BRn #3   ; -> x302F              | BRn todec_int_format_chk            ;       if aux >= 0:
+302C  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;           contador = contador + 1
+302D  1620          ADD R3, R0, #0                   | ADD R3 R0 #0                        ;           entero = aux
+302E  0FFB          BRnzp #-5   ; -> x302A           | BR todec_int_loop                   ;           continue
+302F  209C          LD R0, #156   ; -> x30CC         | LD R0 todec_format                  ;
+3030  5022          AND R0, R0, #2                   | AND R0 R0 #2                        ;
+3031  0A03          BRnp #3   ; -> x3035             | BRnp todec_int_append               ;
+3032  10A0          ADD R0, R2, #0                   | ADD R0 R2 #0                        ;
+3033  0A01          BRnp #1   ; -> x3035             | BRnp todec_int_append               ;
+3034  0E0B          BRnzp #11   ; -> x3040           | BR todec_int_sk1                    ;
+3035  2096          LD R0, #150   ; -> x30CC         | LD R0 todec_format                  ;
+3036  903F          NOT R0, R0                       | NOT R0 R0                           ;
+3037  503D          AND R0, R0, #-3                  | AND R0 R0 #-3                       ;
+3038  903F          NOT R0, R0                       | NOT R0 R0                           ;
+3039  3092          ST R0, #146   ; -> x30CC         | ST R0 todec_format                  ;           [formato] = [formato] | SHOW_LEADZ
+303A  209A          LD R0, #154   ; -> x30D5         | LD R0 todec_chr_zero                ;
+303B  228F          LD R1, #143   ; -> x30CB         | LD R1 todec_cursor_wr               ;
+303C  1002          ADD R0, R0, R2                   | ADD R0 R0 R2                        ;
+303D  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+303E  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+303F  328B          ST R1, #139   ; -> x30CB         | ST R1 todec_cursor_wr               ;           texto = texto + char(contador)
+3040  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;       contador = 0
+3041  1B62          ADD R5, R5, #2                   | ADD R5 R5 #2                        ;       expresiones.incr(2)
+3042  6941          LDR R4, R5, #1                   | LDR R4 R5 #1                        ;       -expr_actual = expresiones.peek(1)
+3043  0401          BRz #1   ; -> x3045              | BRz todec_int_break                 ;       if expr_actual == 0:
+3044  0FE5          BRnzp #-27   ; -> x302A          | BR todec_int_loop                   ;           break
+3045  2086          LD R0, #134   ; -> x30CC         | LD R0 todec_format                  ;
+3046  5022          AND R0, R0, #2                   | AND R0 R0 #2                        ;
+3047  0A05          BRnp #5   ; -> x304D             | BRnp todec_early                    ;   if not [formato] & SHOW_LEADZ:  #(si no se mostro ningun numero)
+3048  208C          LD R0, #140   ; -> x30D5         | LD R0 todec_chr_zero                ;
+3049  2281          LD R1, #129   ; -> x30CB         | LD R1 todec_cursor_wr               ;
+304A  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+304B  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+304C  327E          ST R1, #126   ; -> x30CB         | ST R1 todec_cursor_wr               ;       texto = texto + '0'
+304D  207B          LD R0, #123   ; -> x30C9         | LD R0 todec_fraccion                ;
+304E  0A14          BRnp #20   ; -> x3063            | BRnp todec_dec                      ;   if decimal == 0:
+304F  227B          LD R1, #123   ; -> x30CB         | LD R1 todec_cursor_wr               ;       [R1] cursor_wr
+3050  207B          LD R0, #123   ; -> x30CC         | LD R0 todec_format                  ;
+3051  5024          AND R0, R0, #4                   | AND R0 R0 #4                        ;
+3052  040C          BRz #12   ; -> x305F             | BRz todec_early_chk                 ;       if [formato] & SHOW_ENDZ:
+3053  2080          LD R0, #128   ; -> x30D4         | LD R0 todec_chr_dot                 ;
+3054  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+3055  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;           texto = texto + '.'
+3056  207E          LD R0, #126   ; -> x30D5         | LD R0 todec_chr_zero                ;           [R0] char '0'
+3057  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+3058  14A9          ADD R2, R2, #9                   | ADD R2 R2 #9                        ;           [R2] contador = 9
+3059  14A0          ADD R2, R2, #0                   | ADD R2 R2 #0                        ;
+305A  0C04          BRnz #4   ; -> x305F             | BRnz todec_early_chk                ;
+305B  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+305C  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;               texto = texto + '0'
+305D  14BF          ADD R2, R2, #-1                  | ADD R2 R2 #-1                       ;               contador -= 1
+305E  0FFA          BRnzp #-6   ; -> x3059           | BRnzp todec_early_chk_loop          ;
+305F  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+3060  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;       texto = texto + '\0'
+3061  3269          ST R1, #105   ; -> x30CB         | ST R1 todec_cursor_wr               ;
+3062  0E57          BRnzp #87   ; -> x30BA           | BRnzp todec_ret                     ;       return
+3063  2070          LD R0, #112   ; -> x30D4         | LD R0 todec_chr_dot                 ;
+3064  2266          LD R1, #102   ; -> x30CB         | LD R1 todec_cursor_wr               ;
+3065  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+3066  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+3067  3263          ST R1, #99   ; -> x30CB          | ST R1 todec_cursor_wr               ;   texto = texto + '.'
+3068  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+3069  3063          ST R0, #99   ; -> x30CD          | ST R0 todec_fraccion_h              ;   [fraccion_h] = 0
+306A  3063          ST R0, #99   ; -> x30CE          | ST R0 todec_fraccion_l              ;   [fraccion_l] = 0
+306B  3063          ST R0, #99   ; -> x30CF          | ST R0 todec_aux_0                   ;
+306C  2069          LD R0, #105   ; -> x30D6         | LD R0 todec_frac_expr_h             ;
+306D  3062          ST R0, #98   ; -> x30D0          | ST R0 todec_aux_1                   ;
+306E  2068          LD R0, #104   ; -> x30D7         | LD R0 todec_frac_expr_l             ;
+306F  3061          ST R0, #97   ; -> x30D1          | ST R0 todec_aux_2                   ;   [aux_0, aux_1, aux_2] = [0, 1_000_000_000]
+3070  5B60          AND R5, R5, #0                   | AND R5 R5 #0                        ;
+3071  1B61          ADD R5, R5, #1                   | ADD R5 R5 #1                        ;   [R5] mascara = 1
+3072  1B60          ADD R5, R5, #0                   | ADD R5 R5 #0                        ;
+3073  041D          BRz #29   ; -> x3091             | BRz todec_dec_break1                ;   while mascara:
+3074  2054          LD R0, #84   ; -> x30C9          | LD R0 todec_fraccion                ;
+3075  5005          AND R0, R0, R5                   | AND R0 R0 R5                        ;
+3076  040B          BRz #11   ; -> x3082             | BRz todec_dec_continue1             ;       if [fraccion] & mascara:
+3077  2056          LD R0, #86   ; -> x30CE          | LD R0 todec_fraccion_l              ;
+3078  2257          LD R1, #87   ; -> x30D0          | LD R1 todec_aux_1                   ;
+3079  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+307A  2785          LD R3, #-123   ; -> x3000        | LD R3 sub_sumover                   ;
+307B  40C0          JSRR R3                          | JSRR R3                             ;
+307C  3051          ST R0, #81   ; -> x30CE          | ST R0 todec_fraccion_l              ;
+307D  204F          LD R0, #79   ; -> x30CD          | LD R0 todec_fraccion_h              ;
+307E  2250          LD R1, #80   ; -> x30CF          | LD R1 todec_aux_0                   ;
+307F  1001          ADD R0, R0, R1                   | ADD R0 R0 R1                        ;
+3080  1002          ADD R0, R0, R2                   | ADD R0 R0 R2                        ;
+3081  304B          ST R0, #75   ; -> x30CD          | ST R0 todec_fraccion_h              ;           [fraccion_h, fraccion_l] = [fraccion_h, fraccion_l] + [aux_0, aux_1]
+3082  204C          LD R0, #76   ; -> x30CF          | LD R0 todec_aux_0                   ;
+3083  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+3084  224B          LD R1, #75   ; -> x30D0          | LD R1 todec_aux_1                   ;
+3085  0601          BRzp #1   ; -> x3087             | BRzp todec_dec_cont1_sk1            ;
+3086  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+3087  1241          ADD R1, R1, R1                   | ADD R1 R1 R1                        ;
+3088  2448          LD R2, #72   ; -> x30D1          | LD R2 todec_aux_2                   ;
+3089  0601          BRzp #1   ; -> x308B             | BRzp todec_dec_cont1_sk2            ;
+308A  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+308B  1482          ADD R2, R2, R2                   | ADD R2 R2 R2                        ;
+308C  3042          ST R0, #66   ; -> x30CF          | ST R0 todec_aux_0                   ;
+308D  3242          ST R1, #66   ; -> x30D0          | ST R1 todec_aux_1                   ;
+308E  3442          ST R2, #66   ; -> x30D1          | ST R2 todec_aux_2                   ;       [aux_0, aux_1, aux_2] = [aux_0, aux_1, aux_2] << 1
+308F  1B45          ADD R5, R5, R5                   | ADD R5 R5 R5                        ;       mascara = mascara << 1
+3090  0FE1          BRnzp #-31   ; -> x3072          | BRnzp todec_dec_loop1               ;       continue
+3091  EA46          LEA R5, #70   ; -> x30D8         | LEA R5 todec_expr_vec               ;   [R5] expresiones
+3092  5920          AND R4, R4, #0                   | AND R4 R4 #0                        ;   [R4] contador = 0
+3093  203A          LD R0, #58   ; -> x30CE          | LD R0 todec_fraccion_l              ;
+3094  6341          LDR R1, R5, #1                   | LDR R1 R5 #1                        ;
+3095  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+3096  2769          LD R3, #-151   ; -> x3000        | LD R3 sub_sumover                   ;
+3097  40C0          JSRR R3                          | JSRR R3                             ;
+3098  2234          LD R1, #52   ; -> x30CD          | LD R1 todec_fraccion_h              ;
+3099  1242          ADD R1, R1, R2                   | ADD R1 R1 R2                        ;
+309A  6540          LDR R2, R5, #0                   | LDR R2 R5 #0                        ;
+309B  1242          ADD R1, R1, R2                   | ADD R1 R1 R2                        ;       [R1, R0] aux = [fraccion_h, fraccion_l] + [expresiones.peek(0), expresiones.peek(1)]
+309C  0804          BRn #4   ; -> x30A1              | BRn todec_dec_append                ;       if [fraccion_h, fraccion_l] - [-expresiones.peek(0), expresiones.peek(1)] >= 0:
+309D  322F          ST R1, #47   ; -> x30CD          | ST R1 todec_fraccion_h              ;
+309E  302F          ST R0, #47   ; -> x30CE          | ST R0 todec_fraccion_l              ;           [fraccion_h, fraccion_l] = [R1, R0]
+309F  1921          ADD R4, R4, #1                   | ADD R4 R4 #1                        ;           contador = contador + 1
+30A0  0FF2          BRnzp #-14   ; -> x3093          | BR todec_dec_loop2                  ;           continue
+30A1  2033          LD R0, #51   ; -> x30D5          | LD R0 todec_chr_zero                ;
+30A2  2228          LD R1, #40   ; -> x30CB          | LD R1 todec_cursor_wr               ;
+30A3  1004          ADD R0, R0, R4                   | ADD R0 R0 R4                        ;
+30A4  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+30A5  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+30A6  3224          ST R1, #36   ; -> x30CB          | ST R1 todec_cursor_wr               ;       texto = texto + char(contador)
+30A7  2024          LD R0, #36   ; -> x30CC          | LD R0 todec_format                  ;
+30A8  5024          AND R0, R0, #4                   | AND R0 R0 #4                        ;
+30A9  0A05          BRnp #5   ; -> x30AF             | BRnp todec_dec_continue2            ;
+30AA  2023          LD R0, #35   ; -> x30CE          | LD R0 todec_fraccion_l              ;
+30AB  0A03          BRnp #3   ; -> x30AF             | BRnp todec_dec_continue2            ;
+30AC  2020          LD R0, #32   ; -> x30CD          | LD R0 todec_fraccion_h              ;
+30AD  0A01          BRnp #1   ; -> x30AF             | BRnp todec_dec_continue2            ;       if not [format] & SHOW_ENDZ and [fraccion_h, fraccion_l] == 0:
+30AE  0E06          BRnzp #6   ; -> x30B5            | BR todec_dec_break2                 ;           break
+30AF  5920          AND R4, R4, #0                   | AND R4 R4 #0                        ;       contador = 0
+30B0  1B62          ADD R5, R5, #2                   | ADD R5 R5 #2                        ;       expresiones.incr(2)
+30B1  6141          LDR R0, R5, #1                   | LDR R0 R5 #1                        ;
+30B2  0BE0          BRnp #-32   ; -> x3093           | BRnp todec_dec_loop2                ;
+30B3  6140          LDR R0, R5, #0                   | LDR R0 R5 #0                        ;
+30B4  0BDE          BRnp #-34   ; -> x3093           | BRnp todec_dec_loop2                ;       if [expresiones.peek(0), expresiones.peek(1)] == 0:
+30B5  2215          LD R1, #21   ; -> x30CB          | LD R1 todec_cursor_wr               ;
+30B6  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+30B7  7040          STR R0, R1, #0                   | STR R0 R1 #0                        ;
+30B8  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+30B9  3211          ST R1, #17   ; -> x30CB          | ST R1 todec_cursor_wr               ;   texto = texto + '\0'
+30BA  2007          LD R0, #7   ; -> x30C2           | LD R0 todec_r0                      ;
+30BB  2207          LD R1, #7   ; -> x30C3           | LD R1 todec_r1                      ;
+30BC  240D          LD R2, #13   ; -> x30CA          | LD R2 todec_cursor_beg              ;
+30BD  2606          LD R3, #6   ; -> x30C4           | LD R3 todec_r3                      ;
+30BE  2806          LD R4, #6   ; -> x30C5           | LD R4 todec_r4                      ;
+30BF  2A06          LD R5, #6   ; -> x30C6           | LD R5 todec_r5                      ;
+30C0  2E06          LD R7, #6   ; -> x30C7           | LD R7 todec_r7                      ;
+30C1  C1C0          RET                              | RET                                 ;
+30C2  0000                                           | todec_r0            .FILL #0
+30C3  0000                                           | todec_r1            .FILL #0
+30C4  0000                                           | todec_r3            .FILL #0
+30C5  0000                                           | todec_r4            .FILL #0
+30C6  0000                                           | todec_r5            .FILL #0
+30C7  0000                                           | todec_r7            .FILL #0
+30C8  0000                                           | todec_entero        .FILL #0
+30C9  0000                                           | todec_fraccion      .FILL #0
+30CA  0000                                           | todec_cursor_beg    .FILL #0
+30CB  0000                                           | todec_cursor_wr     .FILL #0
+30CC  0000                                           | todec_format        .FILL #0
+30CD  0000                                           | todec_fraccion_h    .FILL #0
+30CE  0000                                           | todec_fraccion_l    .FILL #0
+30CF  0000                                           | todec_aux_0         .FILL #0
+30D0  0000                                           | todec_aux_1         .FILL #0
+30D1  0000                                           | todec_aux_2         .FILL #0
+30D2  002B                                           | todec_chr_plus      .FILL #43           ;   ord('+')
+30D3  002D                                           | todec_chr_minus     .FILL #45           ;   ord('-')
+30D4  002E                                           | todec_chr_dot       .FILL #46           ;   ord('.')
+30D5  0030                                           | todec_chr_zero      .FILL #48           ;   ord('0')
+30D6  3B9A                                           | todec_frac_expr_h   .FILL x3B9A         ;
+30D7  CA00                                           | todec_frac_expr_l   .FILL xCA00         ;   1_000_000_000
+30D8  FA0A                                           | todec_expr_vec      .FILL xfa0a         ;
+30D9  1F00                                           | .FILL x1f00         ;  - 10**8          9no digito.
+30DA  FF67                                           | .FILL xff67         ;
+30DB  6980                                           | .FILL x6980         ;  - 10**7          8vo digito.
+30DC  FFF0                                           | .FILL xfff0         ;
+30DD  BDC0                                           | .FILL xbdc0         ;  - 10**6          7to digito.
+30DE  FFFE                                           | .FILL xfffe         ;
+30DF  7960                                           | .FILL x7960         ;  - 10**5          6to digito.
+30E0  FFFF                                           | .FILL xffff         ;
+30E1  D8F0                                           | .FILL xd8f0         ;  - 10**4          5to digito.
+30E2  FFFF                                           | .FILL xffff         ;
+30E3  FC18                                           | .FILL xfc18         ;  - 10**3          4to digito.
+30E4  FFFF                                           | .FILL xffff         ;
+30E5  FF9C                                           | .FILL xff9c         ;  - 10**2          3er digito.
+30E6  FFFF                                           | .FILL xffff         ;
+30E7  FFF6                                           | .FILL xfff6         ;  - 10**1          2do digito.
+30E8  FFFF                                           | .FILL xffff         ;
+30E9  FFFF                                           | .FILL xffff         ;  - 10**0          1er digito.
+30EA  0000                                           | .FILL x0000         ;
+30EB  0000                                           | .FILL x0000         ;  NULL32           terminacion.
+30EC  3221          ST R1, #33   ; -> x310E          | ST R1 sumover_r1                    ;
+30ED  3621          ST R3, #33   ; -> x310F          | ST R3 sumover_r3                    ;
+30EE  3821          ST R4, #33   ; -> x3110          | ST R4 sumover_r4                    ;
+30EF  1620          ADD R3, R0, #0                   | ADD R3 R0 #0                        ;   [R3] valor_a
+30F0  10A0          ADD R0, R2, #0                   | ADD R0 R2 #0                        ;   [R0] resultado = carry
+30F1  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;   [R2] carry = 0
+30F2  16E0          ADD R3, R3, #0                   | ADD R3 R3 #0                        ;
+30F3  0601          BRzp #1   ; -> x30F5             | BRzp sumover_test_b                 ;   if valor_a & 0x8000:
+30F4  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+30F5  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+30F6  0601          BRzp #1   ; -> x30F8             | BRzp sumover_sum                    ;   if valor_b & 0x8000:
+30F7  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+30F8  2818          LD R4, #24   ; -> x3111          | LD R4 sumover_mask                  ;
+30F9  56C4          AND R3, R3, R4                   | AND R3 R3 R4                        ;   valor_a = valor_a & 0x7FFF
+30FA  5244          AND R1, R1, R4                   | AND R1 R1 R4                        ;   valor_b = valor_b & 0x7FFF
+30FB  1003          ADD R0, R0, R3                   | ADD R0 R0 R3                        ;
+30FC  1001          ADD R0, R0, R1                   | ADD R0 R0 R1                        ;   resultado = resultado + valor_a + valor_b
+30FD  0601          BRzp #1   ; -> x30FF             | BRzp sumover_resultant              ;   if resultado & 0x8000:
+30FE  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+30FF  5004          AND R0, R0, R4                   | AND R0 R0 R4                        ;   resultado = resultado & 0x7FFF
+3100  58A1          AND R4, R2, #1                   | AND R4 R2 #1                        ;
+3101  0402          BRz #2   ; -> x3104              | BRz sumover_test_carry              ;   if carry & 0x0001:
+3102  280F          LD R4, #15   ; -> x3112          | LD R4 sumover_msb                   ;
+3103  1004          ADD R0, R0, R4                   | ADD R0 R0 R4                        ;       resultado = resultado + 0x8000
+3104  58A2          AND R4, R2, #2                   | AND R4 R2 #2                        ;
+3105  0403          BRz #3   ; -> x3109              | BRz sumover_test_carry_else         ;   if carry & 0x0002:
+3106  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+3107  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry = 1
+3108  0E01          BRnzp #1   ; -> x310A            | BRnzp sumover_ret                   ;   else:
+3109  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;       carry = 0
+310A  2203          LD R1, #3   ; -> x310E           | LD R1 sumover_r1                    ;
+310B  2603          LD R3, #3   ; -> x310F           | LD R3 sumover_r3                    ;
+310C  2803          LD R4, #3   ; -> x3110           | LD R4 sumover_r4                    ;
+310D  C1C0          RET                              | RET                                 ;
+310E  0000                                           | sumover_r1          .FILL #0
+310F  0000                                           | sumover_r3          .FILL #0
+3110  0000                                           | sumover_r4          .FILL #0
+3111  7FFF                                           | sumover_mask        .FILL x7FFF
+3112  8000                                           | sumover_msb         .FILL x8000

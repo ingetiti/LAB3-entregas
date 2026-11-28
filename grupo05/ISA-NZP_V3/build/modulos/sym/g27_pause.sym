@@ -1,0 +1,4 @@
+PAUSE 3000
+pause_r0 300B
+pause_r7 300C
+pause_prompt 300D

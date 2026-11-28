@@ -1,0 +1,133 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3276          ST R1, #118   ; -> x3077         | ST  R1, SQ9_SAVE1
+3001  3476          ST R2, #118   ; -> x3078         | ST  R2, SQ9_SAVE2
+3002  3676          ST R3, #118   ; -> x3079         | ST  R3, SQ9_SAVE3
+3003  3876          ST R4, #118   ; -> x307A         | ST  R4, SQ9_SAVE4
+3004  3A76          ST R5, #118   ; -> x307B         | ST  R5, SQ9_SAVE5
+3005  3E76          ST R7, #118   ; -> x307C         | ST  R7, SQ9_SAVE7
+3006  3068          ST R0, #104   ; -> x306F         | ST  R0, SQ9_X
+3007  2265          LD R1, #101   ; -> x306D         | LD  R1, SQ9_NEGMIN
+3008  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+3009  0832          BRn #50   ; -> x303C             | BRn SQ9_BAD
+300A  2263          LD R1, #99   ; -> x306E          | LD  R1, SQ9_NEGMAX
+300B  1401          ADD R2, R0, R1                   | ADD R2, R0, R1
+300C  022F          BRp #47   ; -> x303C             | BRp SQ9_BAD
+300D  225B          LD R1, #91   ; -> x3069          | LD  R1, SQ9_SEED
+300E  3261          ST R1, #97   ; -> x3070          | ST  R1, SQ9_Y
+300F  225A          LD R1, #90   ; -> x306A          | LD  R1, SQ9_NITER
+3010  3264          ST R1, #100   ; -> x3075         | ST  R1, SQ9_COUNT
+3011  205E          LD R0, #94   ; -> x3070          | LD  R0, SQ9_Y
+3012  225D          LD R1, #93   ; -> x3070          | LD  R1, SQ9_Y
+3013  4831          JSR #49   ; -> x3045             | JSR SQ9_MULQ             ; y2 = floor(y*y/256)
+3014  305C          ST R0, #92   ; -> x3071          | ST  R0, SQ9_Y2
+3015  2059          LD R0, #89   ; -> x306F          | LD  R0, SQ9_X
+3016  225A          LD R1, #90   ; -> x3071          | LD  R1, SQ9_Y2
+3017  482D          JSR #45   ; -> x3045             | JSR SQ9_MULQ             ; xy2 = floor(x*y2/256)
+3018  3059          ST R0, #89   ; -> x3072          | ST  R0, SQ9_XY2
+3019  2051          LD R0, #81   ; -> x306B          | LD  R0, SQ9_THREE
+301A  2257          LD R1, #87   ; -> x3072          | LD  R1, SQ9_XY2
+301B  927F          NOT R1, R1                       | NOT R1, R1
+301C  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+301D  1001          ADD R0, R0, R1                   | ADD R0, R0, R1
+301E  3054          ST R0, #84   ; -> x3073          | ST  R0, SQ9_FACTOR       ; 3*256 - xy2
+301F  2250          LD R1, #80   ; -> x3070          | LD  R1, SQ9_Y
+3020  4824          JSR #36   ; -> x3045             | JSR SQ9_MULQ             ; floor(factor*y/256)
+3021  1420          ADD R2, R0, #0                   | ADD R2, R0, #0
+3022  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3023  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3024  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3025  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3026  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3027  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3028  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3029  5260          AND R1, R1, #0                   | AND R1, R1, #0
+302A  56E0          AND R3, R3, #0                   | AND R3, R3, #0
+302B  16E8          ADD R3, R3, #8                   | ADD R3, R3, #8
+302C  1241          ADD R1, R1, R1                   | ADD R1, R1, R1
+302D  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+302E  0601          BRzp #1   ; -> x3030             | BRzp SQ9_HALF_ZERO
+302F  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3030  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3031  16FF          ADD R3, R3, #-1                  | ADD R3, R3, #-1
+3032  03F9          BRp #-7   ; -> x302C             | BRp SQ9_HALF
+3033  323C          ST R1, #60   ; -> x3070          | ST  R1, SQ9_Y
+3034  2240          LD R1, #64   ; -> x3075          | LD  R1, SQ9_COUNT
+3035  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1
+3036  323E          ST R1, #62   ; -> x3075          | ST  R1, SQ9_COUNT
+3037  03D9          BRp #-39   ; -> x3011            | BRp SQ9_ITER
+3038  2036          LD R0, #54   ; -> x306F          | LD  R0, SQ9_X
+3039  2236          LD R1, #54   ; -> x3070          | LD  R1, SQ9_Y
+303A  480A          JSR #10   ; -> x3045             | JSR SQ9_MULQ
+303B  0E01          BRnzp #1   ; -> x303D            | BRnzp SQ9_DONE
+303C  5020          AND R0, R0, #0                   | AND R0, R0, #0          ; entrada fuera del rango
+303D  3038          ST R0, #56   ; -> x3076          | ST  R0, SQ9_RESULT
+303E  2238          LD R1, #56   ; -> x3077          | LD  R1, SQ9_SAVE1
+303F  2438          LD R2, #56   ; -> x3078          | LD  R2, SQ9_SAVE2
+3040  2638          LD R3, #56   ; -> x3079          | LD  R3, SQ9_SAVE3
+3041  2838          LD R4, #56   ; -> x307A          | LD  R4, SQ9_SAVE4
+3042  2A38          LD R5, #56   ; -> x307B          | LD  R5, SQ9_SAVE5
+3043  2E38          LD R7, #56   ; -> x307C          | LD  R7, SQ9_SAVE7
+3044  C1C0          RET                              | RET
+3045  54A0          AND R2, R2, #0                   | AND R2, R2, #0        ; alto = 0
+3046  1620          ADD R3, R0, #0                   | ADD R3, R0, #0        ; bajo (provisional) = a
+3047  2824          LD R4, #36   ; -> x306C          | LD  R4, SQ9_NEG256
+3048  1AC4          ADD R5, R3, R4                   | ADD R5, R3, R4
+3049  0803          BRn #3   ; -> x304D              | BRn SQ9_SPLIT_END
+304A  1760          ADD R3, R5, #0                   | ADD R3, R5, #0        ; bajo -= 256
+304B  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1        ; alto++
+304C  0FFB          BRnzp #-5   ; -> x3048           | BRnzp SQ9_SPLIT
+304D  3226          ST R1, #38   ; -> x3074          | ST  R1, SQ9_MUL_B     ; guarda b para reutilizar R1 como auxiliar
+304E  5020          AND R0, R0, #0                   | AND R0, R0, #0        ; acumulador alto*b
+304F  5B60          AND R5, R5, #0                   | AND R5, R5, #0        ; acumulador bajo*b
+3050  5920          AND R4, R4, #0                   | AND R4, R4, #0
+3051  1921          ADD R4, R4, #1                   | ADD R4, R4, #1        ; mascara de bits = 1
+3052  2221          LD R1, #33   ; -> x3074          | LD  R1, SQ9_MUL_B
+3053  5244          AND R1, R1, R4                   | AND R1, R1, R4        ; ¿el bit actual de b esta activo?
+3054  0402          BRz #2   ; -> x3057              | BRz SQ9_NO_ADD
+3055  1002          ADD R0, R0, R2                   | ADD R0, R0, R2        ; suma alto*2^bit
+3056  1B43          ADD R5, R5, R3                   | ADD R5, R5, R3        ; suma bajo*2^bit
+3057  1482          ADD R2, R2, R2                   | ADD R2, R2, R2        ; duplica alto
+3058  16C3          ADD R3, R3, R3                   | ADD R3, R3, R3        ; duplica bajo
+3059  1904          ADD R4, R4, R4                   | ADD R4, R4, R4        ; siguiente mascara
+305A  2211          LD R1, #17   ; -> x306C          | LD  R1, SQ9_NEG256
+305B  1301          ADD R1, R4, R1                   | ADD R1, R4, R1
+305C  09F5          BRn #-11   ; -> x3052            | BRn SQ9_BITS          ; 8 bits: 1,2,4,...,128
+305D  54A0          AND R2, R2, #0                   | AND R2, R2, #0        ; cociente = 0
+305E  56E0          AND R3, R3, #0                   | AND R3, R3, #0
+305F  16E8          ADD R3, R3, #8                   | ADD R3, R3, #8
+3060  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3061  1B60          ADD R5, R5, #0                   | ADD R5, R5, #0
+3062  0601          BRzp #1   ; -> x3064             | BRzp SQ9_HIGH_ZERO
+3063  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3064  1B45          ADD R5, R5, R5                   | ADD R5, R5, R5
+3065  16FF          ADD R3, R3, #-1                  | ADD R3, R3, #-1
+3066  03F9          BRp #-7   ; -> x3060             | BRp SQ9_GET_HIGH
+3067  1002          ADD R0, R0, R2                   | ADD R0, R0, R2        ; alto*b + floor(bajo*b/256)
+3068  C1C0          RET                              | RET
+3069  0040                                           | SQ9_SEED      .FILL #64
+306A  0006                                           | SQ9_NITER     .FILL #6
+306B  0300                                           | SQ9_THREE     .FILL #768
+306C  FF00                                           | SQ9_NEG256    .FILL #-256
+306D  FC00                                           | SQ9_NEGMIN    .FILL #-1024
+306E  F000                                           | SQ9_NEGMAX    .FILL #-4096
+306F  0000                                           | SQ9_X         .BLKW #1
+3070  0000                                           | SQ9_Y         .BLKW #1
+3071  0000                                           | SQ9_Y2        .BLKW #1
+3072  0000                                           | SQ9_XY2       .BLKW #1
+3073  0000                                           | SQ9_FACTOR    .BLKW #1
+3074  0000                                           | SQ9_MUL_B     .BLKW #1
+3075  0000                                           | SQ9_COUNT     .BLKW #1
+3076  0000                                           | SQ9_RESULT    .BLKW #1
+3077  0000                                           | SQ9_SAVE1     .BLKW #1
+3078  0000                                           | SQ9_SAVE2     .BLKW #1
+3079  0000                                           | SQ9_SAVE3     .BLKW #1
+307A  0000                                           | SQ9_SAVE4     .BLKW #1
+307B  0000                                           | SQ9_SAVE5     .BLKW #1
+307C  0000                                           | SQ9_SAVE7     .BLKW #1

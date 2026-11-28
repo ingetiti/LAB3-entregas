@@ -1,0 +1,25 @@
+3000  300A          ST R0, #10   ; -> x300B          | ST R0 pause_r0                      ;
+3001  3E0A          ST R7, #10   ; -> x300C          | ST R7 pause_r7                      ;
+3002  E00A          LEA R0, #10   ; -> x300D         | LEA R0 pause_prompt                 ;
+3003  F022          PUTS                             | PUTS                                ;   print("Pulsa una tecla para continuar...")
+3004  F020          GETC                             | GETC                                ;   getc()
+3005  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+3006  102A          ADD R0, R0, #10                  | ADD R0 R0 #10                       ;
+3007  F021          OUT                              | OUT                                 ;   print("\n")
+3008  2002          LD R0, #2   ; -> x300B           | LD R0 pause_r0                      ;
+3009  2E02          LD R7, #2   ; -> x300C           | LD R7 pause_r7                      ;
+300A  C1C0          RET                              | RET
+300B  0000                                           | pause_r0      .FILL #0
+300C  0000                                           | pause_r7      .FILL #0
+300D  00500075006C                                   | pause_prompt  .STRINGZ "Pulsa una tecla para continuar..."
+3010  007300610020                                   | 
+3013  0075006E0061                                   | 
+3016  002000740065                                   | 
+3019  0063006C0061                                   | 
+301C  002000700061                                   | 
+301F  007200610020                                   | 
+3022  0063006F006E                                   | 
+3025  00740069006E                                   | 
+3028  007500610072                                   | 
+302B  002E002E002E                                   | 
+302E  0000                                           | 
