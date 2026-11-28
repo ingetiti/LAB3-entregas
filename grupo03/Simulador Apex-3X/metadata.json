@@ -1,0 +1,6 @@
+{
+  "name": "Simulador Apex-3X",
+  "description": "Simulador funcional, ensamblador y banco de pruebas de módulos para la arquitectura Apex-3X.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
