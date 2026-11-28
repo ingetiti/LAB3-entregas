@@ -1,0 +1,173 @@
+=== verbose: LC-X 6,481 executed (6,475 user + 6 OS), 2,427 words (LC-3 379,578 executed (357,505 user + 22,073 OS), 7,896 words)
+output matches
+
+file                                      LC-3 exec    LC-X exec    LC-3 w    LC-X w
+lib/g21_senotaylor_subrutina.asm              221,428           35       377        43
+lib/g27_sumover.asm                            49,625            0        39         0
+lib/g27_todec.asm                              44,757        2,686       236        54
+lib/g27_circlsh.asm                             6,390            0        21         9
+lib/g18_booth.asm                               5,714          173       115        30
+lib/g19_cordic_multiplicacion.asm               5,107          211       670        45
+lib/g6_EXP.asm                                  4,888          189       505       240
+lib/g9_sqrt_nr_q8.asm                           3,521            0       125         0
+lib/g11_CORDICLog.asm                           2,511          138       156        59
+lib/g14_log_borchardt_q8_7.asm                  2,403           72       456       107
+lib/g12_subrutina_grupo_12.asm                  2,244           28       221        55
+lib/g27_main_menu_PROGRESO.asm                  2,093        1,510     2,605       855
+lib/g27_outval.asm                              1,518          623        40        15
+lib/g27_from_qm_n.asm                             996            0        33        19
+lib/g30_seno_cheb_pade.asm                        909           34       181        43
+lib/g22_Tabla_SIN_y_COS.asm                       668           47       515       212
+lib/g5_Mul_Sucesiva_POW.asm                       471           26       115        28
+lib/g3_MultiplicacionSHIFTandADD.asm              331          111        84        22
+lib/g24_conversor_lc3_max.asm                     307          108       105        42
+lib/g23_modulo_sqrt_nr.asm                        300          116        58        33
+lib/g10_division_larga.asm                        289          108       106        44
+lib/g9_sq9_math_helpers.asm                       238            0        55         0
+lib/g4_potencia.asm                               218           16        67        28
+lib/g15_G15_Q312_Q78.asm                          214            2        46         2
+lib/g1_cordic_division.asm                        143           99        36        18
+lib/g7_mcm.asm                                    123           42        72        25
+lib/g7_mcd.asm                                     41           26        44        17
+lib/g9_sqrt_nr_dq16.asm                            30           59        81        51
+lib/g20_Cordic_reduccion_de_argumento.asm           22           13        32        17
+main.asm                                            6            3       141       121
+lib/g27_getcfiltered.asm                            0            0        32         0
+lib/g27_fromhex.asm                                 0            0        79         0
+lib/g27_pause.asm                                   0            0        47        24
+lib/g27_getval.asm                                  0            0        75        38
+lib/g27_getval_buffer.asm                           0            0        33        17
+lib/g27_getline.asm                                 0            0        33        15
+lib/g27_fromdec.asm                                 0            0       241        93
+lib/g27_to_qm_n.asm                                 0            0        19         6
+OS (trap and fault handlers)                   22,073            6
+
+--- LC-X output
+
+
+==REDUCCION DE ARGUMENTO (CORDIC)==
+(Q3.12) 2.356201171
+(Q3.12) -0.78515625
+
+
+==SENO TRIGONOMETRICO (TAYLOR)==
+(int) 600
+(Q3.12) 0.865966796
+
+
+==SENO TRIGONOMETRICO (TABLE)==
+(Q3.12) 1.04711914
+(Q1.14) 0.865966796
+
+
+==SENO TRIGONOMETRICO (CHEVYSHEV-PADE)==
+(Q3.12) 1.04711914
+(Q1.14) 0.865905761
+
+
+==COSENO TRIGONOMETRICO (TABLE)==
+(Q3.12) 1.04711914
+(Q1.14) 0.500061035
+
+
+==EXPRESION CON BASE (HEX)==
+(int) 1342
+Hexadecimal: 053E
+
+
+==EXPRESION CON BASE (BIN)==
+(int) -1078
+Binario: 1111101111001010
+
+
+==RAIZ CUADRADA (NON RESTORING)==
+(Q7.8) 4.35546875
+(Q6.9) 2.087890625
+
+
+==RAIZ CUADRADA (NEWTON-RAPHSON)==
+(Q15.16) 4.35697937
+(Q15.16) 2.08984375
+
+
+==EXPONENCIACION==
+(Q3.12) 1
+(Q7.8) 2.71875
+
+
+==POTENCIACION (MULTIPLICACIONES SUCESIVAS)==
+(Q7.8) -2
+(int) 5
+(Q7.8) -32
+
+
+==POTENCIACION (EXPONENCIACION BINARIA)==
+(int) -2
+(int) 5
+(int) -32
+
+
+==MULTIPLICACION (CORDIC)==
+(Q7.8) 13.828125
+(Q7.8) -7.23828125
+(Q7.8) -100.09375
+
+
+==MULTIPLICACION (BASIC)==
+(Q7.8) 13.828125
+(Q7.8) -7.23828125
+(Q15.16) -100.09185791
+
+
+==MULTIPLICACION (BOOTH)==
+(Q7.8) 13.828125
+(Q7.8) -7.23828125
+(Q7.8) -100.09375
+
+
+==DIVISION (LONG DIVISION)==
+(Q7.8) 6.3671875
+(Q7.8) 3.234375
+(Q7.8) 1.96484375
+
+
+==DIVISION (NEWTON-RAPHSON)==
+(Q7.8) 6.3671875
+(Q7.8) 3.234375
+(Q7.8) 1.96875
+
+
+==DIVISION (CORDIC)==
+(Q0.15) 0.25
+(Q0.15) 0.700012207
+(Q0.15) 0.357147216
+
+
+==LOGARITMO== (BORCHARDT)
+(Q8.7) 2
+(Q8.7) 0.6953125
+
+
+==LOGARITMO== (CORDIC)
+(Q3.12) 2
+(Q3.12) 0.693359375
+
+
+==MAXIMO COMUN DIVISOR==
+(int) 48
+(int) 18
+(int) 6
+
+
+==MINIMO COMUN MULTIPLO==
+(int) 16
+(int) 38
+(int) 304
+
+
+==Q3.12 -> Q7.8==
+(Q3.12) 5.366210937
+(Q7.8) 5.36328125
+
+HALT
+

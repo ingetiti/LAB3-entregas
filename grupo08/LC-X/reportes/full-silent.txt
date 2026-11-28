@@ -1,0 +1,50 @@
+=== silent: LC-X 2,250 executed (2,244 user + 6 OS), 2,427 words (LC-3 254,079 executed (253,495 user + 584 OS), 7,896 words)
+output matches
+
+file                                      LC-3 exec    LC-X exec    LC-3 w    LC-X w
+lib/g21_senotaylor_subrutina.asm              221,428           35       377        43
+lib/g18_booth.asm                               5,714          173       115        30
+lib/g19_cordic_multiplicacion.asm               5,107          211       670        45
+lib/g6_EXP.asm                                  4,888          189       505       240
+lib/g9_sqrt_nr_q8.asm                           3,521            0       125         0
+lib/g11_CORDICLog.asm                           2,511          138       156        59
+lib/g14_log_borchardt_q8_7.asm                  2,403           72       456       107
+lib/g12_subrutina_grupo_12.asm                  2,244           28       221        55
+lib/g27_main_menu_PROGRESO.asm                  1,369          588     2,605       855
+lib/g30_seno_cheb_pade.asm                        909           34       181        43
+lib/g22_Tabla_SIN_y_COS.asm                       668           47       515       212
+lib/g5_Mul_Sucesiva_POW.asm                       471           26       115        28
+lib/g3_MultiplicacionSHIFTandADD.asm              331          111        84        22
+lib/g24_conversor_lc3_max.asm                     307          108       105        42
+lib/g23_modulo_sqrt_nr.asm                        300          116        58        33
+lib/g10_division_larga.asm                        289          108       106        44
+lib/g9_sq9_math_helpers.asm                       238            0        55         0
+lib/g4_potencia.asm                               218           16        67        28
+lib/g15_G15_Q312_Q78.asm                          214            2        46         2
+lib/g1_cordic_division.asm                        143           99        36        18
+lib/g7_mcm.asm                                    123           42        72        25
+lib/g7_mcd.asm                                     41           26        44        17
+lib/g9_sqrt_nr_dq16.asm                            30           59        81        51
+lib/g20_Cordic_reduccion_de_argumento.asm           22           13        32        17
+main.asm                                            6            3       141       121
+lib/g27_getcfiltered.asm                            0            0        32         0
+lib/g27_fromhex.asm                                 0            0        79         0
+lib/g27_pause.asm                                   0            0        47        24
+lib/g27_from_qm_n.asm                               0            0        33        19
+lib/g27_getval.asm                                  0            0        75        38
+lib/g27_outval.asm                                  0            0        40        15
+lib/g27_circlsh.asm                                 0            0        21         9
+lib/g27_getval_buffer.asm                           0            0        33        17
+lib/g27_getline.asm                                 0            0        33        15
+lib/g27_fromdec.asm                                 0            0       241        93
+lib/g27_todec.asm                                   0            0       236        54
+lib/g27_to_qm_n.asm                                 0            0        19         6
+lib/g27_sumover.asm                                 0            0        39         0
+OS (trap and fault handlers)                      584            6
+
+--- LC-X output
+Hexadecimal: 053E
+Binario: 1111101111001010
+
+HALT
+
