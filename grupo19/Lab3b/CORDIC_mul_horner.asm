@@ -29,7 +29,7 @@
 ;    y se pasa por DIRECCION (como un puntero en C).
 ;  - parametros en R0 y R1. El valor de retorno (si hay) vuelve en R0.
 ;  - cada subrutina PRESERVA R1..R6 (guarda en memoria los que usa y los restaura antes del RET).
-;    R0 solo cambia si la subrutina devuelve un valor. (CORDIC_MUL devuelve ademas R1 y preserva R2..R6)
+;    R0 solo cambia si la subrutina devuelve un valor. (CORDIC_MUL devuelve el resultado en R0, el estado en R1 y preserva R2..R6)
 ;  - R7 lo pisa JSR y tambien TRAP (GETC, OUT, PUTS): las subrutinas que los usan guardan R7 y lo restauran.
 ;  - las zonas de guardado son fijas (ST/LD), por lo tanto NO son recursivas.
 ;  - al volver, los codigos de condicion (N/Z/P) no tienen un significado definido.
@@ -59,9 +59,9 @@ MAIN
 
         LD   R0, A_Q8
         LD   R1, B_Q8
-        JSR  CORDIC_MUL         ; R0 = estado, R1 = resultado Q7.8
-        ST   R0, ESTADO
-        ST   R1, RESULTADO_Q78
+        JSR  CORDIC_MUL         ; R1 = estado, R0 = resultado Q7.8
+        ST   R1, ESTADO
+        ST   R0, RESULTADO_Q78
 
         LD   R0, ESTADO
         BRz  MAIN_OK
@@ -286,8 +286,8 @@ IE_R7   .BLKW #1
 ; ---------------------------------------------------------------------
 ;  CORDIC_MUL : a_q8 * b_q8 con CORDIC lineal, FORMA DE HORNER (sin corrimientos a la derecha)
 ;     entrada : R0 = a_q8     R1 = b_q8
-;     salida  : R0 = estado:  0 = ok / 1 = desbordamiento (|a*b| > 127.996) / 2 = b_q8 invalido (-32768)
-;               R1 = resultado en Q7.8 (solo valido si R0 = 0; en otro caso vale 0)
+;     salida  : R0 = resultado en Q7.8 (solo valido si R1 = 0; en otro caso vale 0)
+;               R1 = estado:  0 = ok / 1 = desbordamiento (|a*b| > 127.996) / 2 = b_q8 invalido (-32768)
 ;     deja ademas en memoria: CM_Y    = acumulador de 32 bits (Q16), que vale a_q8 * b_q8
 ;                             CM_ITER = cantidad de iteraciones realizadas
 ;     preserva R2..R6
@@ -374,18 +374,18 @@ CM_FALTAN
 CM_REDUCIR
         LEA  R1, CM_RES
         JSR  REDUCIR_Q78        ; R0 = 1 si hay desbordamiento
-        ADD  R0, R0, #0
+        ADD  R1, R0, #0
         BRp  CM_DESBORDA
-        LD   R1, CM_RES         ; resultado Q7.8
+        LD   R0, CM_RES         ; resultado Q7.8
         BRnzp CM_FIN
 CM_DESBORDA
-        AND  R1, R1, #0         ; sin resultado valido (R0 ya vale 1)
+        AND  R0, R0, #0         ; sin resultado valido (R1 ya vale 1)
         BRnzp CM_FIN
 CM_B_INVALIDO
-        AND  R0, R0, #0
-        ADD  R0, R0, #2         ; estado = 2
         AND  R1, R1, #0
-        ST   R1, CM_ITER        ; 0 iteraciones
+        ADD  R1, R1, #2         ; estado = 2
+        AND  R0, R0, #0
+        ST   R0, CM_ITER        ; 0 iteraciones
 CM_FIN
         LD   R2, CM_R2
         LD   R3, CM_R3

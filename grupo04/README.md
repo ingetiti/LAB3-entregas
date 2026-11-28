@@ -11,7 +11,7 @@
 ## Archivos
 <!-- Qué archivo hace qué -->
 #### Lab 3-b
-- `main.asm`: Codigo correspondiente a la exponenciacion binaria en Assembly
+- `potencia.asm`: Codigo correspondiente a la exponenciacion binaria en Assembly
 - `expo_b.c`: Codigo correspondiente a la exponenciacion binaria en lenguaje de alto nivel (C)
 
 #### Lab 3-a
@@ -22,7 +22,7 @@
 <!-- Pasos para ensamblar y ejecutar, y un ejemplo de entrada y salida -->
 La implementación en Assembly se encuentra funcionando y publicado en el simulador desarrollado por el Grupo 8.
 
-El programa actualmente no permite ingreso de datos por el usuario. Por lo que si se quieren probar valores distintos a los utilizados de ejemplo se debera reemplazar el valor guardado en los registros en la seccion de --- 1. INICIALIZACIÓN DE VARIABLES EN REGISTROS ---. (R1 - Base / R2 - Expo)
+El porgrama se llama correctamente como subrutina y utiliza los registro R0 y R1 como base y exponente, respectivamente.
 
 Para poder cargar el programa se deben seguir los pasos indicados por el grupo 27.
 
@@ -78,3 +78,7 @@ Realizamos la comprobación final de todos los componentes del trabajo: la exact
 
 ### 6 de noviembre de 2026 – Presentación del LABORATORIO 3
 Realizamos la carga de los archivos correspondientes a nuestro grupo en el repositorio de GitHub.
+
+### 9 de noviembre de 2026 - Correccion ERROR Subrutina
+Recibimos una devolucion del primer codigo. Este no respetaba las restricciones de diseño del grupo 8.
+Se adapto todo el codigo para respetar esta estructura. Conservando correctamente los estados de los registros sin modificar nada y devolviendo el resultado en R0.

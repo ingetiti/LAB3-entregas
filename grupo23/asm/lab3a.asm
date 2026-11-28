@@ -77,22 +77,28 @@ SIN_Y12
 ; =====================================================================
 ; SHL32: corre a la izquierda el par R1:R2 (R1 = alta, R2 = baja)
 ; R3 veces (R3 > 0). El bit 15 de R2 pasa al bit 0 de R1.
-; Modifica R1, R2, R3.
+; Entradas: R1, R2, R3. Salidas: R1, R2.
+; Resguarda de forma autonoma R3.
 ; =====================================================================
-SHL32   ADD R1, R1, R1    ; alta << 1
+SHL32   ST R3, SHL_R3     ; RESGUARDO
+SH_LAZO ADD R1, R1, R1    ; alta << 1
         ADD R2, R2, #0
         BRzp SH_NC        ; si el bit 15 de la baja es 1 ...
         ADD R1, R1, #1    ; ... entra como bit 0 de la alta
 SH_NC   ADD R2, R2, R2    ; baja << 1
         ADD R3, R3, #-1
-        BRp SHL32
+        BRp SH_LAZO
+        LD R3, SHL_R3     ; RESTAURACION
         RET
+SHL_R3  .BLKW #1
 
 ; =====================================================================
 ; RANGO12: R6 = 0 si -2048 <= R0 <= 2047 (entra en 12 bits con signo),
-; R6 = 1 si no. Modifica R5 y R6.
+; R6 = 1 si no. Entradas: R0. Salidas: R6.
+; Resguarda de forma autonoma R5.
 ; =====================================================================
-RANGO12 AND R6, R6, #0
+RANGO12 ST R5, RG_R5      ; RESGUARDO
+        AND R6, R6, #0
         LD R5, MENOS2048
         ADD R5, R0, R5    ; R0 - 2048
         BRzp RG_MAL       ; R0 >= 2048 -> no entra
@@ -100,16 +106,20 @@ RANGO12 AND R6, R6, #0
         ADD R5, R0, R5    ; R0 + 2048
         BRzp RG_OK        ; R0 >= -2048 -> entra
 RG_MAL  ADD R6, R6, #1
-RG_OK   RET
+RG_OK   LD R5, RG_R5      ; RESTAURACION
+        RET
+RG_R5   .BLKW #1
 
 ; =====================================================================
 ; MULS: producto con signo de 16 x 16 bits -> 32 bits
-; Entrada: R1 = a, R2 = b Salida: R1 = parte alta, R2 = parte baja
-; Metodo: signo aparte + "corrimiento y suma" empezando por el MSB de b
-; (como la multiplicacion en papel, pero leyendo b de izquierda a derecha).
-; Modifica R1 a R6.
+; Entrada: R1 = a, R2 = b | Salida: R1 = parte alta, R2 = parte baja
+; Resguarda de forma autonoma R3, R4 y R6.
 ; =====================================================================
-MULS    AND R6, R6, #0    ; R6 cuenta operandos negativos
+MULS    ST R3, MUL_R3     ; RESGUARDO
+        ST R4, MUL_R4
+        ST R6, MUL_R6
+
+        AND R6, R6, #0    ; R6 cuenta operandos negativos
         ADD R3, R1, #0    ; R3 = |a|
         BRzp MA_POS
         NOT R3, R3
@@ -159,21 +169,31 @@ M_SIG   ADD R4, R4, R4    ; siguiente bit de b
         ADD R2, R2, #1    ; ... y sumar 1 a la baja
         BRnp M_FIN
         ADD R1, R1, #1    ; si la baja dio 0, el 1 pasa a la alta
-M_FIN   RET
+
+M_FIN   LD R3, MUL_R3     ; RESTAURACION
+        LD R4, MUL_R4
+        LD R6, MUL_R6
+        RET
 
 ; ---------- constantes y variables ----------
 MENOS2048 .FILL xF800     ; -2048
 MAS2048   .FILL x0800     ; +2048
-MUL_SIGNO .BLKW 1
+MUL_SIGNO .BLKW #1
 X_Q12     .FILL x1B33     ; 1.7 en Q3.12 (6963)
 Y_Q8      .FILL xFDC0     ; -2.25 en Q7.8 (-576)
-X_Q8      .BLKW 1
-Y_Q12     .BLKW 1
-OVF_Y     .BLKW 1
-SUMA_Q8   .BLKW 1
-RESTA_Q8  .BLKW 1
-PROD_HI   .BLKW 1
-PROD_LO   .BLKW 1
-PROD_Q8   .BLKW 1
-OVF_P     .BLKW 1
+X_Q8      .BLKW #1
+Y_Q12     .BLKW #1
+OVF_Y     .BLKW #1
+SUMA_Q8   .BLKW #1
+RESTA_Q8  .BLKW #1
+PROD_HI   .BLKW #1
+PROD_LO   .BLKW #1
+PROD_Q8   .BLKW #1
+OVF_P     .BLKW #1
+
+; ---------- variables locales de subrutinas ----------
+MUL_R3    .BLKW #1
+MUL_R4    .BLKW #1
+MUL_R6    .BLKW #1
+
         .END

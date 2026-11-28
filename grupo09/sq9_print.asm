@@ -1,0 +1,132 @@
+; LAB 3 - GRUPO 09 - Salida decimal independiente.
+; Entrada R0=palabra entera de Q15.16 (0..182 en SQRT), R1=fraccion 0..65535.
+; Muestra decimal exacto a ocho digitos: ejemplo 2.98828125.
+; No depende de TODEC ni de OUTVAL del Grupo 27.
+SQ9_PRINT_DQ16
+    ST R2 SQO_SAVE2
+    ST R3 SQO_SAVE3
+    ST R4 SQO_SAVE4
+    ST R5 SQO_SAVE5
+    ST R7 SQO_SAVE7
+    ST R0 SQO_INT
+    ST R1 SQO_FRAC
+
+    ; El rango de sqrt(x) es < 182. Formatear centenas, decenas, unidades.
+    ADD R4 R0 #0
+    AND R2 R2 #0
+    LD R5 SQO_NEG100
+SQO_HUNDRED_LOOP
+    ADD R3 R4 R5
+    BRn SQO_HUNDRED_DONE
+    ADD R4 R3 #0
+    ADD R2 R2 #1
+    BRnzp SQO_HUNDRED_LOOP
+SQO_HUNDRED_DONE
+    ST R2 SQO_HUNDRED
+    AND R2 R2 #0
+SQO_TENS_LOOP
+    ADD R3 R4 #-10
+    BRn SQO_TENS_DONE
+    ADD R4 R3 #0
+    ADD R2 R2 #1
+    BRnzp SQO_TENS_LOOP
+SQO_TENS_DONE
+    ST R2 SQO_TENS
+    ST R4 SQO_UNITS
+    LD R2 SQO_HUNDRED
+    BRz SQO_TEST_TENS
+    LD R0 SQO_ASCII_ZERO
+    ADD R0 R0 R2
+    OUT
+SQO_TEST_TENS
+    LD R2 SQO_TENS
+    BRp SQO_PRINT_TENS
+    LD R4 SQO_HUNDRED
+    BRz SQO_PRINT_UNITS
+SQO_PRINT_TENS
+    LD R0 SQO_ASCII_ZERO
+    ADD R0 R0 R2
+    OUT
+SQO_PRINT_UNITS
+    LD R0 SQO_ASCII_ZERO
+    LD R4 SQO_UNITS
+    ADD R0 R0 R4
+    OUT
+    LD R0 SQO_ASCII_DOT
+    OUT
+
+    LD R2 SQO_EIGHT
+; Para cada digito calcular 10*frac como (4*frac + frac)*2.
+; R0 contiene la parte alta decimal (0..9), R1 la fraccion remanente.
+SQO_DECIMAL_LOOP
+    LD R1 SQO_FRAC
+    ADD R3 R1 #0             ; guardar frac inicial
+    AND R0 R0 #0
+    ; 32-bit << 1
+    ADD R4 R1 #0
+    BRzp SQO_DOUBLE1_OK
+    ADD R0 R0 #1
+SQO_DOUBLE1_OK
+    ADD R1 R1 R1
+    ; 32-bit << 1 (4*frac)
+    ADD R0 R0 R0
+    ADD R4 R1 #0
+    BRzp SQO_DOUBLE2_OK
+    ADD R0 R0 #1
+SQO_DOUBLE2_OK
+    ADD R1 R1 R1
+    ; Sumar frac a 4*frac, detectando acarreo de 16 bits.
+    ADD R4 R1 R3
+    ADD R5 R1 #0
+    BRn SQO_SUM_A_NEG
+    ADD R5 R3 #0
+    BRzp SQO_SUM_NO_CARRY
+    ADD R5 R4 #0
+    BRn SQO_SUM_NO_CARRY
+    BRnzp SQO_SUM_CARRY
+SQO_SUM_A_NEG
+    ADD R5 R3 #0
+    BRn SQO_SUM_CARRY
+    ADD R5 R4 #0
+    BRn SQO_SUM_NO_CARRY
+SQO_SUM_CARRY
+    ADD R0 R0 #1
+SQO_SUM_NO_CARRY
+    ADD R1 R4 #0
+    ; 32-bit << 1 (10*frac)
+    ADD R0 R0 R0
+    ADD R4 R1 #0
+    BRzp SQO_DOUBLE3_OK
+    ADD R0 R0 #1
+SQO_DOUBLE3_OK
+    ADD R1 R1 R1
+    ST R1 SQO_FRAC
+    LD R4 SQO_ASCII_ZERO
+    ADD R0 R0 R4
+    OUT
+    ADD R2 R2 #-1
+    BRp SQO_DECIMAL_LOOP
+    LD R0 SQO_NEWLINE
+    OUT
+    LD R2 SQO_SAVE2
+    LD R3 SQO_SAVE3
+    LD R4 SQO_SAVE4
+    LD R5 SQO_SAVE5
+    LD R7 SQO_SAVE7
+    RET
+SQO_ASCII_ZERO .FILL #48
+SQO_ASCII_DOT .FILL #46
+SQO_NEWLINE .FILL #10
+SQO_NEG100 .FILL #-100
+SQO_EIGHT .FILL #8
+SQO_SAVE2 .BLKW #1
+SQO_SAVE3 .BLKW #1
+SQO_SAVE4 .BLKW #1
+SQO_SAVE5 .BLKW #1
+SQO_SAVE7 .BLKW #1
+SQO_INT .BLKW #1
+SQO_FRAC .BLKW #1
+SQO_HUNDRED .BLKW #1
+SQO_TENS .BLKW #1
+SQO_UNITS .BLKW #1
+.END

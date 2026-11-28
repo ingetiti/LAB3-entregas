@@ -239,6 +239,9 @@ Por eso el módulo final implementa **la división por CORDIC en modo lineal, ve
 ## Bibliografía
 
 - Muller, J.-M. *Elementary Functions: Algorithms and Implementation*, cap. 7: *The CORDIC Algorithm* (Tablas 7.1 y 7.2).
+
+- COMENTARIOS DE ALDO BENITEZ
+- VERIFICAR LA DIVISIÓN POR CORDIC, PROBÉ ALGUNOS VALORES (POR EJEMPLO -1 / 3 Y ARROJA UN RESULTADO ERRÓNEO), LAS DIVISIÓNES POR LONG Y NEWTON R. DAN CORRECTAS.
 - Patt, Y. N., & Patel, S. J. *Introduction to Computing Systems: From Bits & Gates to C/C++ & Beyond*. McGraw-Hill.
 - Volder, J. E. (1959). *The CORDIC Computing Technique*. IRE Transactions on Electronic Computers.
 - Guía de módulos de la calculadora (convención de llamada y publicación).

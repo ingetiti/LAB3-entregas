@@ -3,7 +3,7 @@
 // Arquitectura de Computadoras (IC221) - FI-UNaM - 2026
 //
 // x se guarda en Q3.12 y y en Q7.8 (formatos distintos, como pide el punto 2).
-// Compilar:  g++ -std=c++20 -Wall -g -o lab3a lab3a.cpp
+// Compilar:  g++ -std=c++14 -Wall -g -o lab3a lab3a.cpp
 // Depurar:   poner breakpoints en las lineas marcadas con  // BP
 //            y vigilar (watch) las variables que se indican al lado.
 // =====================================================================

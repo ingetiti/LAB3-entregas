@@ -3,9 +3,9 @@
 ;   R0 = primer operando Q8.8
 ;   R1 = segundo operando Q8.8
 ; Salida:
-;   R1:R0 = producto Q16.16
-;       R1 = palabra alta
-;       R0 = palabra baja
+;   R0:R1 = producto Q16.16
+;       R0 = parte entera (palabra alta)
+;       R1 = parte fraccionaria (palabra baja)
 ;
 ; R2-R5 se conservan. R6 y R7 no se utilizan.
 
@@ -39,7 +39,7 @@ Q8_SEGUNDO_POSITIVO:
         ST      R5, Q8_SIGNO
         ST      R2, Q8_MULTIPLICADOR
 
-        ; Acumulador de 32 bits: R1:R0.
+        ; Acumulador de 32 bits (interno): R1:R0 = alta:baja.
         AND     R0, R0, #0
         AND     R1, R1, #0
 
@@ -103,12 +103,18 @@ Q8_SIN_ACARREO:
 
         ; Aplicar el signo al resultado de 32 bits.
         LD      R2, Q8_SIGNO
-        BRz     Q8_RESTAURAR
+        BRz     Q8_INTERCAMBIAR
         NOT     R0, R0
         NOT     R1, R1
         ADD     R0, R0, #1
-        BRnp    Q8_RESTAURAR
+        BRnp    Q8_INTERCAMBIAR
         ADD     R1, R1, #1
+
+Q8_INTERCAMBIAR:
+        ; Intercambiar R0 y R1 para entregar R0 = entera, R1 = fraccionaria.
+        ADD     R2, R0, #0          ; R2 = palabra baja (fraccion)
+        ADD     R0, R1, #0          ; R0 = palabra alta (entera)
+        ADD     R1, R2, #0          ; R1 = palabra baja (fraccion)
 
 Q8_RESTAURAR:
         LD      R2, Q8_GUARDAR_R2

@@ -39,3 +39,7 @@
 ## Cómo probarlo
 <!-- Pasos para ensamblar y ejecutar, y un ejemplo de entrada y salida -->
 - A través del archivo Tabla_SIN_y_COS.asm se podrá establecer el ángulo a probar (en radian) en formato Q3.12, en la linea 968 se encuentra el espacio reservado "ANGULO_PRUEBA", desde este espacio puede modificar el valor que recibirá el programa. Al integrarlo en la nueva ISA este valor será recibido a través del Registro 0, mientras que, para facilitar su prueba de testeo de forma aislada puede asignar un valor en Q3.12 al espacio "ANGULO_PRUEBA" y comprobar el funcionamiento de la tabla. En el registro 1 se encontrara el valor resultante para Seno, mientras que para el registro 2 se encontrara el valor resultante para Coseno, ambos con sus signos correspondientes. En caso de que sea un ángulo sobre un eje alguno de los dos valores (ya sea Seno o Coseno) tendrá como valor 0, mientras que el otro un 1 con su signo correspondiente. Desafortunadamente, no se ha implementado la interpolación debido a falta de tiempo.
+
+REPORTE DE ERROR DE BENITEZ ALDO.
+
+VERIFICAR EL SENO PARA EL MÉTODO POR TAYLOR, VERIFIQUÉ POR EJEMPLO SEN(6.28) Y ARROJA UN VALOR ERRÓNEO.

@@ -1,46 +1,60 @@
-; EXP para LC-3. Entrada Q3.12 y salida Q7.8 de 16 bits con signo.
-; Ensamblar, cargar y ejecutar desde x3000. Cambiar ENTRADA para probar.
-; Ejemplo: x1000 = 1.0 -> RES_EXP = x02B8 = 696 -> 696/256 = 2.71875.
+; EXP para la interfaz del Grupo 27 y el simulador del Grupo 8.
+; Entrada: R0 en Q3.12 con signo. Salida: R0 en Q7.8 con signo.
+; Conserva R1, R2, R3, R4, R5 y R7. R6 no se utiliza ni se modifica.
+; EXP_Q3_12 es el simbolo usado por .EXTERNAL g6_EXP-EXP_Q3_12.
+; El archivo contiene una subrutina y termina en .END.
+; El programa principal aporta .ORIG, carga R0 y llama mediante JSR/JSRR.
+;
+; EST_EXP y NUM_ITER quedan en memoria, en lugar de devolverse en R1/R2.
 ; EST_EXP: 0 = normal, 1 = saturado, 2 = redondeado a cero.
-; NUM_ITER: 6 en el calculo normal, 0 si se detecta saturacion al entrar.
+; NUM_ITER: 6 en el calculo normal, 0 en saturacion detectada al entrar.
+; Ejemplo: R0=x3000 (3) -> R0=x1416 (5142/256 = 20.0859375).
+; Otro ejemplo: R0=x1000 (1) -> R0=x02B8 (696/256 = 2.71875).
+; CC refleja el resultado al retornar. No hay TRAP ni HALT en la rutina.
 ;
-; EXP_Q3_12 es invocable con JSR. R0 entra como Q3.12 y retorna Q7.8.
-; R1 retorna el estado y R2, las iteraciones. Modifica R3-R6 y CC.
-; Usa memoria de trabajo estatica. R7 se guarda antes de llamar auxiliares.
-; La entrada y la salida se pasan como enteros ya codificados en punto fijo.
+; Aritmetica multiplicativa de base 16 con escala interna 2^30.
+; Usa almacenamiento estatico: las llamadas deben ser secuenciales.
+; La rutina no debe invocarse recursivamente ni desde una interrupcion
+; mientras otra llamada a EXP esta en curso.
 ;
-; Representacion interna: escala 2^30, en tres palabras de 15 bits utiles.
-; Un entero V se representa como V0 + V1*2^15 + V2*2^30.
-; Se reserva el bit alto de cada palabra para detectar acarreos/prestamos.
-;
-; Bloque de trabajo (R6 como base):
-;  0  retorno de EXP           1-3  residuo (bajo, medio, alto)
-;  4  k                        5    bandera de entrada negativa
-;  6-8 acumulador E            9    reservado
-; 10  puntero a fila de tabla 11    desplazamiento 4*j
-; 12  iteraciones             13-15 temporal para desplazamiento
-; 16  retorno de REDONDEA     17    puntero de lectura de REDONDEA
-
-        .ORIG x3000
-        LD R0, ENTRADA
-        JSR EXP_Q3_12
-        ST R0, RES_EXP
-        ST R1, EST_EXP
-        ST R2, NUM_ITER
-        HALT
-
-ENTRADA .FILL x1000
-RES_EXP .BLKW #1
-EST_EXP .BLKW #1
-NUM_ITER .BLKW #1
+; TRABAJO usa R5 como base. Cada valor interno tiene tres palabras
+; de 15 bits utiles. El desplazamiento 9 preserva el contador de REDONDEA.
 
 EXP_Q3_12
-        LD R6, PTR_TRABAJO
-        STR R7, R6, #0
+        ST R1, G6_EXP_R1
+        ST R2, G6_EXP_R2
+        ST R3, G6_EXP_R3
+        ST R4, G6_EXP_R4
+        ST R5, G6_EXP_R5
+        ST R7, G6_EXP_R7
+        JSR G6_EXP_CALCULA
+        ST R1, EST_EXP
+        ST R2, NUM_ITER
+        LD R1, G6_EXP_R1
+        LD R2, G6_EXP_R2
+        LD R3, G6_EXP_R3
+        LD R4, G6_EXP_R4
+        LD R5, G6_EXP_R5
+        LD R7, G6_EXP_R7
+        ADD R0, R0, #0
+        RET
+
+G6_EXP_R1 .BLKW #1
+G6_EXP_R2 .BLKW #1
+G6_EXP_R3 .BLKW #1
+G6_EXP_R4 .BLKW #1
+G6_EXP_R5 .BLKW #1
+G6_EXP_R7 .BLKW #1
+EST_EXP   .BLKW #1
+NUM_ITER  .BLKW #1
+
+G6_EXP_CALCULA
+        LD R5, PTR_TRABAJO
+        STR R7, R5, #0
         AND R1, R1, #0
-        STR R1, R6, #4
-        STR R1, R6, #5
-        STR R1, R6, #12
+        STR R1, R5, #4
+        STR R1, R5, #5
+        STR R1, R5, #12
         ADD R0, R0, #0
         BRn EXP_NEG
         LD R2, NEG_LIMITE
@@ -49,7 +63,7 @@ EXP_Q3_12
         BRnzp ESCALA
 EXP_NEG
         ADD R1, R1, #1
-        STR R1, R6, #5
+        STR R1, R5, #5
         NOT R0, R0
         ADD R0, R0, #1     ; Magnitud sin signo, incluso x8000.
 
@@ -57,13 +71,13 @@ ESCALA
         ; De Q3.12 a escala 2^30: magnitud << 18.
         ; V0=0, V1=(magnitud << 3) mod 2^15, V2=bits 15..12.
         AND R1, R1, #0
-        STR R1, R6, #1
+        STR R1, R5, #1
         ADD R1, R0, R0
         ADD R1, R1, R1
         ADD R1, R1, R1
-        LD R5, MASK15
-        AND R1, R1, R5
-        STR R1, R6, #2
+        LD R7, MASK15
+        AND R1, R1, R7
+        STR R1, R5, #2
         AND R2, R2, #0
         AND R3, R3, #0
         ADD R3, R3, #4
@@ -76,14 +90,14 @@ ESCALA_SIG
         ADD R0, R0, R0
         ADD R3, R3, #-1
         BRp ESCALA_BITS
-        STR R2, R6, #3
+        STR R2, R5, #3
 
         ; Reducir |x| por restas de ln(2), sin division de hardware.
         ; Si la resta de prueba es negativa se conserva el residuo anterior.
 REDUCE
-        LDR R0, R6, #1
-        LDR R1, R6, #2
-        LDR R2, R6, #3
+        LDR R0, R5, #1
+        LDR R1, R5, #2
+        LDR R2, R5, #3
         LD R3, NEG_LN_LO
         ADD R0, R0, R3
         BRzp REDUCE_MED
@@ -96,23 +110,23 @@ REDUCE_MED
 REDUCE_ALTO
         ADD R2, R2, #0
         BRn REDUCE_SIGNO
-        AND R0, R0, R5
-        AND R1, R1, R5
-        STR R0, R6, #1
-        STR R1, R6, #2
-        STR R2, R6, #3
-        LDR R3, R6, #4
+        AND R0, R0, R7
+        AND R1, R1, R7
+        STR R0, R5, #1
+        STR R1, R5, #2
+        STR R2, R5, #3
+        LDR R3, R5, #4
         ADD R3, R3, #1
-        STR R3, R6, #4
+        STR R3, R5, #4
         BRnzp REDUCE
 
 REDUCE_SIGNO
-        LDR R0, R6, #5
+        LDR R0, R5, #5
         BRz EXP_INICIA
-        LDR R2, R6, #4
+        LDR R2, R5, #4
         NOT R2, R2         ; Si hay resto, k = -cociente - 1.
-        LDR R0, R6, #1
-        LDR R1, R6, #2
+        LDR R0, R5, #1
+        LDR R1, R5, #2
         ADD R3, R0, R1    ; Suma cero solo si ambas palabras son cero.
         BRnp REDUCE_COMP
         ADD R2, R2, #1     ; Resto cero: k = -cociente.
@@ -130,23 +144,23 @@ REDUCE_COMP
 REDUCE_COMP_MI
         LD R3, LN_MI
         ADD R1, R1, R3
-        AND R0, R0, R5
-        STR R0, R6, #1
-        STR R1, R6, #2
+        AND R0, R0, R7
+        STR R0, R5, #1
+        STR R1, R5, #2
 REDUCE_GUARDA
-        STR R2, R6, #4
+        STR R2, R5, #4
 
 EXP_INICIA
         ; E = 1 -> entero 2^30 -> palabras [0, 0, 1].
         AND R0, R0, #0
-        STR R0, R6, #6
-        STR R0, R6, #7
+        STR R0, R5, #6
+        STR R0, R5, #7
         ADD R0, R0, #1
-        STR R0, R6, #8
+        STR R0, R5, #8
         ADD R0, R0, #3
-        STR R0, R6, #11
+        STR R0, R5, #11
         LD R0, PTR_D16
-        STR R0, R6, #10
+        STR R0, R5, #10
         BRnzp EXP_PASO
 
 ; Constantes de reduccion. ln(2)*2^30 redondeado = 744261118.
@@ -160,13 +174,13 @@ NEG_LN_LO   .FILL #-1534
 NEG_LN_MI   .FILL #-22713
 
 EXP_PASO
-        LDR R3, R6, #10    ; Comenzar por el digito 16 de la fila.
-        AND R5, R5, #0
-        ADD R5, R5, #15
-        ADD R5, R5, #1
+        LDR R3, R5, #10    ; Comenzar por el digito 16 de la fila.
+        AND R7, R7, #0
+        ADD R7, R7, #15
+        ADD R7, R7, #1
 EXP_BUSCA
-        LDR R0, R6, #1
-        LDR R1, R6, #2
+        LDR R0, R5, #1
+        LDR R1, R5, #2
         LDR R4, R3, #0     ; Probar r - tabla[j][d] en dos palabras.
         NOT R4, R4
         ADD R4, R4, #1
@@ -180,14 +194,14 @@ EXP_BUSCA_MI
         ADD R1, R1, R4
         BRzp EXP_ACEPTA
         ADD R3, R3, #-2    ; Digito anterior en la misma fila.
-        ADD R5, R5, #-1
+        ADD R7, R7, #-1
         BRnzp EXP_BUSCA
 EXP_ACEPTA
-        ADD R3, R5, #0     ; Guardar digito en R3 para el producto.
-        LD R5, MASK15
-        AND R0, R0, R5
-        STR R0, R6, #1
-        STR R1, R6, #2
+        ADD R3, R7, #0     ; Guardar digito en R3 para el producto.
+        LD R7, MASK15
+        AND R0, R0, R7
+        STR R0, R5, #1
+        STR R1, R5, #2
 
         ; Producto E*d por sumas. d <= 16. R2:R1:R0 acumula.
         AND R0, R0, #0
@@ -196,69 +210,69 @@ EXP_ACEPTA
         ADD R3, R3, #0
         BRz EXP_MULT_FIN
 EXP_MULT
-        LDR R4, R6, #6
+        LDR R4, R5, #6
         ADD R0, R0, R4
         BRzp EXP_MULT_MI
-        AND R0, R0, R5
+        AND R0, R0, R7
         ADD R1, R1, #1
 EXP_MULT_MI
-        LDR R4, R6, #7
+        LDR R4, R5, #7
         ADD R1, R1, R4
         BRzp EXP_MULT_ALTO
-        AND R1, R1, R5
+        AND R1, R1, R7
         ADD R2, R2, #1
 EXP_MULT_ALTO
-        LDR R4, R6, #8
+        LDR R4, R5, #8
         ADD R2, R2, R4
         ADD R3, R3, #-1
         BRp EXP_MULT
 EXP_MULT_FIN
-        STR R0, R6, #13
-        STR R1, R6, #14
-        STR R2, R6, #15
-        LDR R0, R6, #11    ; Dividir E*d por 2^(4*j) con redondeo.
+        STR R0, R5, #13
+        STR R1, R5, #14
+        STR R2, R5, #15
+        LDR R0, R5, #11    ; Dividir E*d por 2^(4*j) con redondeo.
         JSR REDONDEA
 
         ; Acumular E <- E + redondeo(E*d/2^(4*j)).
-        LD R5, MASK15
-        LDR R3, R6, #6
+        LD R7, MASK15
+        LDR R3, R5, #6
         ADD R0, R0, R3
         BRzp EXP_SUMA_MI
-        AND R0, R0, R5
+        AND R0, R0, R7
         ADD R1, R1, #1
 EXP_SUMA_MI
-        LDR R3, R6, #7
+        LDR R3, R5, #7
         ADD R1, R1, R3
         BRzp EXP_SUMA_ALTO
-        AND R1, R1, R5
+        AND R1, R1, R7
         ADD R2, R2, #1
 EXP_SUMA_ALTO
-        LDR R3, R6, #8
+        LDR R3, R5, #8
         ADD R2, R2, R3
-        STR R0, R6, #6
-        STR R1, R6, #7
-        STR R2, R6, #8
-        LDR R3, R6, #12
+        STR R0, R5, #6
+        STR R1, R5, #7
+        STR R2, R5, #8
+        LDR R3, R5, #12
         ADD R3, R3, #1
-        STR R3, R6, #12
+        STR R3, R5, #12
         ADD R3, R3, #-6
         BRz EXP_SALIDA
-        LDR R0, R6, #10
+        LDR R0, R5, #10
         ADD R0, R0, #15
         ADD R0, R0, #15
         ADD R0, R0, #4     ; 17 constantes de dos palabras por fila.
-        STR R0, R6, #10
-        LDR R0, R6, #11
+        STR R0, R5, #10
+        LDR R0, R5, #11
         ADD R0, R0, #4
-        STR R0, R6, #11
+        STR R0, R5, #11
         BRnzp EXP_PASO
 
 EXP_SALIDA
         ; Q7.8 = redondeo(E_entero / 2^(30-8-k)).
-        STR R0, R6, #13
-        STR R1, R6, #14
-        STR R2, R6, #15
-        LDR R0, R6, #4
+        STR R0, R5, #13
+        STR R1, R5, #14
+        STR R2, R5, #15
+        LDR R0, R5, #4
         NOT R0, R0
         ADD R0, R0, #1
         ADD R0, R0, #15
@@ -275,8 +289,8 @@ EXP_SAT
         AND R1, R1, #0
         ADD R1, R1, #1
 EXP_FIN
-        LDR R2, R6, #12
-        LDR R7, R6, #0
+        LDR R2, R5, #12
+        LDR R7, R5, #0
         RET
 
 ; REDONDEA: entero sin signo de 45 bits en TRABAJO+13..15.
@@ -284,35 +298,40 @@ EXP_FIN
 ; Lee los 45-n bits altos y el siguiente bit decide el redondeo.
 ; En los usos de EXP, el resultado cabe en las tres palabras.
 REDONDEA
-        STR R7, R6, #16
-        LD R7, MASK15
-        NOT R5, R0
-        ADD R5, R5, #1
-        ADD R5, R5, #15
-        ADD R5, R5, #15
-        ADD R5, R5, #15    ; 45-n: bits que hay que copiar.
+        STR R7, R5, #16
+        NOT R7, R0
+        ADD R7, R7, #1
+        ADD R7, R7, #15
+        ADD R7, R7, #15
+        ADD R7, R7, #15    ; 45-n: bits que hay que copiar.
         AND R0, R0, #0
         AND R1, R1, #0
         AND R2, R2, #0
-        ADD R3, R6, #15
+        ADD R3, R5, #15
 RED_CARGA
-        STR R3, R6, #17
+        STR R3, R5, #17
         LDR R3, R3, #0
         ADD R3, R3, R3     ; Bit 14 de la palabra pasa al signo.
         AND R4, R4, #0
         ADD R4, R4, #15
 RED_BIT
-        ADD R5, R5, #0
+        ADD R7, R7, #0
         BRz RED_AJUSTA
         ADD R2, R2, R2
         ADD R1, R1, R1
         BRzp RED_DUP_BAJO
-        AND R1, R1, R7
+        STR R4, R5, #9    ; Preservar contador de bits.
+        LD R4, MASK15
+        AND R1, R1, R4
+        LDR R4, R5, #9
         ADD R2, R2, #1
 RED_DUP_BAJO
         ADD R0, R0, R0
         BRzp RED_INSERTA
-        AND R0, R0, R7
+        STR R4, R5, #9    ; Preservar contador de bits.
+        LD R4, MASK15
+        AND R0, R0, R4
+        LDR R4, R5, #9
         ADD R1, R1, #1
 RED_INSERTA
         ADD R3, R3, #0
@@ -320,10 +339,10 @@ RED_INSERTA
         ADD R0, R0, #1
 RED_SIG_BIT
         ADD R3, R3, R3
-        ADD R5, R5, #-1
+        ADD R7, R7, #-1
         ADD R4, R4, #-1
         BRp RED_BIT
-        LDR R3, R6, #17
+        LDR R3, R5, #17
         ADD R3, R3, #-1
         BRnzp RED_CARGA
 RED_AJUSTA
@@ -331,13 +350,19 @@ RED_AJUSTA
         BRzp RED_RETORNO
         ADD R0, R0, #1
         BRzp RED_RETORNO
-        AND R0, R0, R7
+        STR R4, R5, #9    ; Preservar contador de bits.
+        LD R4, MASK15
+        AND R0, R0, R4
+        LDR R4, R5, #9
         ADD R1, R1, #1
         BRzp RED_RETORNO
-        AND R1, R1, R7
+        STR R4, R5, #9    ; Preservar contador de bits.
+        LD R4, MASK15
+        AND R1, R1, R4
+        LDR R4, R5, #9
         ADD R2, R2, #1
 RED_RETORNO
-        LDR R7, R6, #16
+        LDR R7, R5, #16
         RET
 
 TRABAJO .BLKW #18

@@ -7,8 +7,9 @@
         LD      R4, DIRECCION_MULT
         JSRR    R4
 
-        ST      R0, RESULTADO_BAJO
-        ST      R1, RESULTADO_ALTO
+        ; Al volver: R0 = parte entera, R1 = parte fraccionaria
+        ST      R0, RESULTADO_ENTERO
+        ST      R1, RESULTADO_FRACCION
         HALT
 
 ; 1.5 en Q8.8
@@ -19,8 +20,10 @@ OPERANDO_B:     .FILL x0240
 
 DIRECCION_MULT: .FILL MultiplicacionSHIFTandADD-MULTIPLICARSHIFTANDADD
 
-; Resultado esperado: 3.375 en Q16.16 = x00036000
-RESULTADO_BAJO: .FILL #0
-RESULTADO_ALTO: .FILL #0
+; Resultado esperado: 3.375 en Q16.16 = x0003.6000
+;   RESULTADO_ENTERO   = x0003
+;   RESULTADO_FRACCION = x6000
+RESULTADO_ENTERO:   .FILL #0
+RESULTADO_FRACCION: .FILL #0
 
 .END
