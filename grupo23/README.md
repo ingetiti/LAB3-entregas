@@ -7,6 +7,28 @@
 - Kamchem, Melina (@melika2332)
 - Wereszczuk, Danna Maira (@wereszczukdanna-cell)
 
+## Lab 3c · LOVELACE (simulador funcional)
+
+**LOVELACE** es la ISA de 16 bits del grupo; su nombre es un homenaje a Ada Lovelace. Todo lo del Lab 3c está en
+[`lab3c/`](lab3c/), con su instructivo en [`lab3c/README.md`](lab3c/README.md):
+
+- `lab3c/simulador/`: simulador funcional (`simulador.py`), interfaz gráfica (`interfaz.py`) y ensamblador.
+- `lab3c/benchmark/`: el benchmark ya ensamblado (`.hex`, `.bin`) y los `.asm` con que se ensambla.
+- `lab3c/ejemplos/`: la calculadora por teclado y un programa de prueba de teclado.
+
+| | LC-3 | LOVELACE |
+|---|---:|---:|
+| Instrucciones del programa | 357 505 | **17 905** (19,97× menos) |
+| Instrucciones con el sistema operativo | 379 579 | **28 855** (13,15× menos) |
+| Memoria del programa | 15 792 B | **11 980 B** |
+
+La salida del benchmark es idéntica a la de la LC-3 en las 23 operaciones. Ejecutar, desde `grupo23/lab3c/`:
+
+```
+python simulador/simulador.py benchmark/benchmark_g23.hex
+python simulador/interfaz.py
+```
+
 ## Archivos
 - `alto_nivel/lab3a.cpp`: Programa en C++ con la demostración de conversión a formato Q, compatibilización de formatos (Q3.12 y Q7.8) y operaciones de suma, resta, producto y división.
 - `asm/lab3a.asm`: Implementación en assembly LC-3 de las conversiones de formato, la suma, la resta y la multiplicación en punto fijo, utilizando subrutinas de corrimiento (`SHL32`), control de rango (`RANGO12`) y multiplicación por desplazamiento y suma (`MULS`).

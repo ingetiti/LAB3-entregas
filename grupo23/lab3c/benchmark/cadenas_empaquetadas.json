@@ -1,0 +1,397 @@
+{
+ "descripcion": "Cadenas que solo imprime PUTS (ver isa_g23/buscar_cadenas.py)",
+ "cadenas": [
+  {
+   "modulo": "g24_conversor_lc3_max",
+   "etiqueta": "BASE_BIN_LBL"
+  },
+  {
+   "modulo": "g24_conversor_lc3_max",
+   "etiqueta": "BASE_HEX_LBL"
+  },
+  {
+   "modulo": "g27_getval",
+   "etiqueta": "GETVAL_LBRAKET"
+  },
+  {
+   "modulo": "g27_getval",
+   "etiqueta": "GETVAL_RBRAKET"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_ARGRD_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_BASE_BIN_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_BASE_HEX_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_BASE_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_COS_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_DIV_CORDIC_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_DIV_LONG_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_DIV_NR_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_DIV_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_EXP_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_INIT_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_LOG_BORCH_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_LOG_CORDIC_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_LOG_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_MCD_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_MCM_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_MULT_BASIC_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_MULT_BOOTH_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_MULT_CORDIC_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_MULT_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_POW_EXPBIN_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_POW_MULTS_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_POW_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q0A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q0B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q0_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q12A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q12_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q14_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q15A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q15B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q15_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q16A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q16_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q7A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q7_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q8A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q8B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q8_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q9_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_QTOQ_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SIN_CHEB_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SIN_TABLE_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SIN_TAYLOR_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SIN_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SQRT_NONRES_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SQRT_NR_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SQRT_TEXT"
+  },
+  {
+   "modulo": "g27_pause",
+   "etiqueta": "PAUSE_PROMPT"
+  }
+ ],
+ "excluidas": [
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_BASE_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_DIV_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_INIT_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_LOG_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_MULT_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_POW_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SIN_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_SQRT_FILTER",
+   "motivo": "lectura desde el programa (PC x4416)"
+  }
+ ],
+ "no_impresas": [
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q10A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q10B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q10_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q11A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q11B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q11_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q12B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q13A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q13B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q13_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q14A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q14B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q16B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q1A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q1B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q1_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q2A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q2B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q2_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q3A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q3B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q3_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q4A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q4B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q4_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q5A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q5B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q5_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q6A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q6B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q6_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q7B_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q9A_TEXT"
+  },
+  {
+   "modulo": "g27_main_menu_progreso",
+   "etiqueta": "MAIN_MENU_PROMPT_Q9B_TEXT"
+  }
+ ]
+}

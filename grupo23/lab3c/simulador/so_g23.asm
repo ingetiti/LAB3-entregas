@@ -1,0 +1,350 @@
+; Sistema operativo minimo de la ISA LOVELACE (port del lc3os.asm del simulador web).
+; TRAP apila PSR y PC en la pila del supervisor; los servicios vuelven con RTI.
+; Tabla de vectores: 256 palabras (x0000-x01FF); vector v en la direccion 2*v.
+.ORIG x0000
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_GETC
+.FILL OS_OUT
+.FILL OS_PUTS
+.FILL OS_IN
+.FILL OS_PUTS
+.FILL OS_HALT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+.FILL OS_FAULT
+
+OS_GETC     PUSH R1
+OS_GETC_W   LD R1, OS_KBSR_P
+            LDR R1, R1, #0
+            BRzp OS_GETC_W
+            LD R0, OS_KBDR_P
+            LDR R0, R0, #0
+            POP R1
+            RTI
+
+; OUT: espera a que el display este listo (DSR bit 15 = 1) y escribe R0 en DDR.
+; DDR (xFE06) esta una palabra despues de DSR (xFE04): se escribe con desplazamiento #1.
+OS_OUT      PUSH R1, R2
+            LD R1, OS_DSR_P
+OS_OUT_W    LDR R2, R1, #0
+            BRzp OS_OUT_W
+            STR R0, R1, #1          ; DDR <- R0
+            POP R1, R2
+            RTI
+
+; PUTS (y PUTSP): imprime una cadena de uno o dos caracteres por palabra y termina en
+; una palabra 0. De cada palabra escribe el byte bajo y, si no es 0, el alto. Asi sirve
+; para .STRINGZ (un caracter por palabra: el byte alto siempre es 0) y para .STRINGP
+; (dos caracteres por palabra, con una palabra 0 al final).
+; Escribe directamente en el display, sin llamar a OUT por cada caracter: el DDR solo
+; muestra el byte bajo, asi que la palabra entera se puede escribir tal cual.
+; El lazo prueba el fin de cadena al final (do-while): una instruccion menos por palabra.
+; R0 se usa directamente como puntero (se restaura con el POP) y R1 como temporal.
+OS_PUTS     PUSH R0, R1, R2, R3
+            LD R3, OS_DSR_P         ; R3 = DSR; DDR = R3 + 1 palabra
+            LDR R2, R0, #0
+            BRz OS_PUTS_F           ; cadena vacia
+OS_PUTS_W1  LDR R1, R3, #0
+            BRzp OS_PUTS_W1
+            STR R2, R3, #1          ; byte bajo
+            LSR R1, R2, #8          ; byte alto
+            BRz OS_PUTS_N
+OS_PUTS_W2  LDR R2, R3, #0
+            BRzp OS_PUTS_W2
+            STR R1, R3, #1
+OS_PUTS_N   ADD R0, R0, #2
+            LDR R2, R0, #0
+            BRnp OS_PUTS_W1         ; mientras la palabra no sea 0
+OS_PUTS_F   POP R0, R1, R2, R3
+            RTI
+
+OS_IN       LEA R0, OS_PROMPT
+            PUTS
+            GETC
+            OUT
+            RTI
+
+OS_FAULT    LEA R0, OS_FAULT_T
+            PUTS
+            HALT
+            RTI
+
+; HALT: imprime el mensaje, restaura R0 y R1 y detiene el reloj (bit 15 de MCR = 0).
+; Como ya no hay STI, la escritura final usa solo R6 (la pila del supervisor, libre:
+; el R6 del usuario esta guardado): con R6 = 2, STR R6,R6,#-2 escribe el valor 2
+; (bit 15 = 0) en la direccion 2 - 4 = xFFFE (MCR). Asi R0-R5 y R7 quedan intactos.
+; Si se vuelve a encender el reloj, RTI regresa despues del HALT.
+OS_HALT     PUSH R0, R1
+            LEA R0, OS_HALT_T
+            PUTS
+            POP R0, R1
+            ST R6, OS_HALT_SSP
+            AND R6, R6, #0
+            ADD R6, R6, #2
+            STR R6, R6, #-2         ; MCR = x0002 -> se detiene el reloj
+            LD R6, OS_HALT_SSP
+            RTI
+
+OS_HALT_SSP .FILL #0
+
+OS_KBSR_P   .FILL xFE00
+OS_KBDR_P   .FILL xFE02
+OS_DSR_P    .FILL xFE04
+OS_DDR_P    .FILL xFE06
+OS_MCR_P    .FILL xFFFE
+OS_PROMPT   .STRINGZ "Enter a character: "
+OS_FAULT_T  .STRINGZ "LC-3 exception"
+OS_HALT_T   .FILL x000A
+            .FILL x0048
+            .FILL x0041
+            .FILL x004C
+            .FILL x0054
+            .FILL x000A
+            .FILL x0000
+.END
