@@ -1,0 +1,26 @@
+{
+  "folders": [{"path": "."}],
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Ejecutar benchmark",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/simulador.py",
+        "args": ["benchmark/benchmark_adaptado.obj"],
+        "cwd": "${workspaceFolder}",
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "Ensamblar benchmark",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/ensamblador.py",
+        "args": ["benchmark/main_grupo27.asm", "-o", "benchmark/benchmark_adaptado.obj"],
+        "cwd": "${workspaceFolder}",
+        "console": "integratedTerminal"
+      }
+    ]
+  }
+}
