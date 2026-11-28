@@ -1,0 +1,156 @@
+3000  3292          ST R1, #146   ; -> x3093         | ST   R1, guardado_r1
+3001  3492          ST R2, #146   ; -> x3094         | ST   R2, guardado_r2
+3002  3692          ST R3, #146   ; -> x3095         | ST   R3, guardado_r3
+3003  3892          ST R4, #146   ; -> x3096         | ST   R4, guardado_r4
+3004  3A92          ST R5, #146   ; -> x3097         | ST   R5, guardado_r5
+3005  3E92          ST R7, #146   ; -> x3098         | ST   R7, guardado_r7
+3006  1020          ADD R0, R0, #0                   | ADD  R0, R0, #0
+3007  0C41          BRnz #65   ; -> x3049            | BRnz LOG_MIN                 ; m <= 0 : no definido
+3008  5B60          AND R5, R5, #0                   | AND  R5, R5, #0
+3009  2868          LD R4, #104   ; -> x3072         | LD   R4, NEG_HALF
+300A  1204          ADD R1, R0, R4                   | NORM    ADD  R1, R0, R4
+300B  0603          BRzp #3   ; -> x300F             | BRzp NORM_OK
+300C  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0
+300D  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1
+300E  0FFB          BRnzp #-5   ; -> x300A           | BRnzp NORM
+300F  3A81          ST R5, #129   ; -> x3091         | NORM_OK ST   R5, var_k
+3010  5B60          AND R5, R5, #0                   | AND  R5, R5, #0
+3011  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1
+3012  4840          JSR #64   ; -> x3053             | JSR  ASR                     ; R0 = m >> 1
+3013  285D          LD R4, #93   ; -> x3071          | LD   R4, HALF_Q12
+3014  1204          ADD R1, R0, R4                   | ADD  R1, R0, R4              ; x
+3015  993F          NOT R4, R4                       | NOT  R4, R4
+3016  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+3017  1404          ADD R2, R0, R4                   | ADD  R2, R0, R4              ; y
+3018  56E0          AND R3, R3, #0                   | AND  R3, R3, #0              ; z
+3019  5920          AND R4, R4, #0                   | AND  R4, R4, #0              ; indice de tabla
+301A  EA5A          LEA R5, #90   ; -> x3075         | ITER    LEA  R5, SEQ_I
+301B  1B44          ADD R5, R5, R4                   | ADD  R5, R5, R4
+301C  6B40          LDR R5, R5, #0                   | LDR  R5, R5, #0              ; R5 = i (0 = fin)
+301D  041E          BRz #30   ; -> x303C             | BRz  FIN
+301E  1060          ADD R0, R1, #0                   | ADD  R0, R1, #0
+301F  4833          JSR #51   ; -> x3053             | JSR  ASR                     ; R0 = x >> i
+3020  3071          ST R0, #113   ; -> x3092         | ST   R0, var_xs
+3021  10A0          ADD R0, R2, #0                   | ADD  R0, R2, #0
+3022  4830          JSR #48   ; -> x3053             | JSR  ASR                     ; R0 = y >> i  (ASR conserva R5)
+3023  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0
+3024  020A          BRp #10   ; -> x302F             | BRp  Y_POS
+3025  1240          ADD R1, R1, R0                   | ADD  R1, R1, R0              ; y<=0 : x += y>>i
+3026  206B          LD R0, #107   ; -> x3092         | LD   R0, var_xs
+3027  1480          ADD R2, R2, R0                   | ADD  R2, R2, R0              ;        y += x>>i
+3028  EA5A          LEA R5, #90   ; -> x3083         | LEA  R5, LUT_ATANH
+3029  1B44          ADD R5, R5, R4                   | ADD  R5, R5, R4
+302A  6B40          LDR R5, R5, #0                   | LDR  R5, R5, #0
+302B  9B7F          NOT R5, R5                       | NOT  R5, R5
+302C  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1
+302D  16C5          ADD R3, R3, R5                   | ADD  R3, R3, R5              ;        z -= atanh
+302E  0E0B          BRnzp #11   ; -> x303A           | BRnzp NEXT
+302F  903F          NOT R0, R0                       | Y_POS   NOT  R0, R0              ; y>0 : x -= y>>i
+3030  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1
+3031  1240          ADD R1, R1, R0                   | ADD  R1, R1, R0
+3032  205F          LD R0, #95   ; -> x3092          | LD   R0, var_xs
+3033  903F          NOT R0, R0                       | NOT  R0, R0
+3034  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1
+3035  1480          ADD R2, R2, R0                   | ADD  R2, R2, R0              ;       y -= x>>i
+3036  EA4C          LEA R5, #76   ; -> x3083         | LEA  R5, LUT_ATANH
+3037  1B44          ADD R5, R5, R4                   | ADD  R5, R5, R4
+3038  6B40          LDR R5, R5, #0                   | LDR  R5, R5, #0
+3039  16C5          ADD R3, R3, R5                   | ADD  R3, R3, R5              ;       z += atanh
+303A  1921          ADD R4, R4, #1                   | NEXT    ADD  R4, R4, #1
+303B  0FDE          BRnzp #-34   ; -> x301A          | BRnzp ITER
+303C  16C3          ADD R3, R3, R3                   | FIN     ADD  R3, R3, R3          ; 2*z = ln(m*2^k)
+303D  2A53          LD R5, #83   ; -> x3091          | LD   R5, var_k
+303E  0408          BRz #8   ; -> x3047              | BRz  FIN_OK
+303F  1375          ADD R1, R5, #-11                 | ADD  R1, R5, #-11
+3040  0608          BRzp #8   ; -> x3049             | BRzp LOG_MIN                 ; k >= 11 : ln < -8, satura
+3041  2231          LD R1, #49   ; -> x3073          | LD   R1, LN2_Q12
+3042  927F          NOT R1, R1                       | NOT  R1, R1
+3043  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1              ; -ln2
+3044  16C1          ADD R3, R3, R1                   | RESTA   ADD  R3, R3, R1          ; ln(m) = ln(m*2^k) - k*ln2
+3045  1B7F          ADD R5, R5, #-1                  | ADD  R5, R5, #-1
+3046  03FD          BRp #-3   ; -> x3044             | BRp  RESTA
+3047  3648          ST R3, #72   ; -> x3090          | FIN_OK  ST   R3, resultado
+3048  0E02          BRnzp #2   ; -> x304B            | BRnzp LOG_RET
+3049  262A          LD R3, #42   ; -> x3074          | LOG_MIN LD   R3, MIN_Q12
+304A  3645          ST R3, #69   ; -> x3090          | ST   R3, resultado
+304B  2044          LD R0, #68   ; -> x3090          | LOG_RET LD   R0, resultado
+304C  2246          LD R1, #70   ; -> x3093          | LD   R1, guardado_r1
+304D  2446          LD R2, #70   ; -> x3094          | LD   R2, guardado_r2
+304E  2646          LD R3, #70   ; -> x3095          | LD   R3, guardado_r3
+304F  2846          LD R4, #70   ; -> x3096          | LD   R4, guardado_r4
+3050  2A46          LD R5, #70   ; -> x3097          | LD   R5, guardado_r5
+3051  2E46          LD R7, #70   ; -> x3098          | LD   R7, guardado_r7
+3052  C1C0          RET                              | RET
+3053  3245          ST R1, #69   ; -> x3099          | ASR     ST   R1, asr_r1
+3054  3445          ST R2, #69   ; -> x309A          | ST   R2, asr_r2
+3055  3645          ST R3, #69   ; -> x309B          | ST   R3, asr_r3
+3056  5260          AND R1, R1, #0                   | AND  R1, R1, #0              ; bandera de negativo
+3057  1020          ADD R0, R0, #0                   | ADD  R0, R0, #0
+3058  0603          BRzp #3   ; -> x305C             | BRzp A_POS
+3059  903F          NOT R0, R0                       | NOT  R0, R0
+305A  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1
+305B  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1
+305C  977F          NOT R3, R5                       | A_POS   NOT  R3, R5
+305D  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1
+305E  16EF          ADD R3, R3, #15                  | ADD  R3, R3, #15
+305F  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1              ; 16 - n iteraciones
+3060  54A0          AND R2, R2, #0                   | AND  R2, R2, #0
+3061  1482          ADD R2, R2, R2                   | A_LOOP  ADD  R2, R2, R2
+3062  1020          ADD R0, R0, #0                   | ADD  R0, R0, #0
+3063  0601          BRzp #1   ; -> x3065             | BRzp A_Z
+3064  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3065  1000          ADD R0, R0, R0                   | A_Z     ADD  R0, R0, R0
+3066  16FF          ADD R3, R3, #-1                  | ADD  R3, R3, #-1
+3067  03F9          BRp #-7   ; -> x3061             | BRp  A_LOOP
+3068  10A0          ADD R0, R2, #0                   | ADD  R0, R2, #0
+3069  1260          ADD R1, R1, #0                   | ADD  R1, R1, #0
+306A  0402          BRz #2   ; -> x306D              | BRz  A_END
+306B  903F          NOT R0, R0                       | NOT  R0, R0
+306C  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1
+306D  222B          LD R1, #43   ; -> x3099          | A_END   LD   R1, asr_r1
+306E  242B          LD R2, #43   ; -> x309A          | LD   R2, asr_r2
+306F  262B          LD R3, #43   ; -> x309B          | LD   R3, asr_r3
+3070  C1C0          RET                              | RET
+3071  0800                                           | HALF_Q12  .FILL x0800            ; 0.5
+3072  F800                                           | NEG_HALF  .FILL xF800            ; -0.5
+3073  0B17                                           | LN2_Q12   .FILL #2839            ; ln(2)*4096
+3074  8000                                           | MIN_Q12   .FILL x8000            ; -8.0
+3075  0001                                           | SEQ_I     .FILL #1
+3076  0002                                           | .FILL #2
+3077  0003                                           | .FILL #3
+3078  0004                                           | .FILL #4
+3079  0004                                           | .FILL #4                     ; repeticion obligatoria
+307A  0005                                           | .FILL #5
+307B  0006                                           | .FILL #6
+307C  0007                                           | .FILL #7
+307D  0008                                           | .FILL #8
+307E  0009                                           | .FILL #9
+307F  000A                                           | .FILL #10
+3080  000B                                           | .FILL #11
+3081  000C                                           | .FILL #12
+3082  0000                                           | .FILL #0
+3083  08CA                                           | .FILL #2250
+3084  0416                                           | .FILL #1046
+3085  0203                                           | .FILL #515
+3086  0100                                           | .FILL #256
+3087  0100                                           | .FILL #256
+3088  0080                                           | .FILL #128
+3089  0040                                           | .FILL #64
+308A  0020                                           | .FILL #32
+308B  0010                                           | .FILL #16
+308C  0008                                           | .FILL #8
+308D  0004                                           | .FILL #4
+308E  0002                                           | .FILL #2
+308F  0001                                           | .FILL #1
+3090  0000                                           | resultado   .FILL #0
+3091  0000                                           | var_k       .FILL #0
+3092  0000                                           | var_xs      .FILL #0
+3093  0000                                           | guardado_r1 .FILL #0
+3094  0000                                           | guardado_r2 .FILL #0
+3095  0000                                           | guardado_r3 .FILL #0
+3096  0000                                           | guardado_r4 .FILL #0
+3097  0000                                           | guardado_r5 .FILL #0
+3098  0000                                           | guardado_r7 .FILL #0
+3099  0000                                           | asr_r1      .FILL #0
+309A  0000                                           | asr_r2      .FILL #0
+309B  0000                                           | asr_r3      .FILL #0

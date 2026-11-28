@@ -1,0 +1,21 @@
+3000  3412          ST R2, #18   ; -> x3013          | ST R2 circlsh_r2                    ;   [R2] n
+3001  3612          ST R3, #18   ; -> x3014          | ST R3 circlsh_r3                    ;
+3002  56E0          AND R3, R3, #0                   | AND R3 R3 #0                        ;   [R3] carry = 0
+3003  14A0          ADD R2, R2, #0                   | ADD R2 R2 #0                        ;
+3004  0C0B          BRnz #11   ; -> x3010            | BRnz circlsh_ret                    ;   while n > 0:
+3005  1020          ADD R0, R0, #0                   | ADD R0 R0 #0                        ;
+3006  0601          BRzp #1   ; -> x3008             | BRzp circlsh_sk1                    ;       if right & 0x8000:
+3007  16E1          ADD R3, R3, #1                   | ADD R3 R3 #1                        ;           carry = carry + 1
+3008  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;       right = right << 1
+3009  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+300A  0601          BRzp #1   ; -> x300C             | BRzp circlsh_sk2                    ;       if left & 0x8000:
+300B  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;           right = right + 1
+300C  1241          ADD R1, R1, R1                   | ADD R1 R1 R1                        ;       left = left << 1
+300D  1243          ADD R1, R1, R3                   | ADD R1 R1 R3                        ;       left = left + carry
+300E  14BF          ADD R2, R2, #-1                  | ADD R2 R2 #-1                       ;       n -= 1
+300F  0FF2          BRnzp #-14   ; -> x3002          | BRnzp circlsh_loop                  ;
+3010  2402          LD R2, #2   ; -> x3013           | LD R2 circlsh_r2                    ;
+3011  2602          LD R3, #2   ; -> x3014           | LD R3 circlsh_r3                    ;
+3012  C1C0          RET                              | RET                                 ;
+3013  0000                                           | circlsh_r2          .FILL #0
+3014  0000                                           | circlsh_r3          .FILL #0

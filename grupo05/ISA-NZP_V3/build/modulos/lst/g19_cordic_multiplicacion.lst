@@ -1,0 +1,554 @@
+3000  E025          LEA R0, #37   ; -> x3026         | LEA  R0, MSG_TITULO
+3001  F022          PUTS                             | PUTS
+3002  48CF          JSR #207   ; -> x30D2            | JSR  NUEVA_LINEA
+3003  E044          LEA R0, #68   ; -> x3048         | LEA  R0, MSG_A          ; "Primer factor..."
+3004  F022          PUTS                             | PUTS
+3005  48D6          JSR #214   ; -> x30DC            | JSR  LEER_ENTERO        ; R0 = valor leido
+3006  301B          ST R0, #27   ; -> x3022          | ST   R0, A_Q8
+3007  E05E          LEA R0, #94   ; -> x3066         | LEA  R0, MSG_B          ; "Segundo factor..."
+3008  F022          PUTS                             | PUTS
+3009  48D2          JSR #210   ; -> x30DC            | JSR  LEER_ENTERO
+300A  3018          ST R0, #24   ; -> x3023          | ST   R0, B_Q8
+300B  2016          LD R0, #22   ; -> x3022          | LD   R0, A_Q8
+300C  2216          LD R1, #22   ; -> x3023          | LD   R1, B_Q8
+300D  4954          JSR #340   ; -> x3162            | JSR  CORDIC_MUL         ; R1 = estado, R0 = resultado Q7.8
+300E  3215          ST R1, #21   ; -> x3024          | ST   R1, ESTADO
+300F  3015          ST R0, #21   ; -> x3025          | ST   R0, RESULTADO_Q78
+3010  2013          LD R0, #19   ; -> x3024          | LD   R0, ESTADO
+3011  040A          BRz #10   ; -> x301C             | BRz  MAIN_OK
+3012  103F          ADD R0, R0, #-1                  | ADD  R0, R0, #-1
+3013  0404          BRz #4   ; -> x3018              | BRz  MAIN_DESBORDA
+3014  E0AD          LEA R0, #173   ; -> x30C2        | LEA  R0, MSG_BINV       ; estado 2
+3015  F022          PUTS                             | PUTS
+3016  48BB          JSR #187   ; -> x30D2            | JSR  NUEVA_LINEA
+3017  0E09          BRnzp #9   ; -> x3021            | BRnzp FIN
+3018  E088          LEA R0, #136   ; -> x30A1        | LEA  R0, MSG_DESB       ; estado 1
+3019  F022          PUTS                             | PUTS
+301A  48B7          JSR #183   ; -> x30D2            | JSR  NUEVA_LINEA
+301B  0E05          BRnzp #5   ; -> x3021            | BRnzp FIN
+301C  E068          LEA R0, #104   ; -> x3085        | LEA  R0, MSG_RES        ; "Resultado en formato Q7.8: "
+301D  F022          PUTS                             | PUTS
+301E  2006          LD R0, #6   ; -> x3025           | LD   R0, RESULTADO_Q78
+301F  4901          JSR #257   ; -> x3121            | JSR  IMPRIMIR_ENTERO
+3020  48B1          JSR #177   ; -> x30D2            | JSR  NUEVA_LINEA
+3021  F025          HALT                             | FIN     HALT
+3022  0000                                           | A_Q8          .BLKW #1
+3023  0000                                           | B_Q8          .BLKW #1
+3024  0000                                           | ESTADO        .BLKW #1
+3025  0000                                           | RESULTADO_Q78 .BLKW #1
+3026  002D002D002D                                   | MSG_TITULO .STRINGZ "--- MULTIPLICACION POR CORDIC ---"
+3029  0020004D0055                                   | 
+302C  004C00540049                                   | 
+302F  0050004C0049                                   | 
+3032  004300410043                                   | 
+3035  0049004F004E                                   | 
+3038  00200050004F                                   | 
+303B  005200200043                                   | 
+303E  004F00520044                                   | 
+3041  004900430020                                   | 
+3044  002D002D002D                                   | 
+3047  0000                                           | 
+3048  005000720069                                   | MSG_A      .STRINGZ "Primer factor (entero Q7.8): "
+304B  006D00650072                                   | 
+304E  002000660061                                   | 
+3051  00630074006F                                   | 
+3054  007200200028                                   | 
+3057  0065006E0074                                   | 
+305A  00650072006F                                   | 
+305D  002000510037                                   | 
+3060  002E00380029                                   | 
+3063  003A00200000                                   | 
+3066  005300650067                                   | MSG_B      .STRINGZ "Segundo factor (entero Q7.8): "
+3069  0075006E0064                                   | 
+306C  006F00200066                                   | 
+306F  006100630074                                   | 
+3072  006F00720020                                   | 
+3075  00280065006E                                   | 
+3078  007400650072                                   | 
+307B  006F00200051                                   | 
+307E  0037002E0038                                   | 
+3081  0029003A0020                                   | 
+3084  0000                                           | 
+3085  005200650073                                   | MSG_RES    .STRINGZ "Resultado en formato Q7.8: "
+3088  0075006C0074                                   | 
+308B  00610064006F                                   | 
+308E  00200065006E                                   | 
+3091  00200066006F                                   | 
+3094  0072006D0061                                   | 
+3097  0074006F0020                                   | 
+309A  00510037002E                                   | 
+309D  0038003A0020                                   | 
+30A0  0000                                           | 
+30A1  004400450053                                   | MSG_DESB   .STRINGZ "DESBORDAMIENTO: no entra en Q7.8"
+30A4  0042004F0052                                   | 
+30A7  00440041004D                                   | 
+30AA  00490045004E                                   | 
+30AD  0054004F003A                                   | 
+30B0  0020006E006F                                   | 
+30B3  00200065006E                                   | 
+30B6  007400720061                                   | 
+30B9  00200065006E                                   | 
+30BC  002000510037                                   | 
+30BF  002E00380000                                   | 
+30C2  004600610063                                   | MSG_BINV   .STRINGZ "Factor invalido"
+30C5  0074006F0072                                   | 
+30C8  00200069006E                                   | 
+30CB  00760061006C                                   | 
+30CE  00690064006F                                   | 
+30D1  0000                                           | 
+30D2  3007          ST R0, #7   ; -> x30DA           | ST   R0, NL_R0
+30D3  3E07          ST R7, #7   ; -> x30DB           | ST   R7, NL_R7
+30D4  2004          LD R0, #4   ; -> x30D9           | LD   R0, NL_LF
+30D5  F021          OUT                              | OUT
+30D6  2003          LD R0, #3   ; -> x30DA           | LD   R0, NL_R0
+30D7  2E03          LD R7, #3   ; -> x30DB           | LD   R7, NL_R7
+30D8  C1C0          RET                              | RET
+30D9  000A                                           | NL_LF   .FILL x0A
+30DA  0000                                           | NL_R0   .BLKW #1
+30DB  0000                                           | NL_R7   .BLKW #1
+30DC  323D          ST R1, #61   ; -> x311A          | ST   R1, LE_R1
+30DD  343D          ST R2, #61   ; -> x311B          | ST   R2, LE_R2
+30DE  363D          ST R3, #61   ; -> x311C          | ST   R3, LE_R3
+30DF  383D          ST R4, #61   ; -> x311D          | ST   R4, LE_R4
+30E0  3A3D          ST R5, #61   ; -> x311E          | ST   R5, LE_R5
+30E1  3C3D          ST R6, #61   ; -> x311F          | ST   R6, LE_R6
+30E2  3E3D          ST R7, #61   ; -> x3120          | ST   R7, LE_R7
+30E3  5260          AND R1, R1, #0                   | AND  R1, R1, #0         ; magnitud = 0
+30E4  54A0          AND R2, R2, #0                   | AND  R2, R2, #0         ; negativo = 0
+30E5  56E0          AND R3, R3, #0                   | AND  R3, R3, #0         ; digitos = 0
+30E6  F020          GETC                             | GETC                    ; R0 = caracter
+30E7  1836          ADD R4, R0, #-10                 | ADD  R4, R0, #-10       ; Enter (LF)?
+30E8  041E          BRz #30   ; -> x3107             | BRz  LE_FIN
+30E9  1833          ADD R4, R0, #-13                 | ADD  R4, R0, #-13       ; Enter (CR)?
+30EA  041C          BRz #28   ; -> x3107             | BRz  LE_FIN
+30EB  282A          LD R4, #42   ; -> x3116          | LD   R4, LE_NEG_MENOS   ; -45 = -'-'
+30EC  1900          ADD R4, R4, R0                   | ADD  R4, R4, R0
+30ED  0A07          BRnp #7   ; -> x30F5             | BRnp LE_DIGITO          ; no es '-'
+30EE  16E0          ADD R3, R3, #0                   | ADD  R3, R3, #0         ; el '-' solo vale antes de los digitos
+30EF  03F6          BRp #-10   ; -> x30E6            | BRp  LE_LAZO
+30F0  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0         ; y una sola vez
+30F1  03F4          BRp #-12   ; -> x30E6            | BRp  LE_LAZO
+30F2  F021          OUT                              | OUT                     ; muestra el '-'
+30F3  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1         ; negativo = 1
+30F4  0FF1          BRnzp #-15   ; -> x30E6          | BRnzp LE_LAZO
+30F5  2821          LD R4, #33   ; -> x3117          | LD   R4, LE_NEG_CERO    ; -48 = -'0'
+30F6  1900          ADD R4, R4, R0                   | ADD  R4, R4, R0         ; R4 = caracter - '0'
+30F7  09EE          BRn #-18   ; -> x30E6            | BRn  LE_LAZO            ; menor que '0': se ignora
+30F8  1B37          ADD R5, R4, #-9                  | ADD  R5, R4, #-9
+30F9  03EC          BRp #-20   ; -> x30E6            | BRp  LE_LAZO            ; mayor que '9': se ignora
+30FA  2A1D          LD R5, #29   ; -> x3118          | LD   R5, LE_LIM         ; -3277
+30FB  1B41          ADD R5, R5, R1                   | ADD  R5, R5, R1
+30FC  07E9          BRzp #-23   ; -> x30E6           | BRzp LE_LAZO            ; magnitud >= 3277: otro digito pasaria de 32767, se ignora
+30FD  1C41          ADD R6, R1, R1                   | ADD  R6, R1, R1         ; 2m
+30FE  1B86          ADD R5, R6, R6                   | ADD  R5, R6, R6         ; 4m
+30FF  1B45          ADD R5, R5, R5                   | ADD  R5, R5, R5         ; 8m
+3100  1B46          ADD R5, R5, R6                   | ADD  R5, R5, R6         ; 10m
+3101  1B44          ADD R5, R5, R4                   | ADD  R5, R5, R4         ; 10m + digito
+3102  09E3          BRn #-29   ; -> x30E6            | BRn  LE_LAZO            ; paso de 32767: se ignora
+3103  1360          ADD R1, R5, #0                   | ADD  R1, R5, #0         ; magnitud = nuevo valor
+3104  F021          OUT                              | OUT                     ; muestra el digito
+3105  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1
+3106  0FDF          BRnzp #-33   ; -> x30E6          | BRnzp LE_LAZO
+3107  2011          LD R0, #17   ; -> x3119          | LD   R0, LE_LF
+3108  F021          OUT                              | OUT                     ; salto de linea en pantalla
+3109  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0
+310A  0402          BRz #2   ; -> x310D              | BRz  LE_POSITIVO
+310B  927F          NOT R1, R1                       | NOT  R1, R1
+310C  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1         ; valor = -magnitud
+310D  1060          ADD R0, R1, #0                   | ADD  R0, R1, #0         ; devuelve el valor en R0
+310E  220B          LD R1, #11   ; -> x311A          | LD   R1, LE_R1
+310F  240B          LD R2, #11   ; -> x311B          | LD   R2, LE_R2
+3110  260B          LD R3, #11   ; -> x311C          | LD   R3, LE_R3
+3111  280B          LD R4, #11   ; -> x311D          | LD   R4, LE_R4
+3112  2A0B          LD R5, #11   ; -> x311E          | LD   R5, LE_R5
+3113  2C0B          LD R6, #11   ; -> x311F          | LD   R6, LE_R6
+3114  2E0B          LD R7, #11   ; -> x3120          | LD   R7, LE_R7
+3115  C1C0          RET                              | RET
+3116  FFD3                                           | LE_NEG_MENOS .FILL #-45
+3117  FFD0                                           | LE_NEG_CERO  .FILL #-48
+3118  F333                                           | LE_LIM       .FILL #-3277
+3119  000A                                           | LE_LF        .FILL x0A
+311A  0000                                           | LE_R1   .BLKW #1
+311B  0000                                           | LE_R2   .BLKW #1
+311C  0000                                           | LE_R3   .BLKW #1
+311D  0000                                           | LE_R4   .BLKW #1
+311E  0000                                           | LE_R5   .BLKW #1
+311F  0000                                           | LE_R6   .BLKW #1
+3120  0000                                           | LE_R7   .BLKW #1
+3121  3038          ST R0, #56   ; -> x315A          | ST   R0, IE_R0
+3122  3238          ST R1, #56   ; -> x315B          | ST   R1, IE_R1
+3123  3438          ST R2, #56   ; -> x315C          | ST   R2, IE_R2
+3124  3638          ST R3, #56   ; -> x315D          | ST   R3, IE_R3
+3125  3838          ST R4, #56   ; -> x315E          | ST   R4, IE_R4
+3126  3A38          ST R5, #56   ; -> x315F          | ST   R5, IE_R5
+3127  3C38          ST R6, #56   ; -> x3160          | ST   R6, IE_R6
+3128  3E38          ST R7, #56   ; -> x3161          | ST   R7, IE_R7
+3129  1220          ADD R1, R0, #0                   | ADD  R1, R0, #0
+312A  0603          BRzp #3   ; -> x312E             | BRzp IE_POSITIVO
+312B  2028          LD R0, #40   ; -> x3154          | LD   R0, IE_MENOS       ; negativo: se muestra '-' y n ya es negativo
+312C  F021          OUT                              | OUT
+312D  0E02          BRnzp #2   ; -> x3130            | BRnzp IE_INICIO
+312E  927F          NOT R1, R1                       | NOT  R1, R1
+312F  1261          ADD R1, R1, #1                   | ADD  R1, R1, #1         ; n = -valor
+3130  E424          LEA R2, #36   ; -> x3155         | LEA  R2, IE_POTENCIAS
+3131  56E0          AND R3, R3, #0                   | AND  R3, R3, #0
+3132  16E5          ADD R3, R3, #5                   | ADD  R3, R3, #5         ; 5 posiciones
+3133  5920          AND R4, R4, #0                   | AND  R4, R4, #0         ; todavia no se imprimio ningun digito
+3134  6A80          LDR R5, R2, #0                   | LDR  R5, R2, #0         ; potencia
+3135  5DA0          AND R6, R6, #0                   | AND  R6, R6, #0         ; digito = 0
+3136  1045          ADD R0, R1, R5                   | ADD  R0, R1, R5         ; n + potencia
+3137  0203          BRp #3   ; -> x313B              | BRp  IE_SALE            ; si es > 0 ya no cabe otra vez
+3138  1220          ADD R1, R0, #0                   | ADD  R1, R0, #0         ; n = n + potencia
+3139  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1         ; digito + 1
+313A  0FFB          BRnzp #-5   ; -> x3136           | BRnzp IE_RESTAR
+313B  1DA0          ADD R6, R6, #0                   | ADD  R6, R6, #0         ; se imprime si el digito no es 0,
+313C  0205          BRp #5   ; -> x3142              | BRp  IE_IMPRIME
+313D  1920          ADD R4, R4, #0                   | ADD  R4, R4, #0         ; o si ya se imprimio algo (para no perder ceros del medio),
+313E  0203          BRp #3   ; -> x3142              | BRp  IE_IMPRIME
+313F  10FF          ADD R0, R3, #-1                  | ADD  R0, R3, #-1        ; o si es la ultima posicion (para que el 0 se muestre)
+3140  0401          BRz #1   ; -> x3142              | BRz  IE_IMPRIME
+3141  0E05          BRnzp #5   ; -> x3147            | BRnzp IE_SIGUE
+3142  2010          LD R0, #16   ; -> x3153          | LD   R0, IE_CERO        ; '0'
+3143  1006          ADD R0, R0, R6                   | ADD  R0, R0, R6         ; '0' + digito
+3144  F021          OUT                              | OUT
+3145  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+3146  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1         ; ya se imprimio algo
+3147  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1         ; siguiente potencia
+3148  16FF          ADD R3, R3, #-1                  | ADD  R3, R3, #-1
+3149  03EA          BRp #-22   ; -> x3134            | BRp  IE_POSICION
+314A  200F          LD R0, #15   ; -> x315A          | LD   R0, IE_R0
+314B  220F          LD R1, #15   ; -> x315B          | LD   R1, IE_R1
+314C  240F          LD R2, #15   ; -> x315C          | LD   R2, IE_R2
+314D  260F          LD R3, #15   ; -> x315D          | LD   R3, IE_R3
+314E  280F          LD R4, #15   ; -> x315E          | LD   R4, IE_R4
+314F  2A0F          LD R5, #15   ; -> x315F          | LD   R5, IE_R5
+3150  2C0F          LD R6, #15   ; -> x3160          | LD   R6, IE_R6
+3151  2E0F          LD R7, #15   ; -> x3161          | LD   R7, IE_R7
+3152  C1C0          RET                              | RET
+3153  0030                                           | IE_CERO  .FILL x30
+3154  002D                                           | IE_MENOS .FILL x2D
+3155  2710                                           | IE_POTENCIAS .FILL #10000
+3156  03E8                                           | .FILL #1000
+3157  0064                                           | .FILL #100
+3158  000A                                           | .FILL #10
+3159  0001                                           | .FILL #1
+315A  0000                                           | IE_R0   .BLKW #1
+315B  0000                                           | IE_R1   .BLKW #1
+315C  0000                                           | IE_R2   .BLKW #1
+315D  0000                                           | IE_R3   .BLKW #1
+315E  0000                                           | IE_R4   .BLKW #1
+315F  0000                                           | IE_R5   .BLKW #1
+3160  0000                                           | IE_R6   .BLKW #1
+3161  0000                                           | IE_R7   .BLKW #1
+3162  3452          ST R2, #82   ; -> x31B5          | ST   R2, CM_R2
+3163  3652          ST R3, #82   ; -> x31B6          | ST   R3, CM_R3
+3164  3852          ST R4, #82   ; -> x31B7          | ST   R4, CM_R4
+3165  3A52          ST R5, #82   ; -> x31B8          | ST   R5, CM_R5
+3166  3C52          ST R6, #82   ; -> x31B9          | ST   R6, CM_R6
+3167  3E52          ST R7, #82   ; -> x31BA          | ST   R7, CM_R7
+3168  1460          ADD R2, R1, #0                   | ADD  R2, R1, #0         ; z = b_q8 (el multiplicador que voy a vaciar)
+3169  2644          LD R3, #68   ; -> x31AE          | LD   R3, CM_B_MIN       ; 0x8000
+316A  16C2          ADD R3, R3, R2                   | ADD  R3, R3, R2         ; 0x8000 + 0x8000 = 0 solo si b_q8 == -32768
+316B  0428          BRz #40   ; -> x3194             | BRz  CM_B_INVALIDO
+316C  E842          LEA R4, #66   ; -> x31AF         | LEA  R4, CM_Y
+316D  56E0          AND R3, R3, #0                   | AND  R3, R3, #0
+316E  7700          STR R3, R4, #0                   | STR  R3, R4, #0         ; y.hi = 0
+316F  7701          STR R3, R4, #1                   | STR  R3, R4, #1         ; y.lo = 0
+3170  E240          LEA R1, #64   ; -> x31B1         | LEA  R1, CM_X
+3171  48D3          JSR #211   ; -> x3245            | JSR  PREPARAR_X
+3172  5B60          AND R5, R5, #0                   | AND  R5, R5, #0         ; i = 0
+3173  EC2B          LEA R6, #43   ; -> x319F         | LEA  R6, CM_TABLA_Z     ; R6 apunta a tabla_z[i]
+3174  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0         ; if (z == 0) break;
+3175  0414          BRz #20   ; -> x318A             | BRz  CM_FIN_LAZO
+3176  6780          LDR R3, R6, #0                   | LDR  R3, R6, #0         ; current_z = tabla_z[i]
+3177  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0         ; z > 0 o z < 0 (ya se sabe que no es 0)
+3178  0807          BRn #7   ; -> x3180              | BRn  CM_Z_NEG
+3179  96FF          NOT R3, R3                       | NOT  R3, R3             ; z > 0:  z = z - current_z
+317A  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1
+317B  1483          ADD R2, R2, R3                   | ADD  R2, R2, R3
+317C  E032          LEA R0, #50   ; -> x31AF         | LEA  R0, CM_Y
+317D  E233          LEA R1, #51   ; -> x31B1         | LEA  R1, CM_X
+317E  486C          JSR #108   ; -> x31EB            | JSR  SUMA32             ;         y = y + current_x
+317F  0E04          BRnzp #4   ; -> x3184            | BRnzp CM_SIGUE
+3180  1483          ADD R2, R2, R3                   | ADD  R2, R2, R3         ; z < 0:  z = z + current_z
+3181  E02D          LEA R0, #45   ; -> x31AF         | LEA  R0, CM_Y
+3182  E22E          LEA R1, #46   ; -> x31B1         | LEA  R1, CM_X
+3183  488B          JSR #139   ; -> x320F            | JSR  RESTA32            ;         y = y - current_x
+3184  E02C          LEA R0, #44   ; -> x31B1         | LEA  R0, CM_X
+3185  48A3          JSR #163   ; -> x3229            | JSR  DESP_DER_32        ; current_x = current_x / 2
+3186  1DA1          ADD R6, R6, #1                   | ADD  R6, R6, #1         ; siguiente peso de la tabla
+3187  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1         ; i = i + 1
+3188  1771          ADD R3, R5, #-15                 | ADD  R3, R5, #-15
+3189  09EA          BRn #-22   ; -> x3174            | BRn  CM_LAZO            ; mientras i < 15
+318A  3A29          ST R5, #41   ; -> x31B4          | ST   R5, CM_ITER        ; iteraciones realizadas
+318B  E023          LEA R0, #35   ; -> x31AF         | LEA  R0, CM_Y
+318C  E226          LEA R1, #38   ; -> x31B3         | LEA  R1, CM_RES
+318D  48CE          JSR #206   ; -> x325C            | JSR  REDUCIR_Q78        ; R0 = 1 si hay desbordamiento
+318E  1220          ADD R1, R0, #0                   | ADD  R1, R0, #0
+318F  0202          BRp #2   ; -> x3192              | BRp  CM_DESBORDA
+3190  2022          LD R0, #34   ; -> x31B3          | LD   R0, CM_RES         ; resultado Q7.8
+3191  0E06          BRnzp #6   ; -> x3198            | BRnzp CM_FIN
+3192  5020          AND R0, R0, #0                   | AND  R0, R0, #0         ; sin resultado valido (R1 ya vale 1)
+3193  0E04          BRnzp #4   ; -> x3198            | BRnzp CM_FIN
+3194  5260          AND R1, R1, #0                   | AND  R1, R1, #0
+3195  1262          ADD R1, R1, #2                   | ADD  R1, R1, #2         ; estado = 2
+3196  5020          AND R0, R0, #0                   | AND  R0, R0, #0
+3197  301C          ST R0, #28   ; -> x31B4          | ST   R0, CM_ITER        ; 0 iteraciones
+3198  241C          LD R2, #28   ; -> x31B5          | LD   R2, CM_R2
+3199  261C          LD R3, #28   ; -> x31B6          | LD   R3, CM_R3
+319A  281C          LD R4, #28   ; -> x31B7          | LD   R4, CM_R4
+319B  2A1C          LD R5, #28   ; -> x31B8          | LD   R5, CM_R5
+319C  2C1C          LD R6, #28   ; -> x31B9          | LD   R6, CM_R6
+319D  2E1C          LD R7, #28   ; -> x31BA          | LD   R7, CM_R7
+319E  C1C0          RET                              | RET
+319F  4000                                           | CM_TABLA_Z .FILL #16384
+31A0  2000                                           | .FILL #8192
+31A1  1000                                           | .FILL #4096
+31A2  0800                                           | .FILL #2048
+31A3  0400                                           | .FILL #1024
+31A4  0200                                           | .FILL #512
+31A5  0100                                           | .FILL #256
+31A6  0080                                           | .FILL #128
+31A7  0040                                           | .FILL #64
+31A8  0020                                           | .FILL #32
+31A9  0010                                           | .FILL #16
+31AA  0008                                           | .FILL #8
+31AB  0004                                           | .FILL #4
+31AC  0002                                           | .FILL #2
+31AD  0001                                           | .FILL #1
+31AE  8000                                           | CM_B_MIN .FILL x8000
+31AF  00000000                                       | CM_Y     .BLKW #2                ; acumulador y (32 bits, Q16)
+31B1  00000000                                       | CM_X     .BLKW #2                ; current_x (32 bits)
+31B3  0000                                           | CM_RES   .BLKW #1                ; resultado Q7.8 que escribe REDUCIR_Q78
+31B4  0000                                           | CM_ITER  .BLKW #1
+31B5  0000                                           | CM_R2    .BLKW #1
+31B6  0000                                           | CM_R3    .BLKW #1
+31B7  0000                                           | CM_R4    .BLKW #1
+31B8  0000                                           | CM_R5    .BLKW #1
+31B9  0000                                           | CM_R6    .BLKW #1
+31BA  0000                                           | CM_R7    .BLKW #1
+31BB  3219          ST R1, #25   ; -> x31D5          | ST   R1, DDL_R1
+31BC  3419          ST R2, #25   ; -> x31D6          | ST   R2, DDL_R2
+31BD  3619          ST R3, #25   ; -> x31D7          | ST   R3, DDL_R3
+31BE  3819          ST R4, #25   ; -> x31D8          | ST   R4, DDL_R4
+31BF  3A19          ST R5, #25   ; -> x31D9          | ST   R5, DDL_R5
+31C0  56E0          AND R3, R3, #0                   | AND  R3, R3, #0         ; res = 0
+31C1  5260          AND R1, R1, #0                   | AND  R1, R1, #0
+31C2  1262          ADD R1, R1, #2                   | ADD  R1, R1, #2         ; m = 2
+31C3  54A0          AND R2, R2, #0                   | AND  R2, R2, #0
+31C4  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1         ; r = 1
+31C5  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+31C6  192F          ADD R4, R4, #15                  | ADD  R4, R4, #15        ; k = 15 vueltas
+31C7  5A01          AND R5, R0, R1                   | AND  R5, R0, R1         ; x & m
+31C8  0401          BRz #1   ; -> x31CA              | BRz  DDL_SIGUE          ; ese bit era 0
+31C9  16C2          ADD R3, R3, R2                   | ADD  R3, R3, R2         ; res = res + r
+31CA  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1         ; m = m + m
+31CB  1482          ADD R2, R2, R2                   | ADD  R2, R2, R2         ; r = r + r
+31CC  193F          ADD R4, R4, #-1                  | ADD  R4, R4, #-1
+31CD  03F9          BRp #-7   ; -> x31C7             | BRp  DDL_LAZO
+31CE  10E0          ADD R0, R3, #0                   | ADD  R0, R3, #0         ; devuelve res
+31CF  2205          LD R1, #5   ; -> x31D5           | LD   R1, DDL_R1
+31D0  2405          LD R2, #5   ; -> x31D6           | LD   R2, DDL_R2
+31D1  2605          LD R3, #5   ; -> x31D7           | LD   R3, DDL_R3
+31D2  2805          LD R4, #5   ; -> x31D8           | LD   R4, DDL_R4
+31D3  2A05          LD R5, #5   ; -> x31D9           | LD   R5, DDL_R5
+31D4  C1C0          RET                              | RET
+31D5  0000                                           | DDL_R1  .BLKW #1
+31D6  0000                                           | DDL_R2  .BLKW #1
+31D7  0000                                           | DDL_R3  .BLKW #1
+31D8  0000                                           | DDL_R4  .BLKW #1
+31D9  0000                                           | DDL_R5  .BLKW #1
+31DA  320D          ST R1, #13   ; -> x31E8          | ST   R1, DDA_R1
+31DB  340D          ST R2, #13   ; -> x31E9          | ST   R2, DDA_R2
+31DC  3E0D          ST R7, #13   ; -> x31EA          | ST   R7, DDA_R7
+31DD  1420          ADD R2, R0, #0                   | ADD  R2, R0, #0         ; se guarda x para ver su signo despues
+31DE  4FDC          JSR #-36   ; -> x31BB            | JSR  DESP_DER_LOG       ; R0 = x >> 1 (logico)
+31DF  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0         ; codigos de condicion segun el signo de x
+31E0  0602          BRzp #2   ; -> x31E3             | BRzp DDA_FIN            ; x >= 0: listo
+31E1  2205          LD R1, #5   ; -> x31E7           | LD   R1, DDA_BIT15
+31E2  1001          ADD R0, R0, R1                   | ADD  R0, R0, R1         ; res = res - 32768 (prende el bit 15)
+31E3  2204          LD R1, #4   ; -> x31E8           | LD   R1, DDA_R1
+31E4  2404          LD R2, #4   ; -> x31E9           | LD   R2, DDA_R2
+31E5  2E04          LD R7, #4   ; -> x31EA           | LD   R7, DDA_R7
+31E6  C1C0          RET                              | RET
+31E7  8000                                           | DDA_BIT15 .FILL x8000
+31E8  0000                                           | DDA_R1  .BLKW #1
+31E9  0000                                           | DDA_R2  .BLKW #1
+31EA  0000                                           | DDA_R7  .BLKW #1
+31EB  341F          ST R2, #31   ; -> x320B          | ST   R2, S32_R2
+31EC  361F          ST R3, #31   ; -> x320C          | ST   R3, S32_R3
+31ED  381F          ST R4, #31   ; -> x320D          | ST   R4, S32_R4
+31EE  3A1F          ST R5, #31   ; -> x320E          | ST   R5, S32_R5
+31EF  6401          LDR R2, R0, #1                   | LDR  R2, R0, #1         ; a.lo
+31F0  6641          LDR R3, R1, #1                   | LDR  R3, R1, #1         ; b.lo
+31F1  1883          ADD R4, R2, R3                   | ADD  R4, R2, R3         ; lo = a.lo + b.lo
+31F2  5B60          AND R5, R5, #0                   | AND  R5, R5, #0         ; acarreo = 0
+31F3  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0         ; es a.lo "grande"?
+31F4  0806          BRn #6   ; -> x31FB              | BRn  S32_A_GRANDE
+31F5  16E0          ADD R3, R3, #0                   | ADD  R3, R3, #0
+31F6  0609          BRzp #9   ; -> x3200             | BRzp S32_SUMA_HI        ; b.lo tambien chico: no hay acarreo
+31F7  1920          ADD R4, R4, #0                   | ADD  R4, R4, #0         ; b.lo grande: hay acarreo si lo quedo chico (>= 0)
+31F8  0807          BRn #7   ; -> x3200              | BRn  S32_SUMA_HI
+31F9  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1
+31FA  0E05          BRnzp #5   ; -> x3200            | BRnzp S32_SUMA_HI
+31FB  16E0          ADD R3, R3, #0                   | ADD  R3, R3, #0
+31FC  0802          BRn #2   ; -> x31FF              | BRn  S32_ACARREO        ; los dos grandes: hay acarreo
+31FD  1920          ADD R4, R4, #0                   | ADD  R4, R4, #0         ; a grande y b chico: hay acarreo si lo quedo chico (>= 0)
+31FE  0801          BRn #1   ; -> x3200              | BRn  S32_SUMA_HI
+31FF  1B61          ADD R5, R5, #1                   | ADD  R5, R5, #1         ; acarreo = 1
+3200  6400          LDR R2, R0, #0                   | LDR  R2, R0, #0         ; a.hi
+3201  6640          LDR R3, R1, #0                   | LDR  R3, R1, #0         ; b.hi
+3202  1483          ADD R2, R2, R3                   | ADD  R2, R2, R3
+3203  1485          ADD R2, R2, R5                   | ADD  R2, R2, R5         ; a.hi = a.hi + b.hi + acarreo
+3204  7400          STR R2, R0, #0                   | STR  R2, R0, #0
+3205  7801          STR R4, R0, #1                   | STR  R4, R0, #1         ; a.lo = lo
+3206  2404          LD R2, #4   ; -> x320B           | LD   R2, S32_R2
+3207  2604          LD R3, #4   ; -> x320C           | LD   R3, S32_R3
+3208  2804          LD R4, #4   ; -> x320D           | LD   R4, S32_R4
+3209  2A04          LD R5, #4   ; -> x320E           | LD   R5, S32_R5
+320A  C1C0          RET                              | RET
+320B  0000                                           | S32_R2  .BLKW #1
+320C  0000                                           | S32_R3  .BLKW #1
+320D  0000                                           | S32_R4  .BLKW #1
+320E  0000                                           | S32_R5  .BLKW #1
+320F  3215          ST R1, #21   ; -> x3225          | ST   R1, REST_R1
+3210  3415          ST R2, #21   ; -> x3226          | ST   R2, REST_R2
+3211  3615          ST R3, #21   ; -> x3227          | ST   R3, REST_R3
+3212  3E15          ST R7, #21   ; -> x3228          | ST   R7, REST_R7
+3213  6440          LDR R2, R1, #0                   | LDR  R2, R1, #0         ; b.hi
+3214  94BF          NOT R2, R2                       | NOT  R2, R2             ; ~b.hi
+3215  6641          LDR R3, R1, #1                   | LDR  R3, R1, #1         ; b.lo
+3216  96FF          NOT R3, R3                       | NOT  R3, R3             ; ~b.lo
+3217  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1         ; ~b.lo + 1
+3218  0A01          BRnp #1   ; -> x321A             | BRnp REST_ARMAR          ; si lo no dio 0 no hubo acarreo hacia hi
+3219  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1         ; el +1 desbordo lo: se lleva 1 a hi
+321A  E208          LEA R1, #8   ; -> x3223          | LEA  R1, REST_OPUESTO
+321B  7440          STR R2, R1, #0                   | STR  R2, R1, #0
+321C  7641          STR R3, R1, #1                   | STR  R3, R1, #1
+321D  4FCD          JSR #-51   ; -> x31EB            | JSR  SUMA32             ; a = a + (-b)
+321E  2206          LD R1, #6   ; -> x3225           | LD   R1, REST_R1
+321F  2406          LD R2, #6   ; -> x3226           | LD   R2, REST_R2
+3220  2606          LD R3, #6   ; -> x3227           | LD   R3, REST_R3
+3221  2E06          LD R7, #6   ; -> x3228           | LD   R7, REST_R7
+3222  C1C0          RET                              | RET
+3223  00000000                                       | REST_OPUESTO .BLKW #2
+3225  0000                                           | REST_R1  .BLKW #1
+3226  0000                                           | REST_R2  .BLKW #1
+3227  0000                                           | REST_R3  .BLKW #1
+3228  0000                                           | REST_R7  .BLKW #1
+3229  3217          ST R1, #23   ; -> x3241          | ST   R1, D32_R1
+322A  3417          ST R2, #23   ; -> x3242          | ST   R2, D32_R2
+322B  3617          ST R3, #23   ; -> x3243          | ST   R3, D32_R3
+322C  3E17          ST R7, #23   ; -> x3244          | ST   R7, D32_R7
+322D  1620          ADD R3, R0, #0                   | ADD  R3, R0, #0         ; R3 = &v (R0 se va a usar para pasar valores)
+322E  62C0          LDR R1, R3, #0                   | LDR  R1, R3, #0         ; v.hi
+322F  5461          AND R2, R1, #1                   | AND  R2, R1, #1         ; bit_bajo_hi (antes de modificar hi)
+3230  60C1          LDR R0, R3, #1                   | LDR  R0, R3, #1         ; v.lo
+3231  4F89          JSR #-119   ; -> x31BB           | JSR  DESP_DER_LOG       ; R0 = v.lo >> 1 (logico)
+3232  14A0          ADD R2, R2, #0                   | ADD  R2, R2, #0
+3233  0402          BRz #2   ; -> x3236              | BRz  D32_SIN_BIT
+3234  220B          LD R1, #11   ; -> x3240          | LD   R1, D32_BIT15
+3235  1001          ADD R0, R0, R1                   | ADD  R0, R0, R1         ; lo recibe el bit en la posicion 15
+3236  70C1          STR R0, R3, #1                   | STR  R0, R3, #1         ; v.lo
+3237  60C0          LDR R0, R3, #0                   | LDR  R0, R3, #0         ; v.hi
+3238  4FA1          JSR #-95   ; -> x31DA            | JSR  DESP_DER_ARIT      ; R0 = v.hi >> 1 (aritmetico)
+3239  70C0          STR R0, R3, #0                   | STR  R0, R3, #0         ; v.hi
+323A  10E0          ADD R0, R3, #0                   | ADD  R0, R3, #0         ; R0 vuelve a ser &v
+323B  2205          LD R1, #5   ; -> x3241           | LD   R1, D32_R1
+323C  2405          LD R2, #5   ; -> x3242           | LD   R2, D32_R2
+323D  2605          LD R3, #5   ; -> x3243           | LD   R3, D32_R3
+323E  2E05          LD R7, #5   ; -> x3244           | LD   R7, D32_R7
+323F  C1C0          RET                              | RET
+3240  8000                                           | D32_BIT15 .FILL x8000
+3241  0000                                           | D32_R1  .BLKW #1
+3242  0000                                           | D32_R2  .BLKW #1
+3243  0000                                           | D32_R3  .BLKW #1
+3244  0000                                           | D32_R7  .BLKW #1
+3245  3012          ST R0, #18   ; -> x3258          | ST   R0, PX_R0
+3246  3412          ST R2, #18   ; -> x3259          | ST   R2, PX_R2
+3247  3612          ST R3, #18   ; -> x325A          | ST   R3, PX_R3
+3248  3E12          ST R7, #18   ; -> x325B          | ST   R7, PX_R7
+3249  5423          AND R2, R0, #3                   | AND  R2, R0, #3         ; resto = a_q8 & 3
+324A  4F8F          JSR #-113   ; -> x31DA           | JSR  DESP_DER_ARIT      ; R0 = a_q8 >> 1
+324B  4F8E          JSR #-114   ; -> x31DA           | JSR  DESP_DER_ARIT      ; R0 = a_q8 >> 2
+324C  7040          STR R0, R1, #0                   | STR  R0, R1, #0         ; x.hi
+324D  56E0          AND R3, R3, #0                   | AND  R3, R3, #0
+324E  16EE          ADD R3, R3, #14                  | ADD  R3, R3, #14        ; 14 duplicaciones
+324F  1482          ADD R2, R2, R2                   | ADD  R2, R2, R2         ; resto = resto + resto
+3250  16FF          ADD R3, R3, #-1                  | ADD  R3, R3, #-1
+3251  03FD          BRp #-3   ; -> x324F             | BRp  PX_LAZO
+3252  7441          STR R2, R1, #1                   | STR  R2, R1, #1         ; x.lo
+3253  2004          LD R0, #4   ; -> x3258           | LD   R0, PX_R0
+3254  2404          LD R2, #4   ; -> x3259           | LD   R2, PX_R2
+3255  2604          LD R3, #4   ; -> x325A           | LD   R3, PX_R3
+3256  2E04          LD R7, #4   ; -> x325B           | LD   R7, PX_R7
+3257  C1C0          RET                              | RET
+3258  0000                                           | PX_R0   .BLKW #1
+3259  0000                                           | PX_R2   .BLKW #1
+325A  0000                                           | PX_R3   .BLKW #1
+325B  0000                                           | PX_R7   .BLKW #1
+325C  323A          ST R1, #58   ; -> x3297          | ST   R1, RQ_R1
+325D  343A          ST R2, #58   ; -> x3298          | ST   R2, RQ_R2
+325E  363A          ST R3, #58   ; -> x3299          | ST   R3, RQ_R3
+325F  383A          ST R4, #58   ; -> x329A          | ST   R4, RQ_R4
+3260  3A3A          ST R5, #58   ; -> x329B          | ST   R5, RQ_R5
+3261  3C3A          ST R6, #58   ; -> x329C          | ST   R6, RQ_R6
+3262  3E3A          ST R7, #58   ; -> x329D          | ST   R7, RQ_R7
+3263  E42D          LEA R2, #45   ; -> x3291         | LEA  R2, RQ_COPIA
+3264  6600          LDR R3, R0, #0                   | LDR  R3, R0, #0
+3265  7680          STR R3, R2, #0                   | STR  R3, R2, #0
+3266  6601          LDR R3, R0, #1                   | LDR  R3, R0, #1
+3267  7681          STR R3, R2, #1                   | STR  R3, R2, #1
+3268  10A0          ADD R0, R2, #0                   | ADD  R0, R2, #0         ; R0 = &copia
+3269  E229          LEA R1, #41   ; -> x3293         | LEA  R1, RQ_MEDIO       ; par (0 : 128)
+326A  4F80          JSR #-128   ; -> x31EB           | JSR  SUMA32
+326B  6600          LDR R3, R0, #0                   | LDR  R3, R0, #0         ; copia.hi
+326C  2828          LD R4, #40   ; -> x3295          | LD   R4, RQ_128
+326D  16C4          ADD R3, R3, R4                   | ADD  R3, R3, R4         ; chequeo = copia.hi + 128
+326E  2827          LD R4, #39   ; -> x3296          | LD   R4, RQ_FF00
+326F  56C4          AND R3, R3, R4                   | AND  R3, R3, R4
+3270  0403          BRz #3   ; -> x3274              | BRz  RQ_SIN_DESB
+3271  5020          AND R0, R0, #0                   | AND  R0, R0, #0
+3272  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1         ; desbordamiento = 1
+3273  0E15          BRnzp #21   ; -> x3289           | BRnzp RQ_FIN
+3274  5920          AND R4, R4, #0                   | AND  R4, R4, #0         ; parte_baja = 0
+3275  6A01          LDR R5, R0, #1                   | LDR  R5, R0, #1         ; copia.lo
+3276  56E0          AND R3, R3, #0                   | AND  R3, R3, #0
+3277  16E8          ADD R3, R3, #8                   | ADD  R3, R3, #8
+3278  1904          ADD R4, R4, R4                   | ADD  R4, R4, R4         ; parte_baja = parte_baja + parte_baja
+3279  1B60          ADD R5, R5, #0                   | ADD  R5, R5, #0
+327A  0601          BRzp #1   ; -> x327C             | BRzp RQ_LO_SIGUE        ; bit 15 en 0
+327B  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+327C  1B45          ADD R5, R5, R5                   | ADD  R5, R5, R5         ; lo = lo + lo
+327D  16FF          ADD R3, R3, #-1                  | ADD  R3, R3, #-1
+327E  03F9          BRp #-7   ; -> x3278             | BRp  RQ_LAZO_LO
+327F  6A00          LDR R5, R0, #0                   | LDR  R5, R0, #0         ; copia.hi
+3280  56E0          AND R3, R3, #0                   | AND  R3, R3, #0
+3281  16E8          ADD R3, R3, #8                   | ADD  R3, R3, #8
+3282  1B45          ADD R5, R5, R5                   | ADD  R5, R5, R5
+3283  16FF          ADD R3, R3, #-1                  | ADD  R3, R3, #-1
+3284  03FD          BRp #-3   ; -> x3282             | BRp  RQ_LAZO_HI
+3285  1B44          ADD R5, R5, R4                   | ADD  R5, R5, R4         ; resultado = hi * 256 + parte_baja
+3286  2C10          LD R6, #16   ; -> x3297          | LD   R6, RQ_R1          ; &resultado_q78
+3287  7B80          STR R5, R6, #0                   | STR  R5, R6, #0
+3288  5020          AND R0, R0, #0                   | AND  R0, R0, #0         ; desbordamiento = 0
+3289  220D          LD R1, #13   ; -> x3297          | LD   R1, RQ_R1
+328A  240D          LD R2, #13   ; -> x3298          | LD   R2, RQ_R2
+328B  260D          LD R3, #13   ; -> x3299          | LD   R3, RQ_R3
+328C  280D          LD R4, #13   ; -> x329A          | LD   R4, RQ_R4
+328D  2A0D          LD R5, #13   ; -> x329B          | LD   R5, RQ_R5
+328E  2C0D          LD R6, #13   ; -> x329C          | LD   R6, RQ_R6
+328F  2E0D          LD R7, #13   ; -> x329D          | LD   R7, RQ_R7
+3290  C1C0          RET                              | RET
+3291  00000000                                       | RQ_COPIA .BLKW #2
+3293  0000                                           | RQ_MEDIO .FILL #0
+3294  0080                                           | .FILL #128
+3295  0080                                           | RQ_128  .FILL #128
+3296  FF00                                           | RQ_FF00 .FILL xFF00
+3297  0000                                           | RQ_R1   .BLKW #1
+3298  0000                                           | RQ_R2   .BLKW #1
+3299  0000                                           | RQ_R3   .BLKW #1
+329A  0000                                           | RQ_R4   .BLKW #1
+329B  0000                                           | RQ_R5   .BLKW #1
+329C  0000                                           | RQ_R6   .BLKW #1
+329D  0000                                           | RQ_R7   .BLKW #1

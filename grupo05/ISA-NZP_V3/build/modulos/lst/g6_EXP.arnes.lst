@@ -1,0 +1,501 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  3210          ST R1, #16   ; -> x3011          | ST R1, G6_EXP_R1
+3001  3410          ST R2, #16   ; -> x3012          | ST R2, G6_EXP_R2
+3002  3610          ST R3, #16   ; -> x3013          | ST R3, G6_EXP_R3
+3003  3810          ST R4, #16   ; -> x3014          | ST R4, G6_EXP_R4
+3004  3A10          ST R5, #16   ; -> x3015          | ST R5, G6_EXP_R5
+3005  3E10          ST R7, #16   ; -> x3016          | ST R7, G6_EXP_R7
+3006  4812          JSR #18   ; -> x3019             | JSR G6_EXP_CALCULA
+3007  320F          ST R1, #15   ; -> x3017          | ST R1, EST_EXP
+3008  340F          ST R2, #15   ; -> x3018          | ST R2, NUM_ITER
+3009  2207          LD R1, #7   ; -> x3011           | LD R1, G6_EXP_R1
+300A  2407          LD R2, #7   ; -> x3012           | LD R2, G6_EXP_R2
+300B  2607          LD R3, #7   ; -> x3013           | LD R3, G6_EXP_R3
+300C  2807          LD R4, #7   ; -> x3014           | LD R4, G6_EXP_R4
+300D  2A07          LD R5, #7   ; -> x3015           | LD R5, G6_EXP_R5
+300E  2E07          LD R7, #7   ; -> x3016           | LD R7, G6_EXP_R7
+300F  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+3010  C1C0          RET                              | RET
+3011  0000                                           | G6_EXP_R1 .BLKW #1
+3012  0000                                           | G6_EXP_R2 .BLKW #1
+3013  0000                                           | G6_EXP_R3 .BLKW #1
+3014  0000                                           | G6_EXP_R4 .BLKW #1
+3015  0000                                           | G6_EXP_R5 .BLKW #1
+3016  0000                                           | G6_EXP_R7 .BLKW #1
+3017  0000                                           | EST_EXP   .BLKW #1
+3018  0000                                           | NUM_ITER  .BLKW #1
+3019  2A5A          LD R5, #90   ; -> x3074          | LD R5, PTR_TRABAJO
+301A  7F40          STR R7, R5, #0                   | STR R7, R5, #0
+301B  5260          AND R1, R1, #0                   | AND R1, R1, #0
+301C  7344          STR R1, R5, #4                   | STR R1, R5, #4
+301D  7345          STR R1, R5, #5                   | STR R1, R5, #5
+301E  734C          STR R1, R5, #12                  | STR R1, R5, #12
+301F  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+3020  0804          BRn #4   ; -> x3025              | BRn EXP_NEG
+3021  2453          LD R2, #83   ; -> x3075          | LD R2, NEG_LIMITE
+3022  1402          ADD R2, R0, R2                   | ADD R2, R0, R2
+3023  02B6          BRp #182   ; -> x30DA            | BRp EXP_SAT
+3024  0E04          BRnzp #4   ; -> x3029            | BRnzp ESCALA
+3025  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3026  7345          STR R1, R5, #5                   | STR R1, R5, #5
+3027  903F          NOT R0, R0                       | NOT R0, R0
+3028  1021          ADD R0, R0, #1                   | ADD R0, R0, #1     ; Magnitud sin signo, incluso x8000.
+3029  5260          AND R1, R1, #0                   | AND R1, R1, #0
+302A  7341          STR R1, R5, #1                   | STR R1, R5, #1
+302B  1200          ADD R1, R0, R0                   | ADD R1, R0, R0
+302C  1241          ADD R1, R1, R1                   | ADD R1, R1, R1
+302D  1241          ADD R1, R1, R1                   | ADD R1, R1, R1
+302E  2E47          LD R7, #71   ; -> x3076          | LD R7, MASK15
+302F  5247          AND R1, R1, R7                   | AND R1, R1, R7
+3030  7342          STR R1, R5, #2                   | STR R1, R5, #2
+3031  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+3032  56E0          AND R3, R3, #0                   | AND R3, R3, #0
+3033  16E4          ADD R3, R3, #4                   | ADD R3, R3, #4
+3034  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+3035  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+3036  0601          BRzp #1   ; -> x3038             | BRzp ESCALA_SIG
+3037  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3038  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+3039  16FF          ADD R3, R3, #-1                  | ADD R3, R3, #-1
+303A  03F9          BRp #-7   ; -> x3034             | BRp ESCALA_BITS
+303B  7543          STR R2, R5, #3                   | STR R2, R5, #3
+303C  6141          LDR R0, R5, #1                   | LDR R0, R5, #1
+303D  6342          LDR R1, R5, #2                   | LDR R1, R5, #2
+303E  6543          LDR R2, R5, #3                   | LDR R2, R5, #3
+303F  263A          LD R3, #58   ; -> x307A          | LD R3, NEG_LN_LO
+3040  1003          ADD R0, R0, R3                   | ADD R0, R0, R3
+3041  0601          BRzp #1   ; -> x3043             | BRzp REDUCE_MED
+3042  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1
+3043  2637          LD R3, #55   ; -> x307B          | LD R3, NEG_LN_MI
+3044  1243          ADD R1, R1, R3                   | ADD R1, R1, R3
+3045  0601          BRzp #1   ; -> x3047             | BRzp REDUCE_ALTO
+3046  14BF          ADD R2, R2, #-1                  | ADD R2, R2, #-1
+3047  14A0          ADD R2, R2, #0                   | ADD R2, R2, #0
+3048  0809          BRn #9   ; -> x3052              | BRn REDUCE_SIGNO
+3049  5007          AND R0, R0, R7                   | AND R0, R0, R7
+304A  5247          AND R1, R1, R7                   | AND R1, R1, R7
+304B  7141          STR R0, R5, #1                   | STR R0, R5, #1
+304C  7342          STR R1, R5, #2                   | STR R1, R5, #2
+304D  7543          STR R2, R5, #3                   | STR R2, R5, #3
+304E  6744          LDR R3, R5, #4                   | LDR R3, R5, #4
+304F  16E1          ADD R3, R3, #1                   | ADD R3, R3, #1
+3050  7744          STR R3, R5, #4                   | STR R3, R5, #4
+3051  0FEA          BRnzp #-22   ; -> x303C          | BRnzp REDUCE
+3052  6145          LDR R0, R5, #5                   | LDR R0, R5, #5
+3053  0416          BRz #22   ; -> x306A             | BRz EXP_INICIA
+3054  6544          LDR R2, R5, #4                   | LDR R2, R5, #4
+3055  94BF          NOT R2, R2                       | NOT R2, R2         ; Si hay resto, k = -cociente - 1.
+3056  6141          LDR R0, R5, #1                   | LDR R0, R5, #1
+3057  6342          LDR R1, R5, #2                   | LDR R1, R5, #2
+3058  1601          ADD R3, R0, R1                   | ADD R3, R0, R1    ; Suma cero solo si ambas palabras son cero.
+3059  0A02          BRnp #2   ; -> x305C             | BRnp REDUCE_COMP
+305A  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1     ; Resto cero: k = -cociente.
+305B  0E0D          BRnzp #13   ; -> x3069           | BRnzp REDUCE_GUARDA
+305C  903F          NOT R0, R0                       | NOT R0, R0
+305D  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+305E  927F          NOT R1, R1                       | NOT R1, R1
+305F  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3060  2617          LD R3, #23   ; -> x3078          | LD R3, LN_LO
+3061  1003          ADD R0, R0, R3                   | ADD R0, R0, R3
+3062  0601          BRzp #1   ; -> x3064             | BRzp REDUCE_COMP_MI
+3063  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1
+3064  2614          LD R3, #20   ; -> x3079          | LD R3, LN_MI
+3065  1243          ADD R1, R1, R3                   | ADD R1, R1, R3
+3066  5007          AND R0, R0, R7                   | AND R0, R0, R7
+3067  7141          STR R0, R5, #1                   | STR R0, R5, #1
+3068  7342          STR R1, R5, #2                   | STR R1, R5, #2
+3069  7544          STR R2, R5, #4                   | STR R2, R5, #4
+306A  5020          AND R0, R0, #0                   | AND R0, R0, #0
+306B  7146          STR R0, R5, #6                   | STR R0, R5, #6
+306C  7147          STR R0, R5, #7                   | STR R0, R5, #7
+306D  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+306E  7148          STR R0, R5, #8                   | STR R0, R5, #8
+306F  1023          ADD R0, R0, #3                   | ADD R0, R0, #3
+3070  714B          STR R0, R5, #11                  | STR R0, R5, #11
+3071  2005          LD R0, #5   ; -> x3077           | LD R0, PTR_D16
+3072  714A          STR R0, R5, #10                  | STR R0, R5, #10
+3073  0E08          BRnzp #8   ; -> x307C            | BRnzp EXP_PASO
+3074  311B                                           | PTR_TRABAJO .FILL TRABAJO
+3075  B25F                                           | NEG_LIMITE  .FILL #-19873
+3076  7FFF                                           | MASK15      .FILL x7FFF
+3077  314D                                           | PTR_D16     .FILL TABLA_D16
+3078  05FE                                           | LN_LO       .FILL #1534
+3079  58B9                                           | LN_MI       .FILL #22713
+307A  FA02                                           | NEG_LN_LO   .FILL #-1534
+307B  A747                                           | NEG_LN_MI   .FILL #-22713
+307C  674A          LDR R3, R5, #10                  | LDR R3, R5, #10    ; Comenzar por el digito 16 de la fila.
+307D  5FE0          AND R7, R7, #0                   | AND R7, R7, #0
+307E  1FEF          ADD R7, R7, #15                  | ADD R7, R7, #15
+307F  1FE1          ADD R7, R7, #1                   | ADD R7, R7, #1
+3080  6141          LDR R0, R5, #1                   | LDR R0, R5, #1
+3081  6342          LDR R1, R5, #2                   | LDR R1, R5, #2
+3082  68C0          LDR R4, R3, #0                   | LDR R4, R3, #0     ; Probar r - tabla[j][d] en dos palabras.
+3083  993F          NOT R4, R4                       | NOT R4, R4
+3084  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3085  1004          ADD R0, R0, R4                   | ADD R0, R0, R4
+3086  0601          BRzp #1   ; -> x3088             | BRzp EXP_BUSCA_MI
+3087  127F          ADD R1, R1, #-1                  | ADD R1, R1, #-1
+3088  68C1          LDR R4, R3, #1                   | LDR R4, R3, #1
+3089  993F          NOT R4, R4                       | NOT R4, R4
+308A  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+308B  1244          ADD R1, R1, R4                   | ADD R1, R1, R4
+308C  0603          BRzp #3   ; -> x3090             | BRzp EXP_ACEPTA
+308D  16FE          ADD R3, R3, #-2                  | ADD R3, R3, #-2    ; Digito anterior en la misma fila.
+308E  1FFF          ADD R7, R7, #-1                  | ADD R7, R7, #-1
+308F  0FF0          BRnzp #-16   ; -> x3080          | BRnzp EXP_BUSCA
+3090  17E0          ADD R3, R7, #0                   | ADD R3, R7, #0     ; Guardar digito en R3 para el producto.
+3091  2FE4          LD R7, #-28   ; -> x3076         | LD R7, MASK15
+3092  5007          AND R0, R0, R7                   | AND R0, R0, R7
+3093  7141          STR R0, R5, #1                   | STR R0, R5, #1
+3094  7342          STR R1, R5, #2                   | STR R1, R5, #2
+3095  5020          AND R0, R0, #0                   | AND R0, R0, #0
+3096  5260          AND R1, R1, #0                   | AND R1, R1, #0
+3097  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+3098  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+3099  040E          BRz #14   ; -> x30A8             | BRz EXP_MULT_FIN
+309A  6946          LDR R4, R5, #6                   | LDR R4, R5, #6
+309B  1004          ADD R0, R0, R4                   | ADD R0, R0, R4
+309C  0602          BRzp #2   ; -> x309F             | BRzp EXP_MULT_MI
+309D  5007          AND R0, R0, R7                   | AND R0, R0, R7
+309E  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+309F  6947          LDR R4, R5, #7                   | LDR R4, R5, #7
+30A0  1244          ADD R1, R1, R4                   | ADD R1, R1, R4
+30A1  0602          BRzp #2   ; -> x30A4             | BRzp EXP_MULT_ALTO
+30A2  5247          AND R1, R1, R7                   | AND R1, R1, R7
+30A3  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30A4  6948          LDR R4, R5, #8                   | LDR R4, R5, #8
+30A5  1484          ADD R2, R2, R4                   | ADD R2, R2, R4
+30A6  16FF          ADD R3, R3, #-1                  | ADD R3, R3, #-1
+30A7  03F2          BRp #-14   ; -> x309A            | BRp EXP_MULT
+30A8  714D          STR R0, R5, #13                  | STR R0, R5, #13
+30A9  734E          STR R1, R5, #14                  | STR R1, R5, #14
+30AA  754F          STR R2, R5, #15                  | STR R2, R5, #15
+30AB  614B          LDR R0, R5, #11                  | LDR R0, R5, #11    ; Dividir E*d por 2^(4*j) con redondeo.
+30AC  4833          JSR #51   ; -> x30E0             | JSR REDONDEA
+30AD  2FC8          LD R7, #-56   ; -> x3076         | LD R7, MASK15
+30AE  6746          LDR R3, R5, #6                   | LDR R3, R5, #6
+30AF  1003          ADD R0, R0, R3                   | ADD R0, R0, R3
+30B0  0602          BRzp #2   ; -> x30B3             | BRzp EXP_SUMA_MI
+30B1  5007          AND R0, R0, R7                   | AND R0, R0, R7
+30B2  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+30B3  6747          LDR R3, R5, #7                   | LDR R3, R5, #7
+30B4  1243          ADD R1, R1, R3                   | ADD R1, R1, R3
+30B5  0602          BRzp #2   ; -> x30B8             | BRzp EXP_SUMA_ALTO
+30B6  5247          AND R1, R1, R7                   | AND R1, R1, R7
+30B7  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30B8  6748          LDR R3, R5, #8                   | LDR R3, R5, #8
+30B9  1483          ADD R2, R2, R3                   | ADD R2, R2, R3
+30BA  7146          STR R0, R5, #6                   | STR R0, R5, #6
+30BB  7347          STR R1, R5, #7                   | STR R1, R5, #7
+30BC  7548          STR R2, R5, #8                   | STR R2, R5, #8
+30BD  674C          LDR R3, R5, #12                  | LDR R3, R5, #12
+30BE  16E1          ADD R3, R3, #1                   | ADD R3, R3, #1
+30BF  774C          STR R3, R5, #12                  | STR R3, R5, #12
+30C0  16FA          ADD R3, R3, #-6                  | ADD R3, R3, #-6
+30C1  0409          BRz #9   ; -> x30CB              | BRz EXP_SALIDA
+30C2  614A          LDR R0, R5, #10                  | LDR R0, R5, #10
+30C3  102F          ADD R0, R0, #15                  | ADD R0, R0, #15
+30C4  102F          ADD R0, R0, #15                  | ADD R0, R0, #15
+30C5  1024          ADD R0, R0, #4                   | ADD R0, R0, #4     ; 17 constantes de dos palabras por fila.
+30C6  714A          STR R0, R5, #10                  | STR R0, R5, #10
+30C7  614B          LDR R0, R5, #11                  | LDR R0, R5, #11
+30C8  1024          ADD R0, R0, #4                   | ADD R0, R0, #4
+30C9  714B          STR R0, R5, #11                  | STR R0, R5, #11
+30CA  0FB1          BRnzp #-79   ; -> x307C          | BRnzp EXP_PASO
+30CB  714D          STR R0, R5, #13                  | STR R0, R5, #13
+30CC  734E          STR R1, R5, #14                  | STR R1, R5, #14
+30CD  754F          STR R2, R5, #15                  | STR R2, R5, #15
+30CE  6144          LDR R0, R5, #4                   | LDR R0, R5, #4
+30CF  903F          NOT R0, R0                       | NOT R0, R0
+30D0  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+30D1  102F          ADD R0, R0, #15                  | ADD R0, R0, #15
+30D2  1027          ADD R0, R0, #7                   | ADD R0, R0, #7
+30D3  480C          JSR #12   ; -> x30E0             | JSR REDONDEA
+30D4  1642          ADD R3, R1, R2                   | ADD R3, R1, R2    ; Palabras altas distintas de cero: no cabe.
+30D5  0A04          BRnp #4   ; -> x30DA             | BRnp EXP_SAT
+30D6  1020          ADD R0, R0, #0                   | ADD R0, R0, #0
+30D7  0A05          BRnp #5   ; -> x30DD             | BRnp EXP_FIN      ; R1 ya contiene cero (estado normal).
+30D8  1262          ADD R1, R1, #2                   | ADD R1, R1, #2
+30D9  0E03          BRnzp #3   ; -> x30DD            | BRnzp EXP_FIN
+30DA  219B          LD R0, #-101   ; -> x3076        | LD R0, MASK15
+30DB  5260          AND R1, R1, #0                   | AND R1, R1, #0
+30DC  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+30DD  654C          LDR R2, R5, #12                  | LDR R2, R5, #12
+30DE  6F40          LDR R7, R5, #0                   | LDR R7, R5, #0
+30DF  C1C0          RET                              | RET
+30E0  7F50          STR R7, R5, #16                  | STR R7, R5, #16
+30E1  9E3F          NOT R7, R0                       | NOT R7, R0
+30E2  1FE1          ADD R7, R7, #1                   | ADD R7, R7, #1
+30E3  1FEF          ADD R7, R7, #15                  | ADD R7, R7, #15
+30E4  1FEF          ADD R7, R7, #15                  | ADD R7, R7, #15
+30E5  1FEF          ADD R7, R7, #15                  | ADD R7, R7, #15    ; 45-n: bits que hay que copiar.
+30E6  5020          AND R0, R0, #0                   | AND R0, R0, #0
+30E7  5260          AND R1, R1, #0                   | AND R1, R1, #0
+30E8  54A0          AND R2, R2, #0                   | AND R2, R2, #0
+30E9  176F          ADD R3, R5, #15                  | ADD R3, R5, #15
+30EA  7751          STR R3, R5, #17                  | STR R3, R5, #17
+30EB  66C0          LDR R3, R3, #0                   | LDR R3, R3, #0
+30EC  16C3          ADD R3, R3, R3                   | ADD R3, R3, R3     ; Bit 14 de la palabra pasa al signo.
+30ED  5920          AND R4, R4, #0                   | AND R4, R4, #0
+30EE  192F          ADD R4, R4, #15                  | ADD R4, R4, #15
+30EF  1FE0          ADD R7, R7, #0                   | ADD R7, R7, #0
+30F0  0419          BRz #25   ; -> x310A             | BRz RED_AJUSTA
+30F1  1482          ADD R2, R2, R2                   | ADD R2, R2, R2
+30F2  1241          ADD R1, R1, R1                   | ADD R1, R1, R1
+30F3  0605          BRzp #5   ; -> x30F9             | BRzp RED_DUP_BAJO
+30F4  7949          STR R4, R5, #9                   | STR R4, R5, #9    ; Preservar contador de bits.
+30F5  2980          LD R4, #-128   ; -> x3076        | LD R4, MASK15
+30F6  5244          AND R1, R1, R4                   | AND R1, R1, R4
+30F7  6949          LDR R4, R5, #9                   | LDR R4, R5, #9
+30F8  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+30F9  1000          ADD R0, R0, R0                   | ADD R0, R0, R0
+30FA  0605          BRzp #5   ; -> x3100             | BRzp RED_INSERTA
+30FB  7949          STR R4, R5, #9                   | STR R4, R5, #9    ; Preservar contador de bits.
+30FC  2979          LD R4, #-135   ; -> x3076        | LD R4, MASK15
+30FD  5004          AND R0, R0, R4                   | AND R0, R0, R4
+30FE  6949          LDR R4, R5, #9                   | LDR R4, R5, #9
+30FF  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3100  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+3101  0601          BRzp #1   ; -> x3103             | BRzp RED_SIG_BIT
+3102  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+3103  16C3          ADD R3, R3, R3                   | ADD R3, R3, R3
+3104  1FFF          ADD R7, R7, #-1                  | ADD R7, R7, #-1
+3105  193F          ADD R4, R4, #-1                  | ADD R4, R4, #-1
+3106  03E8          BRp #-24   ; -> x30EF            | BRp RED_BIT
+3107  6751          LDR R3, R5, #17                  | LDR R3, R5, #17
+3108  16FF          ADD R3, R3, #-1                  | ADD R3, R3, #-1
+3109  0FE0          BRnzp #-32   ; -> x30EA          | BRnzp RED_CARGA
+310A  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+310B  060D          BRzp #13   ; -> x3119            | BRzp RED_RETORNO
+310C  1021          ADD R0, R0, #1                   | ADD R0, R0, #1
+310D  060B          BRzp #11   ; -> x3119            | BRzp RED_RETORNO
+310E  7949          STR R4, R5, #9                   | STR R4, R5, #9    ; Preservar contador de bits.
+310F  2966          LD R4, #-154   ; -> x3076        | LD R4, MASK15
+3110  5004          AND R0, R0, R4                   | AND R0, R0, R4
+3111  6949          LDR R4, R5, #9                   | LDR R4, R5, #9
+3112  1261          ADD R1, R1, #1                   | ADD R1, R1, #1
+3113  0605          BRzp #5   ; -> x3119             | BRzp RED_RETORNO
+3114  7949          STR R4, R5, #9                   | STR R4, R5, #9    ; Preservar contador de bits.
+3115  2960          LD R4, #-160   ; -> x3076        | LD R4, MASK15
+3116  5244          AND R1, R1, R4                   | AND R1, R1, R4
+3117  6949          LDR R4, R5, #9                   | LDR R4, R5, #9
+3118  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1
+3119  6F50          LDR R7, R5, #16                  | LDR R7, R5, #16
+311A  C1C0          RET                              | RET
+311B  000000000000                                   | TRABAJO .BLKW #18
+311E  000000000000                                   | 
+3121  000000000000                                   | 
+3124  000000000000                                   | 
+3127  000000000000                                   | 
+312A  000000000000                                   | 
+312D  0000                                           | .FILL x0000 ; d=0, bajo
+312E  0000                                           | .FILL x0000 ; medio
+312F  4618                                           | .FILL x4618 ; d=1, bajo
+3130  07C2                                           | .FILL x07C2 ; medio
+3131  41DC                                           | .FILL x41DC ; d=2, bajo
+3132  0F13                                           | .FILL x0F13 ; medio
+3133  1838                                           | .FILL x1838 ; d=3, bajo
+3134  15FF                                           | .FILL x15FF ; medio
+3135  7BE4                                           | .FILL x7BE4 ; d=4, bajo
+3136  1C8F                                           | .FILL x1C8F ; medio
+3137  5CAC                                           | .FILL x5CAC ; d=5, bajo
+3138  22CE                                           | .FILL x22CE ; medio
+3139  0BC2                                           | .FILL x0BC2 ; d=6, bajo
+313A  28C3                                           | .FILL x28C3 ; medio
+313B  57F7                                           | .FILL x57F7 ; d=7, bajo
+313C  2E73                                           | .FILL x2E73 ; medio
+313D  23ED                                           | .FILL x23ED ; d=8, bajo
+313E  33E6                                           | .FILL x33E6 ; medio
+313F  77C8                                           | .FILL x77C8 ; d=9, bajo
+3140  391F                                           | .FILL x391F ; medio
+3141  0F60                                           | .FILL x0F60 ; d=10, bajo
+3142  3E25                                           | .FILL x3E25 ; medio
+3143  65C8                                           | .FILL x65C8 ; d=11, bajo
+3144  42F9                                           | .FILL x42F9 ; medio
+3145  3EBD                                           | .FILL x3EBD ; d=12, bajo
+3146  47A1                                           | .FILL x47A1 ; medio
+3147  2E67                                           | .FILL x2E67 ; d=13, bajo
+3148  4C1F                                           | .FILL x4C1F ; medio
+3149  1FD1                                           | .FILL x1FD1 ; d=14, bajo
+314A  5076                                           | .FILL x5076 ; medio
+314B  5A4D                                           | .FILL x5A4D ; d=15, bajo
+314C  54A8                                           | .FILL x54A8 ; medio
+314D  05FE                                           | TABLA_D16 .FILL x05FE ; d=16, bajo
+314E  58B9                                           | .FILL x58B9 ; medio
+314F  0000                                           | .FILL x0000 ; d=0, bajo
+3150  0000                                           | .FILL x0000 ; medio
+3151  6015                                           | .FILL x6015 ; d=1, bajo
+3152  007F                                           | .FILL x007F ; medio
+3153  00AA                                           | .FILL x00AA ; d=2, bajo
+3154  00FF                                           | .FILL x00FF ; medio
+3155  623B                                           | .FILL x623B ; d=3, bajo
+3156  017D                                           | .FILL x017D ; medio
+3157  0546                                           | .FILL x0546 ; d=4, bajo
+3158  01FC                                           | .FILL x01FC ; medio
+3159  6A44                                           | .FILL x6A44 ; d=5, bajo
+315A  0279                                           | .FILL x0279 ; medio
+315B  11B0                                           | .FILL x11B0 ; d=6, bajo
+315C  02F7                                           | .FILL x02F7 ; medio
+315D  7C02                                           | .FILL x7C02 ; d=7, bajo
+315E  0373                                           | .FILL x0373 ; medio
+315F  29B1                                           | .FILL x29B1 ; d=8, bajo
+3160  03F0                                           | .FILL x03F0 ; medio
+3161  1B31                                           | .FILL x1B31 ; d=9, bajo
+3162  046C                                           | .FILL x046C ; medio
+3163  50F7                                           | .FILL x50F7 ; d=10, bajo
+3164  04E7                                           | .FILL x04E7 ; medio
+3165  4B76                                           | .FILL x4B76 ; d=11, bajo
+3166  0562                                           | .FILL x0562 ; medio
+3167  0B1F                                           | .FILL x0B1F ; d=12, bajo
+3168  05DD                                           | .FILL x05DD ; medio
+3169  1062                                           | .FILL x1062 ; d=13, bajo
+316A  0657                                           | .FILL x0657 ; medio
+316B  5BAE                                           | .FILL x5BAE ; d=14, bajo
+316C  06D0                                           | .FILL x06D0 ; medio
+316D  6D71                                           | .FILL x6D71 ; d=15, bajo
+316E  0749                                           | .FILL x0749 ; medio
+316F  4618                                           | .FILL x4618 ; d=16, bajo
+3170  07C2                                           | .FILL x07C2 ; medio
+3171  0000                                           | .FILL x0000 ; d=0, bajo
+3172  0000                                           | .FILL x0000 ; medio
+3173  7FE0                                           | .FILL x7FE0 ; d=1, bajo
+3174  0007                                           | .FILL x0007 ; medio
+3175  7F80                                           | .FILL x7F80 ; d=2, bajo
+3176  000F                                           | .FILL x000F ; medio
+3177  7EE0                                           | .FILL x7EE0 ; d=3, bajo
+3178  0017                                           | .FILL x0017 ; medio
+3179  7E00                                           | .FILL x7E00 ; d=4, bajo
+317A  001F                                           | .FILL x001F ; medio
+317B  7CE1                                           | .FILL x7CE1 ; d=5, bajo
+317C  0027                                           | .FILL x0027 ; medio
+317D  7B81                                           | .FILL x7B81 ; d=6, bajo
+317E  002F                                           | .FILL x002F ; medio
+317F  79E2                                           | .FILL x79E2 ; d=7, bajo
+3180  0037                                           | .FILL x0037 ; medio
+3181  7803                                           | .FILL x7803 ; d=8, bajo
+3182  003F                                           | .FILL x003F ; medio
+3183  75E4                                           | .FILL x75E4 ; d=9, bajo
+3184  0047                                           | .FILL x0047 ; medio
+3185  7385                                           | .FILL x7385 ; d=10, bajo
+3186  004F                                           | .FILL x004F ; medio
+3187  70E7                                           | .FILL x70E7 ; d=11, bajo
+3188  0057                                           | .FILL x0057 ; medio
+3189  6E09                                           | .FILL x6E09 ; d=12, bajo
+318A  005F                                           | .FILL x005F ; medio
+318B  6AEB                                           | .FILL x6AEB ; d=13, bajo
+318C  0067                                           | .FILL x0067 ; medio
+318D  678E                                           | .FILL x678E ; d=14, bajo
+318E  006F                                           | .FILL x006F ; medio
+318F  63F2                                           | .FILL x63F2 ; d=15, bajo
+3190  0077                                           | .FILL x0077 ; medio
+3191  6015                                           | .FILL x6015 ; d=16, bajo
+3192  007F                                           | .FILL x007F ; medio
+3193  0000                                           | .FILL x0000 ; d=0, bajo
+3194  0000                                           | .FILL x0000 ; medio
+3195  4000                                           | .FILL x4000 ; d=1, bajo
+3196  0000                                           | .FILL x0000 ; medio
+3197  0000                                           | .FILL x0000 ; d=2, bajo
+3198  0001                                           | .FILL x0001 ; medio
+3199  3FFF                                           | .FILL x3FFF ; d=3, bajo
+319A  0001                                           | .FILL x0001 ; medio
+319B  7FFE                                           | .FILL x7FFE ; d=4, bajo
+319C  0001                                           | .FILL x0001 ; medio
+319D  3FFD                                           | .FILL x3FFD ; d=5, bajo
+319E  0002                                           | .FILL x0002 ; medio
+319F  7FFC                                           | .FILL x7FFC ; d=6, bajo
+31A0  0002                                           | .FILL x0002 ; medio
+31A1  3FFA                                           | .FILL x3FFA ; d=7, bajo
+31A2  0003                                           | .FILL x0003 ; medio
+31A3  7FF8                                           | .FILL x7FF8 ; d=8, bajo
+31A4  0003                                           | .FILL x0003 ; medio
+31A5  3FF6                                           | .FILL x3FF6 ; d=9, bajo
+31A6  0004                                           | .FILL x0004 ; medio
+31A7  7FF4                                           | .FILL x7FF4 ; d=10, bajo
+31A8  0004                                           | .FILL x0004 ; medio
+31A9  3FF1                                           | .FILL x3FF1 ; d=11, bajo
+31AA  0005                                           | .FILL x0005 ; medio
+31AB  7FEE                                           | .FILL x7FEE ; d=12, bajo
+31AC  0005                                           | .FILL x0005 ; medio
+31AD  3FEB                                           | .FILL x3FEB ; d=13, bajo
+31AE  0006                                           | .FILL x0006 ; medio
+31AF  7FE8                                           | .FILL x7FE8 ; d=14, bajo
+31B0  0006                                           | .FILL x0006 ; medio
+31B1  3FE4                                           | .FILL x3FE4 ; d=15, bajo
+31B2  0007                                           | .FILL x0007 ; medio
+31B3  7FE0                                           | .FILL x7FE0 ; d=16, bajo
+31B4  0007                                           | .FILL x0007 ; medio
+31B5  0000                                           | .FILL x0000 ; d=0, bajo
+31B6  0000                                           | .FILL x0000 ; medio
+31B7  0400                                           | .FILL x0400 ; d=1, bajo
+31B8  0000                                           | .FILL x0000 ; medio
+31B9  0800                                           | .FILL x0800 ; d=2, bajo
+31BA  0000                                           | .FILL x0000 ; medio
+31BB  0C00                                           | .FILL x0C00 ; d=3, bajo
+31BC  0000                                           | .FILL x0000 ; medio
+31BD  1000                                           | .FILL x1000 ; d=4, bajo
+31BE  0000                                           | .FILL x0000 ; medio
+31BF  1400                                           | .FILL x1400 ; d=5, bajo
+31C0  0000                                           | .FILL x0000 ; medio
+31C1  1800                                           | .FILL x1800 ; d=6, bajo
+31C2  0000                                           | .FILL x0000 ; medio
+31C3  1C00                                           | .FILL x1C00 ; d=7, bajo
+31C4  0000                                           | .FILL x0000 ; medio
+31C5  2000                                           | .FILL x2000 ; d=8, bajo
+31C6  0000                                           | .FILL x0000 ; medio
+31C7  2400                                           | .FILL x2400 ; d=9, bajo
+31C8  0000                                           | .FILL x0000 ; medio
+31C9  2800                                           | .FILL x2800 ; d=10, bajo
+31CA  0000                                           | .FILL x0000 ; medio
+31CB  2C00                                           | .FILL x2C00 ; d=11, bajo
+31CC  0000                                           | .FILL x0000 ; medio
+31CD  3000                                           | .FILL x3000 ; d=12, bajo
+31CE  0000                                           | .FILL x0000 ; medio
+31CF  3400                                           | .FILL x3400 ; d=13, bajo
+31D0  0000                                           | .FILL x0000 ; medio
+31D1  3800                                           | .FILL x3800 ; d=14, bajo
+31D2  0000                                           | .FILL x0000 ; medio
+31D3  3C00                                           | .FILL x3C00 ; d=15, bajo
+31D4  0000                                           | .FILL x0000 ; medio
+31D5  4000                                           | .FILL x4000 ; d=16, bajo
+31D6  0000                                           | .FILL x0000 ; medio
+31D7  0000                                           | .FILL x0000 ; d=0, bajo
+31D8  0000                                           | .FILL x0000 ; medio
+31D9  0040                                           | .FILL x0040 ; d=1, bajo
+31DA  0000                                           | .FILL x0000 ; medio
+31DB  0080                                           | .FILL x0080 ; d=2, bajo
+31DC  0000                                           | .FILL x0000 ; medio
+31DD  00C0                                           | .FILL x00C0 ; d=3, bajo
+31DE  0000                                           | .FILL x0000 ; medio
+31DF  0100                                           | .FILL x0100 ; d=4, bajo
+31E0  0000                                           | .FILL x0000 ; medio
+31E1  0140                                           | .FILL x0140 ; d=5, bajo
+31E2  0000                                           | .FILL x0000 ; medio
+31E3  0180                                           | .FILL x0180 ; d=6, bajo
+31E4  0000                                           | .FILL x0000 ; medio
+31E5  01C0                                           | .FILL x01C0 ; d=7, bajo
+31E6  0000                                           | .FILL x0000 ; medio
+31E7  0200                                           | .FILL x0200 ; d=8, bajo
+31E8  0000                                           | .FILL x0000 ; medio
+31E9  0240                                           | .FILL x0240 ; d=9, bajo
+31EA  0000                                           | .FILL x0000 ; medio
+31EB  0280                                           | .FILL x0280 ; d=10, bajo
+31EC  0000                                           | .FILL x0000 ; medio
+31ED  02C0                                           | .FILL x02C0 ; d=11, bajo
+31EE  0000                                           | .FILL x0000 ; medio
+31EF  0300                                           | .FILL x0300 ; d=12, bajo
+31F0  0000                                           | .FILL x0000 ; medio
+31F1  0340                                           | .FILL x0340 ; d=13, bajo
+31F2  0000                                           | .FILL x0000 ; medio
+31F3  0380                                           | .FILL x0380 ; d=14, bajo
+31F4  0000                                           | .FILL x0000 ; medio
+31F5  03C0                                           | .FILL x03C0 ; d=15, bajo
+31F6  0000                                           | .FILL x0000 ; medio
+31F7  0400                                           | .FILL x0400 ; d=16, bajo
+31F8  0000                                           | .FILL x0000 ; medio

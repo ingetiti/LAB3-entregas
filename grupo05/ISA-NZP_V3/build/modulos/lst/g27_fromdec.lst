@@ -1,0 +1,280 @@
+3000  30F1                                           | sub_sumover     .FILL SUMOVER-SUMOVER
+3001  34E1          ST R2, #225   ; -> x30E3         | ST R2 fromdec_r2                    ;
+3002  36E1          ST R3, #225   ; -> x30E4         | ST R3 fromdec_r3                    ;
+3003  38E1          ST R4, #225   ; -> x30E5         | ST R4 fromdec_r4                    ;
+3004  3EE1          ST R7, #225   ; -> x30E6         | ST R7 fromdec_r7                    ;
+3005  5B60          AND R5, R5, #0                   | AND R5 R5 #0                        ;   [R5] errores
+3006  1820          ADD R4, R0, #0                   | ADD R4 R0 #0                        ;   [R4] texto
+3007  5020          AND R0, R0, #0                   | AND R0 R0 #0
+3008  30D0          ST R0, #208   ; -> x30D9         | ST R0 fromdec_entero                ;   [entero]   = 0          # parte entera obtenida
+3009  30D0          ST R0, #208   ; -> x30DA         | ST R0 fromdec_fraccion              ;   [fraccion] = 0          # parte fraccion obtenida
+300A  30D0          ST R0, #208   ; -> x30DB         | ST R0 fromdec_negativo              ;   [negativo] = 0          # signo obtenido
+300B  30D0          ST R0, #208   ; -> x30DC         | ST R0 fromdec_has_number            ;   [tiene_numero] = 0      # verifica que haya almenos 1 numero
+300C  6100          LDR R0, R4, #0                   | LDR R0 R4 #0                        ;   [R0] char = texto.peek()
+300D  22DB          LD R1, #219   ; -> x30E9         | LD  R1 fromdec_neg_minus            ;
+300E  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+300F  0A09          BRnp #9   ; -> x3019             | BRnp fromdec_int_loop               ;   if char == '-':
+3010  5260          AND R1, R1, #0                   | AND R1 R1 #0                        ;
+3011  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;
+3012  32C8          ST R1, #200   ; -> x30DB         | ST R1 fromdec_negativo              ;       [negativo] = 1
+3013  1921          ADD R4, R4, #1                   | ADD R4 R4 #1                        ;       texto.incr()
+3014  0E04          BRnzp #4   ; -> x3019            | BRnzp fromdec_int_loop              ;
+3015  22D1          LD R1, #209   ; -> x30E7         | LD R1 fromdec_neg_plus              ;
+3016  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+3017  0A01          BRnp #1   ; -> x3019             | BRnp fromdec_int_loop               ;   elif char == '+':
+3018  1921          ADD R4, R4, #1                   | ADD R4 R4 #1                        ;       texto.incr()
+3019  6100          LDR R0, R4, #0                   | LDR R0 R4 #0                        ;       [R0] char = texto.peek()
+301A  04A7          BRz #167   ; -> x30C2            | BRz fromdec_ret                     ;       if char == '\0':
+301B  22CE          LD R1, #206   ; -> x30EA         | LD R1 fromdec_neg_dot               ;
+301C  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+301D  0404          BRz #4   ; -> x3022              | BRz fromdec_int_period_found        ;
+301E  22C9          LD R1, #201   ; -> x30E8         | LD R1 fromdec_neg_period            ;
+301F  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+3020  0401          BRz #1   ; -> x3022              | BRz fromdec_int_period_found        ;
+3021  0E02          BRnzp #2   ; -> x3024            | BRnzp fromdec_int_range_chk         ;
+3022  1921          ADD R4, R4, #1                   | ADD R4 R4 #1                        ;           texto.incr()
+3023  0E26          BRnzp #38   ; -> x304A           | BRnzp fromdec_dec                   ;           break
+3024  22C6          LD R1, #198   ; -> x30EB         | LD R1 fromdec_neg_zero              ;
+3025  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+3026  081F          BRn #31   ; -> x3046             | BRn fromdec_int_invalid             ;
+3027  22C5          LD R1, #197   ; -> x30ED         | LD R1 fromdec_neg_nine              ;
+3028  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+3029  021C          BRp #28   ; -> x3046             | BRp fromdec_int_invalid             ;       if char >= '0' and char <= '9':
+302A  22AE          LD R1, #174   ; -> x30D9         | LD R1 fromdec_entero                ;           [R1] entero = [entero]
+302B  24C2          LD R2, #194   ; -> x30EE         | LD R2 fromdec_neg_overchk           ;
+302C  1481          ADD R2, R2, R1                   | ADD R2 R2 R1                        ;
+302D  0208          BRp #8   ; -> x3036              | BRp fromdec_int_overflow            ;
+302E  080A          BRn #10   ; -> x3039             | BRn fromdec_int_append              ;
+302F  24BC          LD R2, #188   ; -> x30EC         | LD R2 fromdec_neg_eight             ;
+3030  26AA          LD R3, #170   ; -> x30DB         | LD R3 fromdec_negativo              ;
+3031  96FF          NOT R3, R3                       | NOT R3 R3                           ;
+3032  16E1          ADD R3, R3, #1                   | ADD R3 R3 #1                        ;
+3033  1483          ADD R2, R2, R3                   | ADD R2 R2 R3                        ;
+3034  1480          ADD R2, R2, R0                   | ADD R2 R2 R0                        ;
+3035  0803          BRn #3   ; -> x3039              | BRn fromdec_int_append              ;           if entero > 3276 or (entero == 3276 and char >= '8' + negativo):
+3036  9B7F          NOT R5, R5                       | NOT R5 R5                           ;
+3037  5B7D          AND R5, R5, #-3                  | AND R5 R5 #-3                       ;
+3038  9B7F          NOT R5, R5                       | NOT R5 R5                           ;               errores = errores | OVERFLOW
+3039  1441          ADD R2, R1, R1                   | ADD R2 R1 R1                        ;
+303A  1482          ADD R2, R2, R2                   | ADD R2 R2 R2                        ;
+303B  1481          ADD R2, R2, R1                   | ADD R2 R2 R1                        ;
+303C  1282          ADD R1, R2, R2                   | ADD R1 R2 R2                        ;           entero = entero * 10
+303D  24AD          LD R2, #173   ; -> x30EB         | LD  R2 fromdec_neg_zero             ;
+303E  1242          ADD R1, R1, R2                   | ADD R1 R1 R2                        ;
+303F  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;           entero = entero + ord(char) - ord('0')
+3040  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+3041  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;
+3042  3499          ST R2, #153   ; -> x30DC         | ST R2 fromdec_has_number            ;           [tiene_numero] = 1
+3043  1921          ADD R4, R4, #1                   | ADD R4 R4 #1                        ;           texto.incr()
+3044  3294          ST R1, #148   ; -> x30D9         | ST R1 fromdec_entero                ;           [entero] = entero
+3045  0FD3          BRnzp #-45   ; -> x3019          | BRnzp fromdec_int_loop              ;           continue
+3046  9B7F          NOT R5, R5                       | NOT R5 R5                           ;
+3047  5B7E          AND R5, R5, #-2                  | AND R5 R5 #-2                       ;
+3048  9B7F          NOT R5, R5                       | NOT R5 R5                           ;       errores = errores | INVALID_INPUT
+3049  0E78          BRnzp #120   ; -> x30C2          | BRnzp fromdec_ret                   ;       return
+304A  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+304B  3092          ST R0, #146   ; -> x30DE         | ST R0 fromdec_fraccion_l            ;   [fraccion_l] = 0
+304C  3090          ST R0, #144   ; -> x30DD         | ST R0 fromdec_fraccion_h            ;   [fraccion_h] = 0
+304D  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+304E  1029          ADD R0, R0, #9                   | ADD R0 R0 #9                        ;
+304F  3092          ST R0, #146   ; -> x30E2         | ST R0 fromdec_contador              ;   [contador] = 9
+3050  2091          LD R0, #145   ; -> x30E2         | LD R0 fromdec_contador              ;
+3051  0C3D          BRnz #61   ; -> x308F            | BRnz fromdec_dec_break              ;   while contador > 0:
+3052  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+3053  308D          ST R0, #141   ; -> x30E1         | ST R0 fromdec_current               ;       [current] = 0
+3054  6100          LDR R0, R4, #0                   | LDR R0 R4 #0                        ;       [R0] char = texto.peek()
+3055  2295          LD R1, #149   ; -> x30EB         | LD R1 fromdec_neg_zero              ;
+3056  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+3057  0808          BRn #8   ; -> x3060              | BRn fromdec_dec_sk1                 ;
+3058  2294          LD R1, #148   ; -> x30ED         | LD R1 fromdec_neg_nine              ;
+3059  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+305A  0205          BRp #5   ; -> x3060              | BRp fromdec_dec_sk1                 ;       if char >= '0' or char <= '9':
+305B  228F          LD R1, #143   ; -> x30EB         | LD R1 fromdec_neg_zero              ;
+305C  1240          ADD R1, R1, R0                   | ADD R1 R1 R0                        ;
+305D  3283          ST R1, #131   ; -> x30E1         | ST R1 fromdec_current               ;           [current] = char - ord('0')
+305E  1921          ADD R4, R4, #1                   | ADD R4 R4 #1                        ;           texto.incr()
+305F  0E05          BRnzp #5   ; -> x3065            | BRnzp fromdec_dec_increment         ;
+3060  1020          ADD R0, R0, #0                   | ADD R0 R0 #0                        ;
+3061  0403          BRz #3   ; -> x3065              | BRz fromdec_dec_increment           ;       elif char != '\0':
+3062  9B7F          NOT R5, R5                       | NOT R5 R5                           ;
+3063  5B7E          AND R5, R5, #-2                  | AND R5 R5 #-2                       ;
+3064  9B7F          NOT R5, R5                       | NOT R5 R5                           ;           errores = errores | INVALID_INPUT
+3065  2077          LD R0, #119   ; -> x30DD         | LD R0 fromdec_fraccion_h            ;
+3066  2277          LD R1, #119   ; -> x30DE         | LD R1 fromdec_fraccion_l            ;
+3067  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+3068  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+3069  0601          BRzp #1   ; -> x306B             | BRzp fromdec_dec_incr_sk1           ;
+306A  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+306B  1241          ADD R1, R1, R1                   | ADD R1 R1 R1                        ;       [R0, R1] = [fraccion_h, fromdec_aux_l] * 2
+306C  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+306D  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+306E  0601          BRzp #1   ; -> x3070             | BRzp fromdec_dec_incr_sk2           ;
+306F  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+3070  1241          ADD R1, R1, R1                   | ADD R1 R1 R1                        ;       [R0, R1] = [fraccion_h, fromdec_aux_l] * 4
+3071  306D          ST R0, #109   ; -> x30DF         | ST R0 fromdec_aux_h                 ;
+3072  326D          ST R1, #109   ; -> x30E0         | ST R1 fromdec_aux_l                 ;       [aux_h, aux_l] = [R0, R1]
+3073  206C          LD R0, #108   ; -> x30E0         | LD R0 fromdec_aux_l                 ;
+3074  2269          LD R1, #105   ; -> x30DE         | LD R1 fromdec_fraccion_l            ;
+3075  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+3076  2789          LD R3, #-119   ; -> x3000        | LD R3 sub_sumover                   ;
+3077  40C0          JSRR R3                          | JSRR R3                             ;
+3078  3067          ST R0, #103   ; -> x30E0         | ST R0 fromdec_aux_l                 ;
+3079  2065          LD R0, #101   ; -> x30DF         | LD R0 fromdec_aux_h                 ;
+307A  2262          LD R1, #98   ; -> x30DD          | LD R1 fromdec_fraccion_h            ;
+307B  1001          ADD R0, R0, R1                   | ADD R0 R0 R1                        ;
+307C  1002          ADD R0, R0, R2                   | ADD R0 R0 R2                        ;
+307D  3061          ST R0, #97   ; -> x30DF          | ST R0 fromdec_aux_h                 ;       [aux_h, aux_l] = [fraccion_h, fraccion_l] * 5
+307E  2060          LD R0, #96   ; -> x30DF          | LD R0 fromdec_aux_h                 ;
+307F  2260          LD R1, #96   ; -> x30E0          | LD R1 fromdec_aux_l                 ;
+3080  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+3081  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+3082  0601          BRzp #1   ; -> x3084             | BRzp fromdec_dec_incr_sk3           ;
+3083  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+3084  1241          ADD R1, R1, R1                   | ADD R1 R1 R1                        ;
+3085  3057          ST R0, #87   ; -> x30DD          | ST R0 fromdec_fraccion_h            ;
+3086  3257          ST R1, #87   ; -> x30DE          | ST R1 fromdec_fraccion_l            ;       [fraccion_h, fraccion_l] = [fraccion_h, fraccion_l] * 10
+3087  2056          LD R0, #86   ; -> x30DE          | LD R0 fromdec_fraccion_l            ;
+3088  2258          LD R1, #88   ; -> x30E1          | LD R1 fromdec_current               ;
+3089  1001          ADD R0, R0, R1                   | ADD R0 R0 R1                        ;
+308A  3053          ST R0, #83   ; -> x30DE          | ST R0 fromdec_fraccion_l            ;       [fraccion_l] = [fraccion_l] + [current]
+308B  2056          LD R0, #86   ; -> x30E2          | LD R0 fromdec_contador              ;
+308C  103F          ADD R0, R0, #-1                  | ADD R0 R0 #-1                       ;
+308D  3054          ST R0, #84   ; -> x30E2          | ST R0 fromdec_contador              ;       [contador] -= 1
+308E  0FC1          BRnzp #-63   ; -> x3050          | BRnzp fromdec_dec_loop              ;
+308F  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+3090  3051          ST R0, #81   ; -> x30E2          | ST R0 fromdec_contador              ;   [contador] = 0
+3091  204B          LD R0, #75   ; -> x30DD          | LD R0 fromdec_fraccion_h            ;
+3092  224B          LD R1, #75   ; -> x30DE          | LD R1 fromdec_fraccion_l            ;
+3093  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+3094  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+3095  0601          BRzp #1   ; -> x3097             | BRzp fromdec_dec_loop2_sk1          ;
+3096  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+3097  1241          ADD R1, R1, R1                   | ADD R1 R1 R1                        ;
+3098  3044          ST R0, #68   ; -> x30DD          | ST R0 fromdec_fraccion_h            ;
+3099  3244          ST R1, #68   ; -> x30DE          | ST R1 fromdec_fraccion_l            ;       [fraccion_h, fraccion_l] = [fraccion_h, fraccion_l] * 2
+309A  2043          LD R0, #67   ; -> x30DE          | LD R0 fromdec_fraccion_l            ;
+309B  2254          LD R1, #84   ; -> x30F0          | LD R1 fromdec_neg_frac_l            ;
+309C  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+309D  2762          LD R3, #-158   ; -> x3000        | LD R3 sub_sumover                   ;
+309E  40C0          JSRR R3                          | JSRR R3                             ;
+309F  3040          ST R0, #64   ; -> x30E0          | ST R0 fromdec_aux_l                 ;
+30A0  203C          LD R0, #60   ; -> x30DD          | LD R0 fromdec_fraccion_h            ;
+30A1  224D          LD R1, #77   ; -> x30EF          | LD R1 fromdec_neg_frac_h            ;
+30A2  1001          ADD R0, R0, R1                   | ADD R0 R0 R1                        ;
+30A3  1002          ADD R0, R0, R2                   | ADD R0 R0 R2                        ;
+30A4  303A          ST R0, #58   ; -> x30DF          | ST R0 fromdec_aux_h                 ;       [aux_h, aux_l] = [fraccion_h, fraccion_l] - 1_000_000_000
+30A5  203C          LD R0, #60   ; -> x30E2          | LD R0 fromdec_contador              ;
+30A6  1030          ADD R0, R0, #-16                 | ADD R0 R0 #-16                      ;
+30A7  080A          BRn #10   ; -> x30B2             | BRn fromdec_dec_increment2          ;       if [contador] >= 16:
+30A8  2036          LD R0, #54   ; -> x30DF          | LD R0 fromdec_aux_h                 ;
+30A9  0818          BRn #24   ; -> x30C2             | BRn fromdec_ret                     ;           if [aux_h, aux_l] >= 0:
+30AA  202F          LD R0, #47   ; -> x30DA          | LD R0 fromdec_fraccion              ;
+30AB  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+30AC  302D          ST R0, #45   ; -> x30DA          | ST R0 fromdec_fraccion              ;               [fraccion] = [fraccion] + 1
+30AD  0A14          BRnp #20   ; -> x30C2            | BRnp fromdec_ret                    ;           if [fraccion] == 0:
+30AE  202A          LD R0, #42   ; -> x30D9          | LD R0 fromdec_entero                ;
+30AF  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+30B0  3028          ST R0, #40   ; -> x30D9          | ST R0 fromdec_entero                ;               [entero] = [entero] + 1
+30B1  0E10          BRnzp #16   ; -> x30C2           | BR fromdec_ret                      ;           return
+30B2  2027          LD R0, #39   ; -> x30DA          | LD R0 fromdec_fraccion              ;
+30B3  1000          ADD R0, R0, R0                   | ADD R0 R0 R0                        ;
+30B4  3025          ST R0, #37   ; -> x30DA          | ST R0 fromdec_fraccion              ;       [fraccion] = [fraccion] << 1
+30B5  2029          LD R0, #41   ; -> x30DF          | LD R0 fromdec_aux_h                 ;
+30B6  0807          BRn #7   ; -> x30BE              | BRn fromdec_dec_continue2           ;       if [aux_h, aux_l] >= 0:
+30B7  2022          LD R0, #34   ; -> x30DA          | LD R0 fromdec_fraccion              ;
+30B8  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+30B9  3020          ST R0, #32   ; -> x30DA          | ST R0 fromdec_fraccion              ;           [fraccion] = [fraccion] + 1
+30BA  2025          LD R0, #37   ; -> x30E0          | LD R0 fromdec_aux_l                 ;
+30BB  3022          ST R0, #34   ; -> x30DE          | ST R0 fromdec_fraccion_l            ;
+30BC  2022          LD R0, #34   ; -> x30DF          | LD R0 fromdec_aux_h                 ;
+30BD  301F          ST R0, #31   ; -> x30DD          | ST R0 fromdec_fraccion_h            ;           [fraccion_h, fraccion_l] = [aux_h, aux_l]
+30BE  2023          LD R0, #35   ; -> x30E2          | LD R0 fromdec_contador              ;
+30BF  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+30C0  3021          ST R0, #33   ; -> x30E2          | ST R0 fromdec_contador              ;       [contador] += 1
+30C1  0FCF          BRnzp #-49   ; -> x3091          | BRnzp fromdec_dec_loop2             ;
+30C2  2019          LD R0, #25   ; -> x30DC          | LD R0 fromdec_has_number            ;
+30C3  0A03          BRnp #3   ; -> x30C7             | BRnp fromdec_ret_sk1                ;   if not [tiene_numero]:
+30C4  9B7F          NOT R5, R5                       | NOT R5 R5                           ;
+30C5  5B7E          AND R5, R5, #-2                  | AND R5 R5 #-2                       ;
+30C6  9B7F          NOT R5, R5                       | NOT R5 R5                           ;       errores = errores | INVALID_INPUT
+30C7  2013          LD R0, #19   ; -> x30DB          | LD R0 fromdec_negativo              ;
+30C8  0409          BRz #9   ; -> x30D2              | BRz fromdec_ret_skp_neg             ;   if [negativo]:
+30C9  200F          LD R0, #15   ; -> x30D9          | LD R0 fromdec_entero                ;       [R0] entero
+30CA  903F          NOT R0, R0                       | NOT R0 R0                           ;
+30CB  220E          LD R1, #14   ; -> x30DA          | LD R1 fromdec_fraccion              ;       [R1] fraccion
+30CC  0A01          BRnp #1   ; -> x30CE             | BRnp fromdec_ret_sk2                ;
+30CD  1021          ADD R0, R0, #1                   | ADD R0 R0 #1                        ;
+30CE  927F          NOT R1, R1                       | NOT R1 R1                           ;
+30CF  1261          ADD R1, R1, #1                   | ADD R1 R1 #1                        ;       [entero, fraccion] = -[entero, fraccion]
+30D0  3008          ST R0, #8   ; -> x30D9           | ST R0 fromdec_entero                ;       [entero]  = entero
+30D1  3208          ST R1, #8   ; -> x30DA           | ST R1 fromdec_fraccion              ;       [fraccion] = fraccion
+30D2  2006          LD R0, #6   ; -> x30D9           | LD R0 fromdec_entero                ;
+30D3  2206          LD R1, #6   ; -> x30DA           | LD R1 fromdec_fraccion              ;
+30D4  240E          LD R2, #14   ; -> x30E3          | LD R2 fromdec_r2                    ;
+30D5  260E          LD R3, #14   ; -> x30E4          | LD R3 fromdec_r3                    ;
+30D6  280E          LD R4, #14   ; -> x30E5          | LD R4 fromdec_r4                    ;
+30D7  2E0E          LD R7, #14   ; -> x30E6          | LD R7 fromdec_r7                    ;
+30D8  C1C0          RET                              | RET                                 ;
+30D9  0000                                           | fromdec_entero          .FILL #0
+30DA  0000                                           | fromdec_fraccion        .FILL #0
+30DB  0000                                           | fromdec_negativo        .FILL #0
+30DC  0000                                           | fromdec_has_number      .FILL #0
+30DD  0000                                           | fromdec_fraccion_h      .FILL #0
+30DE  0000                                           | fromdec_fraccion_l      .FILL #0
+30DF  0000                                           | fromdec_aux_h           .FILL #0
+30E0  0000                                           | fromdec_aux_l           .FILL #0
+30E1  0000                                           | fromdec_current         .FILL #0
+30E2  0000                                           | fromdec_contador        .FILL #0
+30E3  0000                                           | fromdec_r2              .FILL #0
+30E4  0000                                           | fromdec_r3              .FILL #0
+30E5  0000                                           | fromdec_r4              .FILL #0
+30E6  0000                                           | fromdec_r7              .FILL #0
+30E7  FFD5                                           | fromdec_neg_plus        .FILL #-43      ;   - ord('+')
+30E8  FFD4                                           | fromdec_neg_period      .FILL #-44      ;   - ord(',')
+30E9  FFD3                                           | fromdec_neg_minus       .FILL #-45      ;   - ord('-')
+30EA  FFD2                                           | fromdec_neg_dot         .FILL #-46      ;   - ord('.')
+30EB  FFD0                                           | fromdec_neg_zero        .FILL #-48      ;   - ord('0')
+30EC  FFC8                                           | fromdec_neg_eight       .FILL #-56      ;   - ord('8')
+30ED  FFC7                                           | fromdec_neg_nine        .FILL #-57      ;   - ord('9')
+30EE  F334                                           | fromdec_neg_overchk     .FILL #-3276
+30EF  C465                                           | fromdec_neg_frac_h      .FILL xC465     ;
+30F0  3600                                           | fromdec_neg_frac_l      .FILL x3600     ;   -1_000_000_000
+30F1  3221          ST R1, #33   ; -> x3113          | ST R1 sumover_r1                    ;
+30F2  3621          ST R3, #33   ; -> x3114          | ST R3 sumover_r3                    ;
+30F3  3821          ST R4, #33   ; -> x3115          | ST R4 sumover_r4                    ;
+30F4  1620          ADD R3, R0, #0                   | ADD R3 R0 #0                        ;   [R3] valor_a
+30F5  10A0          ADD R0, R2, #0                   | ADD R0 R2 #0                        ;   [R0] resultado = carry
+30F6  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;   [R2] carry = 0
+30F7  16E0          ADD R3, R3, #0                   | ADD R3 R3 #0                        ;
+30F8  0601          BRzp #1   ; -> x30FA             | BRzp sumover_test_b                 ;   if valor_a & 0x8000:
+30F9  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+30FA  1260          ADD R1, R1, #0                   | ADD R1 R1 #0                        ;
+30FB  0601          BRzp #1   ; -> x30FD             | BRzp sumover_sum                    ;   if valor_b & 0x8000:
+30FC  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+30FD  2818          LD R4, #24   ; -> x3116          | LD R4 sumover_mask                  ;
+30FE  56C4          AND R3, R3, R4                   | AND R3 R3 R4                        ;   valor_a = valor_a & 0x7FFF
+30FF  5244          AND R1, R1, R4                   | AND R1 R1 R4                        ;   valor_b = valor_b & 0x7FFF
+3100  1003          ADD R0, R0, R3                   | ADD R0 R0 R3                        ;
+3101  1001          ADD R0, R0, R1                   | ADD R0 R0 R1                        ;   resultado = resultado + valor_a + valor_b
+3102  0601          BRzp #1   ; -> x3104             | BRzp sumover_resultant              ;   if resultado & 0x8000:
+3103  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry += 1
+3104  5004          AND R0, R0, R4                   | AND R0 R0 R4                        ;   resultado = resultado & 0x7FFF
+3105  58A1          AND R4, R2, #1                   | AND R4 R2 #1                        ;
+3106  0402          BRz #2   ; -> x3109              | BRz sumover_test_carry              ;   if carry & 0x0001:
+3107  280F          LD R4, #15   ; -> x3117          | LD R4 sumover_msb                   ;
+3108  1004          ADD R0, R0, R4                   | ADD R0 R0 R4                        ;       resultado = resultado + 0x8000
+3109  58A2          AND R4, R2, #2                   | AND R4 R2 #2                        ;
+310A  0403          BRz #3   ; -> x310E              | BRz sumover_test_carry_else         ;   if carry & 0x0002:
+310B  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;
+310C  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       carry = 1
+310D  0E01          BRnzp #1   ; -> x310F            | BRnzp sumover_ret                   ;   else:
+310E  54A0          AND R2, R2, #0                   | AND R2 R2 #0                        ;       carry = 0
+310F  2203          LD R1, #3   ; -> x3113           | LD R1 sumover_r1                    ;
+3110  2603          LD R3, #3   ; -> x3114           | LD R3 sumover_r3                    ;
+3111  2803          LD R4, #3   ; -> x3115           | LD R4 sumover_r4                    ;
+3112  C1C0          RET                              | RET                                 ;
+3113  0000                                           | sumover_r1          .FILL #0
+3114  0000                                           | sumover_r3          .FILL #0
+3115  0000                                           | sumover_r4          .FILL #0
+3116  7FFF                                           | sumover_mask        .FILL x7FFF
+3117  8000                                           | sumover_msb         .FILL x8000

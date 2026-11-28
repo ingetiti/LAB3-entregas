@@ -1,0 +1,33 @@
+3000  301B          ST R0, #27   ; -> x301C          | ST R0 getline_buffer_beg            ;
+3001  321B          ST R1, #27   ; -> x301D          | ST R1 getline_r1                    ;
+3002  341B          ST R2, #27   ; -> x301E          | ST R2 getline_r2                    ;
+3003  361B          ST R3, #27   ; -> x301F          | ST R3 getline_r3                    ;
+3004  3E1B          ST R7, #27   ; -> x3020          | ST R7 getline_r7                    ;
+3005  2416          LD R2, #22   ; -> x301C          | LD R2 getline_buffer_beg            ;   [R2] cursor = [buffer_beg]
+3006  927F          NOT R1, R1                       | NOT R1 R1                           ;
+3007  1262          ADD R1, R1, #2                   | ADD R1 R1 #2                        ;   [R1] - (buffer_end - 1)
+3008  F020          GETC                             | GETC                                ;       [R0] char = getc()
+3009  1636          ADD R3, R0, #-10                 | ADD R3 R0 #-10                      ;       if char == '\n':
+300A  0406          BRz #6   ; -> x3011              | BRz getline_ret                     ;           break
+300B  F021          OUT                              | OUT                                 ;       putc(char)
+300C  1681          ADD R3, R2, R1                   | ADD R3 R2 R1                        ;       if cursor >= (buffer_end - 1):
+300D  07FA          BRzp #-6   ; -> x3008            | BRzp getline_loop                   ;           continue
+300E  7080          STR R0, R2, #0                   | STR R0 R2 #0                        ;       cursor.write(char)
+300F  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;       cursor = cursor + 1
+3010  0FF7          BRnzp #-9   ; -> x3008           | BRnzp getline_loop                  ;       continue
+3011  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+3012  102A          ADD R0, R0, #10                  | ADD R0 R0 #10                       ;
+3013  F021          OUT                              | OUT                                 ;   putc('\n')
+3014  5020          AND R0, R0, #0                   | AND R0 R0 #0                        ;
+3015  7080          STR R0, R2, #0                   | STR R0 R2 #0                        ;   cursor.write('\0')
+3016  2005          LD R0, #5   ; -> x301C           | LD R0 getline_buffer_beg            ;
+3017  2205          LD R1, #5   ; -> x301D           | LD R1 getline_r1                    ;
+3018  2405          LD R2, #5   ; -> x301E           | LD R2 getline_r2                    ;
+3019  2605          LD R3, #5   ; -> x301F           | LD R3 getline_r3                    ;
+301A  2E05          LD R7, #5   ; -> x3020           | LD R7 getline_r7                    ;
+301B  C1C0          RET                              | RET                                 ;
+301C  0000                                           | getline_buffer_beg      .FILL #0
+301D  0000                                           | getline_r1              .FILL #0
+301E  0000                                           | getline_r2              .FILL #0
+301F  0000                                           | getline_r3              .FILL #0
+3020  0000                                           | getline_r7              .FILL #0

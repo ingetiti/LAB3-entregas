@@ -1,0 +1,21 @@
+{
+  "*": {
+    "regs": {
+      "R0": 6,
+      "R1": 3
+    }
+  },
+  "main_grupo27": {
+    "tipo": "programa",
+    "max": 50000000
+  },
+  "g27_fromhex": {
+    "entrada": "1A\n",
+    "esperado": {
+      "R0": "0x001A"
+    }
+  },
+  "g27_getval_buffer": {
+    "omitir": true
+  }
+}

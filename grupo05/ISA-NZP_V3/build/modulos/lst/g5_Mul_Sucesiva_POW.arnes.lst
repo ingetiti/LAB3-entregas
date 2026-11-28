@@ -1,0 +1,123 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  1DBC          ADD R6, R6, #-4                  | Mul_Sucesiva_POW ADD R6, R6, #-4         ; apilar R1, R2, R3 y R7
+3001  7380          STR R1, R6, #0                   | STR R1, R6, #0
+3002  7581          STR R2, R6, #1                   | STR R2, R6, #1
+3003  7782          STR R3, R6, #2                   | STR R3, R6, #2
+3004  7F83          STR R7, R6, #3                   | STR R7, R6, #3          ; R7 se pisa con el JSR MULT
+3005  1660          ADD R3, R1, #0                   | ADD R3, R1, #0          ; R3 = B (cuenta las multiplicaciones)
+3006  1220          ADD R1, R0, #0                   | ADD R1, R0, #0          ; R1 = A (MULT preserva R1)
+3007  16E0          ADD R3, R3, #0                   | ADD R3, R3, #0
+3008  0810          BRn #16   ; -> x3019             | BRn POT_ERR             ; exponente negativo
+3009  0204          BRp #4   ; -> x300E              | BRp POT_POS
+300A  1020          ADD R0, R0, #0                   | ADD R0, R0, #0          ; B = 0
+300B  040D          BRz #13   ; -> x3019             | BRz POT_ERR             ; 0^0
+300C  2013          LD R0, #19   ; -> x3020          | LD R0, POT_UNO          ; A^0 = 1.00
+300D  0E0C          BRnzp #12   ; -> x301A           | BRnzp POT_FIN
+300E  1020          ADD R0, R0, #0                   | POT_POS          ADD R0, R0, #0
+300F  040A          BRz #10   ; -> x301A             | BRz POT_FIN             ; 0^B = 0 (R0 ya vale 0)
+3010  16FF          ADD R3, R3, #-1                  | ADD R3, R3, #-1         ; B-1 multiplicaciones restantes
+3011  0408          BRz #8   ; -> x301A              | BRz POT_FIN             ; B = 1 -> R0 = A
+3012  480F          JSR #15   ; -> x3022             | POT_BUC          JSR MULT                ; R0 = R0 * R1  (acumulado * A)
+3013  240D          LD R2, #13   ; -> x3021          | LD R2, POT_ERRQ
+3014  1402          ADD R2, R0, R2                   | ADD R2, R0, R2          ; 0 solo si R0 = x8000
+3015  0404          BRz #4   ; -> x301A              | BRz POT_FIN             ; desborde: R0 ya es el codigo de error
+3016  16FF          ADD R3, R3, #-1                  | ADD R3, R3, #-1
+3017  03FA          BRp #-6   ; -> x3012             | BRp POT_BUC
+3018  0E01          BRnzp #1   ; -> x301A            | BRnzp POT_FIN
+3019  2007          LD R0, #7   ; -> x3021           | POT_ERR          LD R0, POT_ERRQ
+301A  6380          LDR R1, R6, #0                   | POT_FIN          LDR R1, R6, #0
+301B  6581          LDR R2, R6, #1                   | LDR R2, R6, #1
+301C  6782          LDR R3, R6, #2                   | LDR R3, R6, #2
+301D  6F83          LDR R7, R6, #3                   | LDR R7, R6, #3
+301E  1DA4          ADD R6, R6, #4                   | ADD R6, R6, #4          ; R6 vuelve a su valor de entrada
+301F  C1C0          RET                              | RET
+3020  0100                                           | POT_UNO          .FILL x0100             ; 1.00 en Q7.8
+3021  8000                                           | POT_ERRQ         .FILL x8000             ; codigo de error
+3022  1DBB          ADD R6, R6, #-5                  | MULT            ADD R6, R6, #-5         ; apilar R1..R5
+3023  7380          STR R1, R6, #0                   | STR R1, R6, #0
+3024  7581          STR R2, R6, #1                   | STR R2, R6, #1
+3025  7782          STR R3, R6, #2                   | STR R3, R6, #2
+3026  7983          STR R4, R6, #3                   | STR R4, R6, #3
+3027  7B84          STR R5, R6, #4                   | STR R5, R6, #4
+3028  1460          ADD R2, R1, #0                   | ADD R2, R1, #0          ; R2 = B
+3029  1220          ADD R1, R0, #0                   | ADD R1, R0, #0          ; R1 = A
+302A  5B60          AND R5, R5, #0                   | AND R5, R5, #0          ; R5 = cantidad de operandos negativos
+302B  1260          ADD R1, R1, #0                   | ADD R1, R1, #0
+302C  0604          BRzp #4   ; -> x3031             | BRzp MULT_A_POS
+302D  927F          NOT R1, R1                       | NOT R1, R1
+302E  1261          ADD R1, R1, #1                   | ADD R1, R1, #1          ; R1 = |A|
+302F  0837          BRn #55   ; -> x3067             | BRn MULT_DESB           ; x8000 no tiene opuesto en 16 bits
+3030  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+3031  14A0          ADD R2, R2, #0                   | MULT_A_POS      ADD R2, R2, #0
+3032  0604          BRzp #4   ; -> x3037             | BRzp MULT_B_POS
+3033  94BF          NOT R2, R2                       | NOT R2, R2
+3034  14A1          ADD R2, R2, #1                   | ADD R2, R2, #1          ; R2 = |B|
+3035  0831          BRn #49   ; -> x3067             | BRn MULT_DESB
+3036  1B61          ADD R5, R5, #1                   | ADD R5, R5, #1
+3037  5020          AND R0, R0, #0                   | MULT_B_POS      AND R0, R0, #0
+3038  1B7F          ADD R5, R5, #-1                  | ADD R5, R5, #-1         ; con 1 solo negativo R5 queda en 0
+3039  0A01          BRnp #1   ; -> x303B             | BRnp MULT_SGN_SET
+303A  1021          ADD R0, R0, #1                   | ADD R0, R0, #1          ; R0 = 1 -> resultado negativo
+303B  3035          ST R0, #53   ; -> x3071          | MULT_SGN_SET    ST R0, MULT_SGN
+303C  16A0          ADD R3, R2, #0                   | ADD R3, R2, #0          ; R3 = resto (termina siendo BF)
+303D  5920          AND R4, R4, #0                   | AND R4, R4, #0          ; R4 = BI
+303E  2A30          LD R5, #48   ; -> x306F          | LD R5, MULT_NEG256
+303F  14C5          ADD R2, R3, R5                   | MULT_DIV_B      ADD R2, R3, R5
+3040  0803          BRn #3   ; -> x3044              | BRn MULT_FIN_B
+3041  16A0          ADD R3, R2, #0                   | ADD R3, R2, #0
+3042  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3043  0FFB          BRnzp #-5   ; -> x303F           | BRnzp MULT_DIV_B
+3044  362D          ST R3, #45   ; -> x3072          | MULT_FIN_B      ST R3, MULT_BF          ; BF (0..255)
+3045  5020          AND R0, R0, #0                   | AND R0, R0, #0          ; R0 = acumulador del resultado
+3046  1920          ADD R4, R4, #0                   | ADD R4, R4, #0
+3047  0404          BRz #4   ; -> x304C              | BRz MULT_DIV_A
+3048  1001          ADD R0, R0, R1                   | MULT_FASE1      ADD R0, R0, R1          ; resultado += |A|
+3049  081D          BRn #29   ; -> x3067             | BRn MULT_DESB
+304A  193F          ADD R4, R4, #-1                  | ADD R4, R4, #-1
+304B  03FC          BRp #-4   ; -> x3048             | BRp MULT_FASE1
+304C  1660          ADD R3, R1, #0                   | MULT_DIV_A      ADD R3, R1, #0          ; R3 = resto (termina siendo AF)
+304D  5920          AND R4, R4, #0                   | AND R4, R4, #0          ; R4 = AI
+304E  2A20          LD R5, #32   ; -> x306F          | LD R5, MULT_NEG256
+304F  14C5          ADD R2, R3, R5                   | MULT_DA_LOOP    ADD R2, R3, R5
+3050  0803          BRn #3   ; -> x3054              | BRn MULT_FIN_A
+3051  16A0          ADD R3, R2, #0                   | ADD R3, R2, #0
+3052  1921          ADD R4, R4, #1                   | ADD R4, R4, #1
+3053  0FFB          BRnzp #-5   ; -> x304F           | BRnzp MULT_DA_LOOP
+3054  5B60          AND R5, R5, #0                   | MULT_FIN_A      AND R5, R5, #0          ; R5 = acumulador de fracciones
+3055  221C          LD R1, #28   ; -> x3072          | LD R1, MULT_BF          ; R1 = contador (|A| ya no hace falta)
+3056  040B          BRz #11   ; -> x3062             | BRz MULT_FIN_M
+3057  1004          ADD R0, R0, R4                   | MULT_FASE2      ADD R0, R0, R4          ; resultado += AI
+3058  080E          BRn #14   ; -> x3067             | BRn MULT_DESB
+3059  1B43          ADD R5, R5, R3                   | ADD R5, R5, R3          ; acumulador += AF
+305A  2414          LD R2, #20   ; -> x306F          | LD R2, MULT_NEG256
+305B  1542          ADD R2, R5, R2                   | ADD R2, R5, R2          ; acumulador - 256
+305C  0803          BRn #3   ; -> x3060              | BRn MULT_SIG
+305D  1AA0          ADD R5, R2, #0                   | ADD R5, R2, #0          ; acumulador -= 256
+305E  1021          ADD R0, R0, #1                   | ADD R0, R0, #1          ; acarreo: resultado += 1
+305F  0807          BRn #7   ; -> x3067              | BRn MULT_DESB
+3060  127F          ADD R1, R1, #-1                  | MULT_SIG        ADD R1, R1, #-1
+3061  03F5          BRp #-11   ; -> x3057            | BRp MULT_FASE2
+3062  220E          LD R1, #14   ; -> x3071          | MULT_FIN_M      LD R1, MULT_SGN
+3063  0404          BRz #4   ; -> x3068              | BRz MULT_VUELVE
+3064  903F          NOT R0, R0                       | NOT R0, R0
+3065  1021          ADD R0, R0, #1                   | ADD R0, R0, #1          ; resultado negativo
+3066  0E01          BRnzp #1   ; -> x3068            | BRnzp MULT_VUELVE
+3067  2008          LD R0, #8   ; -> x3070           | MULT_DESB       LD R0, MULT_ERRQ
+3068  6380          LDR R1, R6, #0                   | MULT_VUELVE     LDR R1, R6, #0
+3069  6581          LDR R2, R6, #1                   | LDR R2, R6, #1
+306A  6782          LDR R3, R6, #2                   | LDR R3, R6, #2
+306B  6983          LDR R4, R6, #3                   | LDR R4, R6, #3
+306C  6B84          LDR R5, R6, #4                   | LDR R5, R6, #4
+306D  1DA5          ADD R6, R6, #5                   | ADD R6, R6, #5          ; R6 vuelve a su valor de entrada
+306E  C1C0          RET                              | RET
+306F  FF00                                           | MULT_NEG256     .FILL #-256
+3070  8000                                           | MULT_ERRQ       .FILL x8000             ; codigo de error (desborde)
+3071  0000                                           | MULT_SGN        .FILL #0                ; 1 si el resultado es negativo
+3072  0000                                           | MULT_BF         .FILL #0                ; parte fraccionaria de |B|

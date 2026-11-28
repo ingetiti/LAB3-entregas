@@ -1,0 +1,14 @@
+__H_R0 2FC5
+__H_R1 2FC6
+__H_ENT 2FC7
+MCD 3000
+mcd_a_positivo 3007
+mcd_b_positivo 300B
+mcd_restar_r0 3014
+mcd_r0_menor_r1 3018
+mcd_restar_r1 301A
+mcd_devolver_b 3024
+mcd_fin 3025
+mcd_guardado_r1 3029
+mcd_guardado_r2 302A
+mcd_guardado_r3 302B

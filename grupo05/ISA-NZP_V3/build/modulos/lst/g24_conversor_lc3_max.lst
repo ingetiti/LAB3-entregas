@@ -1,0 +1,90 @@
+3000  3E67          ST R7, #103   ; -> x3068         | ST      R7, BASE_SAVE_R7
+3001  3061          ST R0, #97   ; -> x3063          | ST      R0, BASE_SAVE_R0
+3002  3461          ST R2, #97   ; -> x3064          | ST      R2, BASE_SAVE_R2
+3003  3661          ST R3, #97   ; -> x3065          | ST      R3, BASE_SAVE_R3
+3004  3861          ST R4, #97   ; -> x3066          | ST      R4, BASE_SAVE_R4
+3005  3A61          ST R5, #97   ; -> x3067          | ST      R5, BASE_SAVE_R5
+3006  1420          ADD R2, R0, #0                   | ADD     R2, R0, #0
+3007  E047          LEA R0, #71   ; -> x304F         | LEA     R0, BASE_HEX_LBL
+3008  F022          PUTS                             | PUTS
+3009  2857          LD R4, #87   ; -> x3061          | LD      R4, BASE_CNT_4
+300A  56E0          AND R3, R3, #0                   | AND     R3, R3, #0
+300B  2A55          LD R5, #85   ; -> x3061          | LD      R5, BASE_CNT_4
+300C  16C3          ADD R3, R3, R3                   | ADD     R3, R3, R3
+300D  14A0          ADD R2, R2, #0                   | ADD     R2, R2, #0
+300E  0601          BRzp #1   ; -> x3010             | BRzp    BASE_HEX_BIT_CERO
+300F  16E1          ADD R3, R3, #1                   | ADD     R3, R3, #1
+3010  1482          ADD R2, R2, R2                   | ADD     R2, R2, R2
+3011  1B7F          ADD R5, R5, #-1                  | ADD     R5, R5, #-1
+3012  03F9          BRp #-7   ; -> x300C             | BRp     BASE_HEX_BIT
+3013  2A4E          LD R5, #78   ; -> x3062          | LD      R5, BASE_NEG_10
+3014  1AC5          ADD R5, R3, R5                   | ADD     R5, R3, R5
+3015  0805          BRn #5   ; -> x301B              | BRn     BASE_HEX_DECIMAL
+3016  16EF          ADD R3, R3, #15                  | ADD     R3, R3, #15
+3017  16EF          ADD R3, R3, #15                  | ADD     R3, R3, #15
+3018  16EF          ADD R3, R3, #15                  | ADD     R3, R3, #15
+3019  16EA          ADD R3, R3, #10                  | ADD     R3, R3, #10
+301A  0E04          BRnzp #4   ; -> x301F            | BRnzp   BASE_HEX_EMITE
+301B  16EF          ADD R3, R3, #15                  | ADD     R3, R3, #15
+301C  16EF          ADD R3, R3, #15                  | ADD     R3, R3, #15
+301D  16EF          ADD R3, R3, #15                  | ADD     R3, R3, #15
+301E  16E3          ADD R3, R3, #3                   | ADD     R3, R3, #3
+301F  10E0          ADD R0, R3, #0                   | ADD     R0, R3, #0
+3020  F021          OUT                              | OUT
+3021  193F          ADD R4, R4, #-1                  | ADD     R4, R4, #-1
+3022  03E7          BRp #-25   ; -> x300A            | BRp     BASE_HEX_NIBBLE
+3023  2039          LD R0, #57   ; -> x305D          | LD      R0, BASE_NL
+3024  F021          OUT                              | OUT
+3025  2A41          LD R5, #65   ; -> x3067          | LD      R5, BASE_SAVE_R5
+3026  283F          LD R4, #63   ; -> x3066          | LD      R4, BASE_SAVE_R4
+3027  263D          LD R3, #61   ; -> x3065          | LD      R3, BASE_SAVE_R3
+3028  243B          LD R2, #59   ; -> x3064          | LD      R2, BASE_SAVE_R2
+3029  2039          LD R0, #57   ; -> x3063          | LD      R0, BASE_SAVE_R0
+302A  2E3D          LD R7, #61   ; -> x3068          | LD      R7, BASE_SAVE_R7
+302B  C1C0          RET                              | RET
+302C  3E3B          ST R7, #59   ; -> x3068          | ST      R7, BASE_SAVE_R7
+302D  3035          ST R0, #53   ; -> x3063          | ST      R0, BASE_SAVE_R0
+302E  3435          ST R2, #53   ; -> x3064          | ST      R2, BASE_SAVE_R2
+302F  3635          ST R3, #53   ; -> x3065          | ST      R3, BASE_SAVE_R3
+3030  1420          ADD R2, R0, #0                   | ADD     R2, R0, #0
+3031  E013          LEA R0, #19   ; -> x3045         | LEA     R0, BASE_BIN_LBL
+3032  F022          PUTS                             | PUTS
+3033  262C          LD R3, #44   ; -> x3060          | LD      R3, BASE_CNT_16
+3034  14A0          ADD R2, R2, #0                   | ADD     R2, R2, #0
+3035  0803          BRn #3   ; -> x3039              | BRn     BASE_BIN_UNO
+3036  2027          LD R0, #39   ; -> x305E          | LD      R0, BASE_CHR_0
+3037  F021          OUT                              | OUT
+3038  0E02          BRnzp #2   ; -> x303B            | BRnzp   BASE_BIN_SIGUE
+3039  2025          LD R0, #37   ; -> x305F          | LD      R0, BASE_CHR_1
+303A  F021          OUT                              | OUT
+303B  1482          ADD R2, R2, R2                   | ADD     R2, R2, R2
+303C  16FF          ADD R3, R3, #-1                  | ADD     R3, R3, #-1
+303D  03F6          BRp #-10   ; -> x3034            | BRp     BASE_BIN_BUCLE
+303E  201E          LD R0, #30   ; -> x305D          | LD      R0, BASE_NL
+303F  F021          OUT                              | OUT
+3040  2624          LD R3, #36   ; -> x3065          | LD      R3, BASE_SAVE_R3
+3041  2422          LD R2, #34   ; -> x3064          | LD      R2, BASE_SAVE_R2
+3042  2020          LD R0, #32   ; -> x3063          | LD      R0, BASE_SAVE_R0
+3043  2E24          LD R7, #36   ; -> x3068          | LD      R7, BASE_SAVE_R7
+3044  C1C0          RET                              | RET
+3045  00420069006E                                   | BASE_BIN_LBL    .STRINGZ "Binario: "
+3048  006100720069                                   | 
+304B  006F003A0020                                   | 
+304E  0000                                           | 
+304F  004800650078                                   | BASE_HEX_LBL    .STRINGZ "Hexadecimal: "
+3052  006100640065                                   | 
+3055  00630069006D                                   | 
+3058  0061006C003A                                   | 
+305B  00200000                                       | 
+305D  000A                                           | BASE_NL         .FILL #10
+305E  0030                                           | BASE_CHR_0      .FILL #48
+305F  0031                                           | BASE_CHR_1      .FILL #49
+3060  0010                                           | BASE_CNT_16     .FILL #16
+3061  0004                                           | BASE_CNT_4      .FILL #4
+3062  FFF6                                           | BASE_NEG_10     .FILL #-10
+3063  0000                                           | BASE_SAVE_R0    .FILL #0
+3064  0000                                           | BASE_SAVE_R2    .FILL #0
+3065  0000                                           | BASE_SAVE_R3    .FILL #0
+3066  0000                                           | BASE_SAVE_R4    .FILL #0
+3067  0000                                           | BASE_SAVE_R5    .FILL #0
+3068  0000                                           | BASE_SAVE_R7    .FILL #0

@@ -1,0 +1,181 @@
+3000  3246          ST R1, #70   ; -> x3047          | ST   R1, SN_R1           ; guardar los registros del llamador
+3001  3446          ST R2, #70   ; -> x3048          | ST   R2, SN_R2
+3002  3646          ST R3, #70   ; -> x3049          | ST   R3, SN_R3
+3003  3846          ST R4, #70   ; -> x304A          | ST   R4, SN_R4
+3004  3A46          ST R5, #70   ; -> x304B          | ST   R5, SN_R5
+3005  3C46          ST R6, #70   ; -> x304C          | ST   R6, SN_R6
+3006  3E46          ST R7, #70   ; -> x304D          | ST   R7, SN_R7           ; (R7 se pisa en cada JSR interno)
+3007  5920          AND R4, R4, #0                   | AND  R4, R4, #0          ; R4 = bandera de signo (1 = negativo)
+3008  1020          ADD R0, R0, #0                   | ADD  R0, R0, #0
+3009  0603          BRzp #3   ; -> x300D             | BRzp SN_P1
+300A  903F          NOT R0, R0                       | NOT  R0, R0
+300B  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1          ; R0 = |x|  (x = -8.0 da x8000 = 32768)
+300C  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+300D  2246          LD R1, #70   ; -> x3054          | SN_P1   LD   R1, SN_N2PI
+300E  1401          ADD R2, R0, R1                   | ADD  R2, R0, R1          ; |x| - 2pi  (siempre en [-25736, 7032])
+300F  0C01          BRnz #1   ; -> x3011             | BRnz SN_P2               ; |x| <= 2pi: sin cambios
+3010  10A0          ADD R0, R2, #0                   | ADD  R0, R2, #0          ; |x| -= 2pi         -> [0, 2pi]
+3011  2244          LD R1, #68   ; -> x3056          | SN_P2   LD   R1, SN_NPI
+3012  1401          ADD R2, R0, R1                   | ADD  R2, R0, R1          ; |x| - pi
+3013  0C03          BRnz #3   ; -> x3017             | BRnz SN_P3               ; |x| <= pi: ya esta en [0, pi]
+3014  10A0          ADD R0, R2, #0                   | ADD  R0, R2, #0          ; |x| -= pi          -> [0, pi]
+3015  993F          NOT R4, R4                       | NOT  R4, R4              ; sen(x) = -sen(x-pi): invertir signo
+3016  5921          AND R4, R4, #1                   | AND  R4, R4, #1
+3017  223F          LD R1, #63   ; -> x3057          | SN_P3   LD   R1, SN_NHALFPI
+3018  1401          ADD R2, R0, R1                   | ADD  R2, R0, R1          ; |x| - pi/2
+3019  0C04          BRnz #4   ; -> x301E             | BRnz SN_P4
+301A  903F          NOT R0, R0                       | NOT  R0, R0
+301B  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1          ; -|x|
+301C  2238          LD R1, #56   ; -> x3055          | LD   R1, SN_PI
+301D  1001          ADD R0, R0, R1                   | ADD  R0, R0, R1          ; pi - |x|           -> [0, pi/2]
+301E  1000          ADD R0, R0, R0                   | SN_P4   ADD  R0, R0, R0
+301F  1000          ADD R0, R0, R0                   | ADD  R0, R0, R0          ; Q3.12 -> Q1.14 (<< 2)
+3020  041E          BRz #30   ; -> x303F             | BRz  SN_EXIT             ; sen(0) = 0
+3021  382C          ST R4, #44   ; -> x304E          | ST   R4, SN_SIGN
+3022  302C          ST R0, #44   ; -> x304F          | ST   R0, SN_X
+3023  1220          ADD R1, R0, #0                   | ADD  R1, R0, #0
+3024  4835          JSR #53   ; -> x305A             | JSR  MULS15              ; u = x*x/2   (redondeado)
+3025  302A          ST R0, #42   ; -> x3050          | ST   R0, SN_U
+3026  2231          LD R1, #49   ; -> x3058          | LD   R1, SN_A
+3027  4838          JSR #56   ; -> x3060             | JSR  MULU_Q14            ; A*u
+3028  903F          NOT R0, R0                       | NOT  R0, R0
+3029  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1
+302A  2227          LD R1, #39   ; -> x3052          | LD   R1, SN_ONE
+302B  1001          ADD R0, R0, R1                   | ADD  R0, R0, R1          ; num = 1 - A*u
+302C  3024          ST R0, #36   ; -> x3051          | ST   R0, SN_NUM
+302D  2022          LD R0, #34   ; -> x3050          | LD   R0, SN_U
+302E  222A          LD R1, #42   ; -> x3059          | LD   R1, SN_B
+302F  4830          JSR #48   ; -> x3060             | JSR  MULU_Q14            ; B*u
+3030  2221          LD R1, #33   ; -> x3052          | LD   R1, SN_ONE
+3031  1201          ADD R1, R0, R1                   | ADD  R1, R0, R1          ; den = 1 + B*u
+3032  201E          LD R0, #30   ; -> x3051          | LD   R0, SN_NUM
+3033  486D          JSR #109   ; -> x30A1            | JSR  DIVF                ; ratio = num/den  (<= 1.0)
+3034  1220          ADD R1, R0, #0                   | ADD  R1, R0, #0
+3035  2019          LD R0, #25   ; -> x304F          | LD   R0, SN_X
+3036  4829          JSR #41   ; -> x3060             | JSR  MULU_Q14            ; sen = x * ratio
+3037  221B          LD R1, #27   ; -> x3053          | LD   R1, SN_NEG_ONE      ; saturar a 1.0
+3038  1201          ADD R1, R0, R1                   | ADD  R1, R0, R1
+3039  0C01          BRnz #1   ; -> x303B             | BRnz SN_SGN
+303A  2017          LD R0, #23   ; -> x3052          | LD   R0, SN_ONE
+303B  2212          LD R1, #18   ; -> x304E          | SN_SGN  LD   R1, SN_SIGN
+303C  0402          BRz #2   ; -> x303F              | BRz  SN_EXIT
+303D  903F          NOT R0, R0                       | NOT  R0, R0
+303E  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1
+303F  2207          LD R1, #7   ; -> x3047           | SN_EXIT LD   R1, SN_R1
+3040  2407          LD R2, #7   ; -> x3048           | LD   R2, SN_R2
+3041  2607          LD R3, #7   ; -> x3049           | LD   R3, SN_R3
+3042  2807          LD R4, #7   ; -> x304A           | LD   R4, SN_R4
+3043  2A07          LD R5, #7   ; -> x304B           | LD   R5, SN_R5
+3044  2C07          LD R6, #7   ; -> x304C           | LD   R6, SN_R6
+3045  2E07          LD R7, #7   ; -> x304D           | LD   R7, SN_R7           ; direccion de retorno original
+3046  C1C0          RET                              | RET
+3047  0000                                           | SN_R1      .BLKW #1
+3048  0000                                           | SN_R2      .BLKW #1
+3049  0000                                           | SN_R3      .BLKW #1
+304A  0000                                           | SN_R4      .BLKW #1
+304B  0000                                           | SN_R5      .BLKW #1
+304C  0000                                           | SN_R6      .BLKW #1
+304D  0000                                           | SN_R7      .BLKW #1
+304E  0000                                           | SN_SIGN    .BLKW #1
+304F  0000                                           | SN_X       .BLKW #1
+3050  0000                                           | SN_U       .BLKW #1
+3051  0000                                           | SN_NUM     .BLKW #1
+3052  4000                                           | SN_ONE     .FILL #16384          ; 1.0 (Q1.14)
+3053  C000                                           | SN_NEG_ONE .FILL #-16384
+3054  9B78                                           | SN_N2PI    .FILL #-25736         ; -2pi  (Q3.12)
+3055  3244                                           | SN_PI      .FILL #12868          ; pi    (Q3.12)
+3056  CDBC                                           | SN_NPI     .FILL #-12868
+3057  E6DE                                           | SN_NHALFPI .FILL #-6434          ; -pi/2 (Q3.12)
+3058  0E58                                           | SN_A       .FILL #3672           ; A = 0.2241
+3059  0716                                           | SN_B       .FILL #1814           ; B = 0.1107
+305A  54A0          AND R2, R2, #0                   | AND  R2, R2, #0
+305B  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+305C  343E          ST R2, #62   ; -> x309B          | ST   R2, MU_SQ           ; modo: devolver hi
+305D  2440          LD R2, #64   ; -> x309E          | LD   R2, MU_H15
+305E  343D          ST R2, #61   ; -> x309C          | ST   R2, MU_RND          ; redondeo = 2^14
+305F  0E04          BRnzp #4   ; -> x3064            | BR   MU_B
+3060  54A0          AND R2, R2, #0                   | AND  R2, R2, #0
+3061  3439          ST R2, #57   ; -> x309B          | ST   R2, MU_SQ           ; modo: devolver 2*hi + bit14(lo)
+3062  243A          LD R2, #58   ; -> x309D          | LD   R2, MU_H14
+3063  3438          ST R2, #56   ; -> x309C          | ST   R2, MU_RND          ; redondeo = 2^13
+3064  947F          NOT R2, R1                       | MU_B    NOT  R2, R1              ; dejar el menor en R1
+3065  14A1          ADD R2, R2, #1                   | ADD  R2, R2, #1
+3066  1402          ADD R2, R0, R2                   | ADD  R2, R0, R2          ; a - b
+3067  0603          BRzp #3   ; -> x306B             | BRzp MU_OK
+3068  1420          ADD R2, R0, #0                   | ADD  R2, R0, #0
+3069  1060          ADD R0, R1, #0                   | ADD  R0, R1, #0
+306A  12A0          ADD R1, R2, #0                   | ADD  R1, R2, #0
+306B  1260          ADD R1, R1, #0                   | MU_OK   ADD  R1, R1, #0
+306C  042C          BRz #44   ; -> x3099             | BRz  MU_ZERO             ; multiplicador 0 -> producto 0
+306D  54A0          AND R2, R2, #0                   | AND  R2, R2, #0          ; acc_lo = 0
+306E  56E0          AND R3, R3, #0                   | AND  R3, R3, #0          ; acc_hi = 0
+306F  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1          ; bit 14 del multiplicador -> bit 15
+3070  5920          AND R4, R4, #0                   | AND  R4, R4, #0
+3071  192F          ADD R4, R4, #15                  | ADD  R4, R4, #15         ; 15 bits por revisar
+3072  1260          ADD R1, R1, #0                   | MU_SK   ADD  R1, R1, #0          ; saltear los ceros iniciales
+3073  0803          BRn #3   ; -> x3077              | BRn  MU_LP
+3074  1241          ADD R1, R1, R1                   | ADD  R1, R1, R1
+3075  193F          ADD R4, R4, #-1                  | ADD  R4, R4, #-1
+3076  0FFB          BRnzp #-5   ; -> x3072           | BR   MU_SK
+3077  1482          ADD R2, R2, R2                   | MU_LP   ADD  R2, R2, R2          ; acc *= 2   (lo)
+3078  0605          BRzp #5   ; -> x307E             | BRzp MU_D1
+3079  2A25          LD R5, #37   ; -> x309F          | LD   R5, MU_M15
+307A  5485          AND R2, R2, R5                   | AND  R2, R2, R5          ; acarreo: limpiar bit 15
+307B  16C3          ADD R3, R3, R3                   | ADD  R3, R3, R3
+307C  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1          ; hi = 2*hi + 1
+307D  0E01          BRnzp #1   ; -> x307F            | BR   MU_D2
+307E  16C3          ADD R3, R3, R3                   | MU_D1   ADD  R3, R3, R3          ; hi = 2*hi
+307F  1260          ADD R1, R1, #0                   | MU_D2   ADD  R1, R1, #0          ; bit 15 del multiplicador
+3080  0605          BRzp #5   ; -> x3086             | BRzp MU_NB
+3081  1480          ADD R2, R2, R0                   | ADD  R2, R2, R0          ; acc_lo += a
+3082  0603          BRzp #3   ; -> x3086             | BRzp MU_NB
+3083  2A1B          LD R5, #27   ; -> x309F          | LD   R5, MU_M15
+3084  5485          AND R2, R2, R5                   | AND  R2, R2, R5          ; acarreo: limpiar bit 15
+3085  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1          ; y subirlo a acc_hi
+3086  1241          ADD R1, R1, R1                   | MU_NB   ADD  R1, R1, R1          ; multiplicador <<= 1
+3087  193F          ADD R4, R4, #-1                  | ADD  R4, R4, #-1
+3088  03EE          BRp #-18   ; -> x3077            | BRp  MU_LP
+3089  2A12          LD R5, #18   ; -> x309C          | LD   R5, MU_RND          ; sumar el redondeo
+308A  1485          ADD R2, R2, R5                   | ADD  R2, R2, R5
+308B  0603          BRzp #3   ; -> x308F             | BRzp MU_RS
+308C  2A12          LD R5, #18   ; -> x309F          | LD   R5, MU_M15
+308D  5485          AND R2, R2, R5                   | AND  R2, R2, R5
+308E  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1
+308F  2A0B          LD R5, #11   ; -> x309B          | MU_RS   LD   R5, MU_SQ
+3090  0206          BRp #6   ; -> x3097              | BRp  MU_HI
+3091  10C3          ADD R0, R3, R3                   | ADD  R0, R3, R3          ; 2*hi
+3092  2A0D          LD R5, #13   ; -> x30A0          | LD   R5, MU_NEG1
+3093  1A85          ADD R5, R2, R5                   | ADD  R5, R2, R5          ; lo - 16384
+3094  0801          BRn #1   ; -> x3096              | BRn  MU_FIN
+3095  1021          ADD R0, R0, #1                   | ADD  R0, R0, #1          ; + bit 14 de lo
+3096  C1C0          RET                              | MU_FIN  RET
+3097  10E0          ADD R0, R3, #0                   | MU_HI   ADD  R0, R3, #0
+3098  C1C0          RET                              | RET
+3099  5020          AND R0, R0, #0                   | MU_ZERO AND  R0, R0, #0
+309A  C1C0          RET                              | RET
+309B  0000                                           | MU_SQ   .BLKW #1
+309C  0000                                           | MU_RND  .BLKW #1
+309D  2000                                           | MU_H14  .FILL #8192
+309E  4000                                           | MU_H15  .FILL #16384
+309F  7FFF                                           | MU_M15  .FILL #32767
+30A0  C000                                           | MU_NEG1 .FILL #-16384
+30A1  967F          NOT R3, R1                       | NOT  R3, R1
+30A2  16E1          ADD R3, R3, #1                   | ADD  R3, R3, #1          ; R3 = -d
+30A3  1420          ADD R2, R0, #0                   | ADD  R2, R0, #0          ; r = n
+30A4  5920          AND R4, R4, #0                   | AND  R4, R4, #0          ; q = 0
+30A5  5020          AND R0, R0, #0                   | AND  R0, R0, #0
+30A6  102E          ADD R0, R0, #14                  | ADD  R0, R0, #14         ; contador
+30A7  1904          ADD R4, R4, R4                   | DV_LP   ADD  R4, R4, R4          ; q <<= 1
+30A8  1482          ADD R2, R2, R2                   | ADD  R2, R2, R2          ; r <<= 1
+30A9  1283          ADD R1, R2, R3                   | ADD  R1, R2, R3          ; r - d
+30AA  0802          BRn #2   ; -> x30AD              | BRn  DV_NS
+30AB  1460          ADD R2, R1, #0                   | ADD  R2, R1, #0
+30AC  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30AD  103F          ADD R0, R0, #-1                  | DV_NS   ADD  R0, R0, #-1
+30AE  03F8          BRp #-8   ; -> x30A7             | BRp  DV_LP
+30AF  1482          ADD R2, R2, R2                   | ADD  R2, R2, R2          ; redondeo: 2r >= d ?
+30B0  1283          ADD R1, R2, R3                   | ADD  R1, R2, R3
+30B1  0801          BRn #1   ; -> x30B3              | BRn  DV_NR
+30B2  1921          ADD R4, R4, #1                   | ADD  R4, R4, #1
+30B3  1120          ADD R0, R4, #0                   | DV_NR   ADD  R0, R4, #0
+30B4  C1C0          RET                              | RET

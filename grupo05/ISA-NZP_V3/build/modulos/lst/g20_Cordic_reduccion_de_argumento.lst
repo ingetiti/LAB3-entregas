@@ -1,0 +1,32 @@
+3000  321C          ST R1, #28   ; -> x301D          | ST R1, GUARDADO_R1
+3001  341C          ST R2, #28   ; -> x301E          | ST R2, GUARDADO_R2
+3002  361C          ST R3, #28   ; -> x301F          | ST R3, GUARDADO_R3
+3003  56E0          AND R3, R3, #0                   | AND R3, R3, #0
+3004  2217          LD R1, #23   ; -> x301C          | LD R1, NPI_DOS
+3005  1401          ADD R2, R0, R1                   | ADD R2, R0, R1 ;R2 = tita - Pi/2
+3006  0C05          BRnz #5   ; -> x300C             | BRnz REDUCCION_NEG
+3007  2212          LD R1, #18   ; -> x301A          | LD R1, NPI
+3008  1001          ADD R0, R0, R1                   | ADD R0, R0, R1 ;tita = tita - Pi
+3009  96FF          NOT R3, R3                       | NOT R3, R3 ;Niego la bandera
+300A  16E2          ADD R3, R3, #2                   | ADD R3, R3, #2  ;Alterno el estado de la bandera entre 0 y 1 (negativo y positivo)
+300B  0FF8          BRnzp #-8   ; -> x3004           | BRnzp REDUCCION_POS
+300C  220E          LD R1, #14   ; -> x301B          | LD R1, PI_DOS
+300D  1401          ADD R2, R0, R1                   | ADD R2, R0, R1 ;R2 = tita + Pi/2
+300E  0605          BRzp #5   ; -> x3014             | BRzp FIN
+300F  2209          LD R1, #9   ; -> x3019           | LD R1, PI
+3010  1001          ADD R0, R0, R1                   | ADD R0, R0, R1 ;tita = tita + Pi
+3011  96FF          NOT R3, R3                       | NOT R3, R3 ;Niego la bandera
+3012  16E2          ADD R3, R3, #2                   | ADD R3, R3, #2 ;Alterno el estado de la bandera entre 0 y 1 (negativo y positivo)
+3013  0FF8          BRnzp #-8   ; -> x300C           | BRnzp REDUCCION_NEG
+3014  2208          LD R1, #8   ; -> x301D           | LD R1, GUARDADO_R1
+3015  2408          LD R2, #8   ; -> x301E           | LD R2, GUARDADO_R2
+3016  2608          LD R3, #8   ; -> x301F           | LD R3, GUARDADO_R3
+3017  C1C0          RET                              | RET ;Regresa al programa principal (a la instruccion despues del JSR)
+3018  61F9                                           | TITA .FILL #25081 ;6.12 rad (Resta Pi dos veces -> R0=-653, R3=0)
+3019  3243                                           | PI .FILL #12867
+301A  CDBD                                           | NPI .FILL #-12867
+301B  1921                                           | PI_DOS .FILL #6433
+301C  E6DE                                           | NPI_DOS .FILL #-6434
+301D  0000                                           | GUARDADO_R1 .FILL #0
+301E  0000                                           | GUARDADO_R2 .FILL #0
+301F  0000                                           | GUARDADO_R3 .FILL #0

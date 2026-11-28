@@ -1,0 +1,92 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  344C          ST R2, #76   ; -> x304D          | ST      R2, Q8_GUARDAR_R2
+3001  364C          ST R3, #76   ; -> x304E          | ST      R3, Q8_GUARDAR_R3
+3002  384C          ST R4, #76   ; -> x304F          | ST      R4, Q8_GUARDAR_R4
+3003  3A4C          ST R5, #76   ; -> x3050          | ST      R5, Q8_GUARDAR_R5
+3004  5B60          AND R5, R5, #0                   | AND     R5, R5, #0
+3005  1020          ADD R0, R0, #0                   | ADD     R0, R0, #0
+3006  0603          BRzp #3   ; -> x300A             | BRzp    Q8_PRIMER_POSITIVO
+3007  903F          NOT R0, R0                       | NOT     R0, R0
+3008  1021          ADD R0, R0, #1                   | ADD     R0, R0, #1
+3009  1B61          ADD R5, R5, #1                   | ADD     R5, R5, #1
+300A  1620          ADD R3, R0, #0                   | ADD     R3, R0, #0
+300B  1260          ADD R1, R1, #0                   | ADD     R1, R1, #0
+300C  0603          BRzp #3   ; -> x3010             | BRzp    Q8_SEGUNDO_POSITIVO
+300D  927F          NOT R1, R1                       | NOT     R1, R1
+300E  1261          ADD R1, R1, #1                   | ADD     R1, R1, #1
+300F  1B61          ADD R5, R5, #1                   | ADD     R5, R5, #1
+3010  1460          ADD R2, R1, #0                   | ADD     R2, R1, #0
+3011  5B61          AND R5, R5, #1                   | AND     R5, R5, #1
+3012  3A3E          ST R5, #62   ; -> x3051          | ST      R5, Q8_SIGNO
+3013  343E          ST R2, #62   ; -> x3052          | ST      R2, Q8_MULTIPLICADOR
+3014  5020          AND R0, R0, #0                   | AND     R0, R0, #0
+3015  5260          AND R1, R1, #0                   | AND     R1, R1, #0
+3016  5920          AND R4, R4, #0                   | AND     R4, R4, #0
+3017  5B60          AND R5, R5, #0                   | AND     R5, R5, #0
+3018  1B61          ADD R5, R5, #1                   | ADD     R5, R5, #1
+3019  54A0          AND R2, R2, #0                   | AND     R2, R2, #0
+301A  14AF          ADD R2, R2, #15                  | ADD     R2, R2, #15
+301B  14A1          ADD R2, R2, #1                   | ADD     R2, R2, #1
+301C  3436          ST R2, #54   ; -> x3053          | ST      R2, Q8_CANTIDAD_BITS
+301D  2434          LD R2, #52   ; -> x3052          | LD      R2, Q8_MULTIPLICADOR
+301E  5485          AND R2, R2, R5                   | AND     R2, R2, R5
+301F  0413          BRz #19   ; -> x3033             | BRz     Q8_DESPLAZAR
+3020  1420          ADD R2, R0, #0                   | ADD     R2, R0, #0
+3021  1003          ADD R0, R0, R3                   | ADD     R0, R0, R3
+3022  1244          ADD R1, R1, R4                   | ADD     R1, R1, R4
+3023  14A0          ADD R2, R2, #0                   | ADD     R2, R2, #0
+3024  0808          BRn #8   ; -> x302D              | BRn     Q8_ANTIGUO_BAJO_NEGATIVO
+3025  16E0          ADD R3, R3, #0                   | ADD     R3, R3, #0
+3026  0803          BRn #3   ; -> x302A              | BRn     Q8_SUMANDO_BAJO_NEGATIVO
+3027  1020          ADD R0, R0, #0                   | ADD     R0, R0, #0
+3028  0809          BRn #9   ; -> x3032              | BRn     Q8_ACARREO
+3029  0E09          BRnzp #9   ; -> x3033            | BR      Q8_DESPLAZAR
+302A  1020          ADD R0, R0, #0                   | ADD     R0, R0, #0
+302B  0606          BRzp #6   ; -> x3032             | BRzp    Q8_ACARREO
+302C  0E06          BRnzp #6   ; -> x3033            | BR      Q8_DESPLAZAR
+302D  16E0          ADD R3, R3, #0                   | ADD     R3, R3, #0
+302E  0803          BRn #3   ; -> x3032              | BRn     Q8_ACARREO
+302F  1020          ADD R0, R0, #0                   | ADD     R0, R0, #0
+3030  0601          BRzp #1   ; -> x3032             | BRzp    Q8_ACARREO
+3031  0E01          BRnzp #1   ; -> x3033            | BR      Q8_DESPLAZAR
+3032  1261          ADD R1, R1, #1                   | ADD     R1, R1, #1
+3033  14E0          ADD R2, R3, #0                   | ADD     R2, R3, #0
+3034  16C3          ADD R3, R3, R3                   | ADD     R3, R3, R3
+3035  1904          ADD R4, R4, R4                   | ADD     R4, R4, R4
+3036  14A0          ADD R2, R2, #0                   | ADD     R2, R2, #0
+3037  0601          BRzp #1   ; -> x3039             | BRzp    Q8_SIN_ACARREO
+3038  1921          ADD R4, R4, #1                   | ADD     R4, R4, #1
+3039  1B45          ADD R5, R5, R5                   | ADD     R5, R5, R5
+303A  2418          LD R2, #24   ; -> x3053          | LD      R2, Q8_CANTIDAD_BITS
+303B  14BF          ADD R2, R2, #-1                  | ADD     R2, R2, #-1
+303C  3416          ST R2, #22   ; -> x3053          | ST      R2, Q8_CANTIDAD_BITS
+303D  03DF          BRp #-33   ; -> x301D            | BRp     Q8_BUCLE
+303E  2412          LD R2, #18   ; -> x3051          | LD      R2, Q8_SIGNO
+303F  0405          BRz #5   ; -> x3045              | BRz     Q8_INTERCAMBIAR
+3040  903F          NOT R0, R0                       | NOT     R0, R0
+3041  927F          NOT R1, R1                       | NOT     R1, R1
+3042  1021          ADD R0, R0, #1                   | ADD     R0, R0, #1
+3043  0A01          BRnp #1   ; -> x3045             | BRnp    Q8_INTERCAMBIAR
+3044  1261          ADD R1, R1, #1                   | ADD     R1, R1, #1
+3045  1420          ADD R2, R0, #0                   | ADD     R2, R0, #0          ; R2 = palabra baja (fraccion)
+3046  1060          ADD R0, R1, #0                   | ADD     R0, R1, #0          ; R0 = palabra alta (entera)
+3047  12A0          ADD R1, R2, #0                   | ADD     R1, R2, #0          ; R1 = palabra baja (fraccion)
+3048  2404          LD R2, #4   ; -> x304D           | LD      R2, Q8_GUARDAR_R2
+3049  2604          LD R3, #4   ; -> x304E           | LD      R3, Q8_GUARDAR_R3
+304A  2804          LD R4, #4   ; -> x304F           | LD      R4, Q8_GUARDAR_R4
+304B  2A04          LD R5, #4   ; -> x3050           | LD      R5, Q8_GUARDAR_R5
+304C  C1C0          RET                              | RET
+304D  0000                                           | Q8_GUARDAR_R2:     .FILL #0
+304E  0000                                           | Q8_GUARDAR_R3:     .FILL #0
+304F  0000                                           | Q8_GUARDAR_R4:     .FILL #0
+3050  0000                                           | Q8_GUARDAR_R5:     .FILL #0
+3051  0000                                           | Q8_SIGNO:          .FILL #0
+3052  0000                                           | Q8_MULTIPLICADOR:  .FILL #0
+3053  0000                                           | Q8_CANTIDAD_BITS:  .FILL #0

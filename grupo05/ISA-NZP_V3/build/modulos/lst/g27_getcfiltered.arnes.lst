@@ -1,0 +1,40 @@
+2FC0  2004          LD R0, #4   ; -> x2FC5           | LD R0, __H_R0
+2FC1  2204          LD R1, #4   ; -> x2FC6           | LD R1, __H_R1
+2FC2  2E04          LD R7, #4   ; -> x2FC7           | LD R7, __H_ENT
+2FC3  41C0          JSRR R7                          | JSRR R7
+2FC4  F025          HALT                             | HALT
+2FC5  0006                                           | __H_R0   .FILL x0006
+2FC6  0003                                           | __H_R1   .FILL x0003
+2FC7  3000                                           | __H_ENT   .FILL x3000
+3000  301A          ST R0, #26   ; -> x301B          | ST R0 getcfiltered_filter_beg       ;   [filtro_beg] = filtro
+3001  321A          ST R1, #26   ; -> x301C          | ST R1 getcfiltered_r1               ;
+3002  341A          ST R2, #26   ; -> x301D          | ST R2 getcfiltered_r2               ;
+3003  361A          ST R3, #26   ; -> x301E          | ST R3 getcfiltered_r3               ;
+3004  3E1A          ST R7, #26   ; -> x301F          | ST R7 getcfiltered_r7               ;   (necesario por que usamos GETC)
+3005  2215          LD R1, #21   ; -> x301B          | LD R1 getcfiltered_filter_beg       ;       [R1] filtro
+3006  F020          GETC                             | GETC                                ;       [R0] char
+3007  6440          LDR R2, R1, #0                   | LDR R2 R1 #0                        ;           [R2] char_a = filtro.peek(0)
+3008  05FC          BRz #-4   ; -> x3005             | BRz getcfiltered_beg                ;           if char_a == 0: break
+3009  6641          LDR R3, R1, #1                   | LDR R3 R1 #1                        ;           [R3] char_b = filtro.peek(1)
+300A  05FA          BRz #-6   ; -> x3005             | BRz getcfiltered_beg                ;           if char_b == 0: break
+300B  94BF          NOT R2, R2                       | NOT R2 R2                           ;
+300C  14A1          ADD R2, R2, #1                   | ADD R2 R2 #1                        ;
+300D  1480          ADD R2, R2, R0                   | ADD R2 R2 R0                        ;
+300E  0805          BRn #5   ; -> x3014              | BRn getcfiltered_incr               ;
+300F  96FF          NOT R3, R3                       | NOT R3 R3                           ;
+3010  16E1          ADD R3, R3, #1                   | ADD R3 R3 #1                        ;
+3011  16C0          ADD R3, R3, R0                   | ADD R3 R3 R0                        ;
+3012  0201          BRp #1   ; -> x3014              | BRp getcfiltered_incr               ;           if char >= char_a and char <= char_b:
+3013  0E02          BRnzp #2   ; -> x3016            | BRnzp getcfiltered_ret              ;               return char
+3014  1262          ADD R1, R1, #2                   | ADD R1 R1 #2                        ;           filtro.incr(2)
+3015  0FF1          BRnzp #-15   ; -> x3007          | BRnzp getcfiltered_loop             ;
+3016  2205          LD R1, #5   ; -> x301C           | LD R1 getcfiltered_r1               ;
+3017  2405          LD R2, #5   ; -> x301D           | LD R2 getcfiltered_r2               ;
+3018  2605          LD R3, #5   ; -> x301E           | LD R3 getcfiltered_r3               ;
+3019  2E05          LD R7, #5   ; -> x301F           | LD R7 getcfiltered_r7               ;
+301A  C1C0          RET                              | RET
+301B  0000                                           | getcfiltered_filter_beg     .FILL #0
+301C  0000                                           | getcfiltered_r1             .FILL #0
+301D  0000                                           | getcfiltered_r2             .FILL #0
+301E  0000                                           | getcfiltered_r3             .FILL #0
+301F  0000                                           | getcfiltered_r7             .FILL #0

@@ -1,0 +1,15 @@
+__H_R0 2FC5
+__H_R1 2FC6
+__H_ENT 2FC7
+SUMOVER 3000
+sumover_test_b 3009
+sumover_sum 300C
+sumover_resultant 3013
+sumover_test_carry 3018
+sumover_test_carry_else 301D
+sumover_ret 301E
+sumover_r1 3022
+sumover_r3 3023
+sumover_r4 3024
+sumover_mask 3025
+sumover_msb 3026
