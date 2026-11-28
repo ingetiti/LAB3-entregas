@@ -1,0 +1,5 @@
+EXP en Q7.8 (hex): x1416
+HALT
+
+METRICAS instrucciones=2204 interrupciones=0 programa_bytes=1176 accedidos_bytes=1062 escritos_bytes=82 excepcion=0
+TRAFICO lecturas_bytes=5970 escrituras_bytes=526

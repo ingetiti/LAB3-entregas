@@ -1,0 +1,13 @@
+GUÍA DE USO DE BYTEX-16 - GRUPO 6
+
+La guía en PDF y las prácticas están en esta carpeta de la entrega:
+    Lab3c\BYTEX-16\docs\guia
+
+Para iniciar la interfaz, abrir interfaz.bat dentro de BYTEX-16.
+Para las prácticas de consola, abrir CMD dentro de BYTEX-16 y definir:
+    set "PRACTICAS=%CD%\docs\guia\practicas"
+
+La guía usa esa misma estructura. Los programas y sus bibliotecas están
+juntos en practicas. LEER_PRIMERO.txt y docs\INTERFAZ_GRAFICA.md explican
+los accesos y controles de la ventana. Los Word editables se conservan
+en la carpeta de trabajo privada, fuera de la entrega.

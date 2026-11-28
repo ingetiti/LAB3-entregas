@@ -1,0 +1,46 @@
+{
+  "fecha": "2026-11-27",
+  "arquitectura": "BYTEX-16",
+  "version": "1.2",
+  "titulo_interfaz": "BYTEX-16 - Grupo 6",
+  "carpeta_entrega": "Lab3c/BYTEX-16",
+  "commit_base": "672b119ea712ebc3a26646ca74a850e024f42348",
+  "suite_completa": "sin fallos",
+  "objetos_reensamblados_identicos": [
+    "calculadora",
+    "calculadora_automatica",
+    "funciones",
+    "sistema",
+    "exp_bytex16"
+  ],
+  "benchmark_operaciones": 23,
+  "menu_automatico_instrucciones": 365469,
+  "menu_automatico_silencioso_instrucciones": 241990,
+  "imagen_calculadora_bytes": 15932,
+  "objeto_calculadora_bytes": 15934,
+  "excepciones": 0,
+  "banco_casos": 37,
+  "banco_instrucciones": 25202,
+  "calculadora_EXP3": "20.0859375",
+  "exp3_aislada_instrucciones": 1755,
+  "sesion_gui_comprobaciones": 121,
+  "editor_comprobaciones": 44,
+  "practicas_guia": 12,
+  "guia_paginas": 29,
+  "fallos": 0,
+  "revision_visual": {
+    "titulo_completo_claro_oscuro": true,
+    "suma_R0": 42,
+    "suma_programa": 5,
+    "suma_sistema": 103,
+    "suma_total": 108
+  },
+  "excluidos": [
+    "documentos Word editables",
+    "informes privados",
+    "ZIP",
+    "temporales de compilacion",
+    "respaldos"
+  ],
+  "historico": "Los registros fechados de versiones anteriores se conservan como antecedentes. Las mediciones vigentes están en docs/mediciones_finales/resumen.json."
+}

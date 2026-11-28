@@ -1,4 +1,0 @@
-.ORIG x3000
-OTRA_VEZ
-    BR OTRA_VEZ
-.END

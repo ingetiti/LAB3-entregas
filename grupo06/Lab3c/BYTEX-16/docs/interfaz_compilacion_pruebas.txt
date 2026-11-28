@@ -1,0 +1,4 @@
+build\calculadora.obj: 15932 bytes desde x3000, 1515 simbolos.
+Interfaz: 121 comprobaciones, 0 fallos.
+Editor Windows: 44 comprobaciones, 0 fallos.
+Interfaz lista. Abrir interfaz.bat.

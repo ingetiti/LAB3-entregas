@@ -1,0 +1,102 @@
+BYTEX-16 - GRUPO 6 | LABORATORIO 3C
+
+Estructura de entrega: Lab3c\BYTEX-16.
+Abrir esta carpeta BYTEX-16 para ejecutar todos los accesos y comandos.
+
+Esta carpeta contiene la entrega para Windows x64. Descargarla completa antes
+de ejecutar. Los programas ya están compilados: no hace falta instalar GCC
+ni Python para usarlos. La interfaz muestra el título BYTEX-16 - Grupo 6.
+
+1. SIMULADOR FUNCIONAL Y ENSAMBLADOR
+
+- interfaz.bat: abre la ventana con editor, consola, registros y memoria.
+- build\simulador.exe: núcleo independiente que recibe un objeto binario.
+- build\ensamblador.exe: convierte Assembly de BYTEX-16 en código máquina.
+- editor.bat: editor y depurador de consola, como alternativa a la ventana.
+- src, include y resources: fuentes del simulador, ensamblador e interfaz.
+- docs\ISA.md: especificación de instrucciones, formatos y memoria.
+
+Prueba inicial: abrir interfaz.bat y pulsar F5. La suma 15+27 deja 42 en R0
+y en RESULTADO, dirección x300E. Se cuentan 5 instrucciones del programa,
+103 del sistema y 108 totales. La casilla selecciona el alcance visible.
+
+2. BENCHMARK ENSAMBLADO Y FUNCIONANDO
+
+Los objetos ya ensamblados para nuestra ISA están en build:
+- calculadora.obj: calculadora interactiva.
+- calculadora_automatica.obj: secuencia automática del Grupo 27.
+- funciones.obj: banco de funciones para las pruebas por operación.
+
+Para la calculadora interactiva, abrir ejecutar.bat; también se encuentra
+en Ejemplos dentro de la ventana. Pulsar 5 para elegir EXP, sin Enter.
+Escribir 3 y Enter: debe aparecer 20.0859375. Una tecla vuelve al menú;
+d sale. No hace falta pausar entre los ingresos.
+
+Para ejecutar el benchmark automático, abrir CMD en esta carpeta:
+    build\simulador.exe build\calculadora_automatica.obj
+
+Debe recorrer las 23 operaciones y finalizar con excepcion=0 y 365.469
+instrucciones totales. La imagen ocupa 15.932 bytes; el OBJ ocupa 15.934
+bytes porque agrega dos bytes de origen. El último caso es Q3.12 -> Q7.8.
+benchmark.bat ejecuta también el banco de funciones y muestra sus métricas.
+
+3. ARCHIVOS ASSEMBLY UTILIZADOS
+
+- benchmark\calculadora.asm
+- benchmark\calculadora_automatica.asm: selecciona el bloque completo.
+- benchmark\main_grupo27.asm: archivo recibido, sin cambios en sus valores.
+- benchmark\funciones.asm
+- benchmark\modulos: bibliotecas adaptadas y enlazadas por EXTERNAL.
+- ejemplos\sistema.asm: servicios del sistema utilizados por el núcleo.
+- ejemplos: otros programas para verificar la ISA, incluida EXP.
+
+Para volver a ensamblar y ejecutar la calculadora desde CMD:
+    build\ensamblador.exe benchmark\calculadora.asm -I benchmark\modulos -o build\calculadora_reensamblada.obj
+    build\simulador.exe build\calculadora_reensamblada.obj
+
+Para ensamblar y ejecutar la prueba independiente de EXP:
+    build\ensamblador.exe ejemplos\exp_bytex16.asm -I benchmark\modulos -o build\exp_prueba.obj
+    build\simulador.exe build\exp_prueba.obj
+
+Debe imprimir x1416. Ese entero es 5142; al dividir por 256, resulta
+20.0859375 en Q7.8. La función aislada utiliza 1.755 instrucciones; la demo
+con impresión y servicios utiliza 2.204.
+
+Los objetos son de BYTEX-16; no son objetos binarios LC-3 de cuatro bits de
+opcode. El núcleo independiente recibe OBJ, no Assembly directo.
+
+4. DOCUMENTACIÓN E INSTRUCTIVOS
+
+- README.md: descripción general, ejecución, compilación y resultados.
+- LEEME_INTERFAZ.txt: controles y primeros pasos de la ventana.
+- docs\INTERFAZ_GRAFICA.md: teclado, pegado, contadores y depuración.
+- docs\BITACORA.md: incluye las correcciones más recientes del editor.
+- docs\guia\Guia_de_uso_BYTEX-16.pdf: guía de uso y prácticas de consola.
+- docs\mediciones_finales: métricas, precisión y registro de pruebas.
+
+Para las prácticas de la guía, en CMD dentro de esta carpeta:
+    set "PRACTICAS=%CD%\docs\guia\practicas"
+
+La interfaz permite pegar con Ctrl+V y deshacer con Ctrl+Z. Conserva las
+líneas vacías y tabulaciones. La ventana tiene temas claro y oscuro.
+
+RECOMPILACIÓN Y VERIFICACIÓN
+
+- probar.bat: ejecuta la suite con los binarios de prueba incluidos.
+- compilar.bat: reconstruye todo y ejecuta las pruebas; requiere GCC y
+  windres en PATH, por ejemplo los provistos por MSYS2 MinGW-w64.
+- compilar_interfaz.bat: reconstruye la ventana y sus pruebas.
+- CMakeLists.txt: alternativa de construcción; la validación de esta
+  entrega utiliza GCC y los scripts Windows.
+- tools: utilidades opcionales de regeneración y medición; requieren
+  Python 3. No se necesita Python para ejecutar la ISA.
+
+Se conservan tests y benchmark\originales porque se usan para validar y
+regenerar los módulos. Las 23 operaciones del menú están conectadas.
+Los resultados del benchmark completo están en docs\mediciones_finales.
+Es un simulador funcional.
+
+Esta copia excluye temporales de build, registros duplicados, respaldos
+y documentos Word editables. La carpeta de trabajo original se conserva.
+SHA256SUMS.txt identifica los archivos de esta copia. Ejecutar las pruebas
+puede generar nuevos objetos o CSV dentro de build; eso es normal.
