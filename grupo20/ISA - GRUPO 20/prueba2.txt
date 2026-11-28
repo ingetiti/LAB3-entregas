@@ -1,0 +1,37 @@
+.ORIG x3000
+
+; --- PRUEBA 1: Colisión de bits en SHF (ARSHF con R0) ---
+
+; Cargamos R0 = x0008, R1 = x0000
+
+ADD R0, R0, #8
+
+AND R1, R1, #0
+
+; Ejecutamos ARSHF sobre R0 mandando el resultado a R2.
+
+; Si ocurre la colision (dir << 4 pisando bit 5), el ensamblador codifica R1 en lugar de R0.
+
+SHF R2, R0, ARSHF, #1
+
+; --- PRUEBA 2: Etiqueta desalineada tras .BYTE ---
+
+; LDB deja la direccion en IMPAR (x3005)
+
+LDB R3, UN_BYTE
+
+; Esta etiqueta deberia guardarse en la direccion PAR (x3006) despues del NOP padding.
+
+; Con el bug, la etiqueta toma la direccion IMPAR (x3005) antes de insertar el padding.
+
+DATOS_PAR .FILL x1234
+
+; Leemos el valor apuntado por DATOS_PAR
+
+LD R4, DATOS_PAR
+
+UN_BYTE .BYTE #5
+
+TRAP x25
+
+.END
