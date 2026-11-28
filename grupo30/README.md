@@ -1,85 +1,113 @@
-# Grupo 30 · SIN
+# Grupo 30
 
-**Consigna:** Por Chebyshev y Padé
+**Integrantes:**
+- Meretz, Eliana Marife
+- Meretz, Mariana Belén
+- Batista Da Silva, Dante Samuel
 
-## Integrantes
-<!-- Completar en el primer Pull Request -->
-- Meretz, Eliana Marife (@elimeretz)
-- Meretz, Mariana Belen (@meretzmariana)
+## Instructivo de Uso — Simulador y Ensamblador Skynet
 
-## Archivos
-<!-- Qué archivo hace qué -->
-- `seno_cheb_pade.asm`: implementación en Assembly de la función seno mediante el método híbrido Chebyshev-Padé.
-- `seno_cheb_pade.c`: implementación en lenguaje C de la función seno mediante el método híbrido Chebyshev-Padé.
-- `Informe-Chebyshev–Padé-Grupo 30.pdf`: informe general del Laboratorio 3.
-- `informe_Lab3a.pdf`: informe correspondiente a la primera parte del Laboratorio 3 (Lab 3a).
-- `lab3a_punto_fijo.ams`: implementación en Assembly del punto 3 y 4 del Lab 3a
-- `lab3a_puntos_3_y_4.asm`: implementación en lenguaje C del punto 3 y 4 del Lab 3a
+## 1. Requisitos
 
+- **Python 3.10 o superior** (no requiere instalar paquetes externos con `pip`; solo utiliza la biblioteca estándar de Python).
+- Para la interfaz gráfica (`gui.py`), se utiliza `tkinter` (incluido por defecto en la instalación estándar de Python en Windows).
 
-## Cómo probarlo
-<!-- Pasos para ensamblar y ejecutar, y un ejemplo de entrada y salida -->
-La implementación en Assembly se encuentra funcionando en el simulador desarrollado por el Grupo 8 y ya está publicada, por lo que puede ejecutarse desde allí.
+## 2. Ubicación para ejecutar los comandos
 
-### Formatos de punto fijo
-- Entrada: Q3.12, con signo y 16 bits.
-- Salida: Q1.14, con signo y 16 bits.
+Todos los comandos siguientes deben ejecutarse desde una terminal parada **dentro de la carpeta `grupo30/`**:
 
-### Rangos de valores
-- Entrada: desde -8 hasta aproximadamente 7,99976 radianes.
-- Salida: desde -1 hasta aproximadamente 1.
+```powershell
+cd grupo30
+```
 
-###Resolución de los formatos
-La resolución indica cuál es el menor incremento que puede representarse entre dos valores consecutivos. Se calcula dividiendo 1 por 2 elevado a la cantidad de bits destinados a la parte fraccionaria.
+## 3. Cómo ensamblar el benchmark (`.asm` -> `.hex`)
 
-Entrada (Q3.12): tiene 12 bits fraccionarios. Por lo tanto, su resolución es (1/2^12), equivalente a aproximadamente 0,00024414 radianes.
-Salida (Q1.14): tiene 14 bits fraccionarios. Su resolución es (1/2^14), equivalente a aproximadamente 0,00006104.
+El ensamblador (`assembler.py`) une el programa principal (`benchmark_opt/main_grupo27.asm`) junto con todas las subrutinas de `benchmark_opt/lib/*.asm` y genera el archivo ensamblado `benchmark_opt/benchmark.hex`:
 
-## Bitácora de desarrollo
-En esta sección se detallan las actividades realizadas durante el desarrollo del Lab 3, incluyendo el análisis del problema, la implementación de la función asignada, las dificultades encontradas y la coordinación con los demás grupos.
+**En PowerShell (Windows):**
+```powershell
+python assembler.py benchmark_opt/main_grupo27.asm (Get-ChildItem benchmark_opt/lib/*.asm | Sort-Object Name) -o benchmark_opt/benchmark.hex
+```
 
-### 7 de octubre de 2026 – Inicio del laboratorio
-Comenzamos a trabajar con el Lab 3a y el TP2. Para avanzar, leímos los apuntes de la cátedra sobre números en punto fijo y empezamos a practicar operaciones utilizando distintos formatos Q.
-Estos contenidos fueron importantes porque necesitábamos representar números reales mediante valores enteros para poder realizar los cálculos en el procesador LC-3.
-También comenzamos a desarrollar código en Assembly con ayuda de herramientas de inteligencia artificial. Durante este proceso realizamos distintas pruebas y correcciones para detectar errores.
-Una de las principales dificultades fue comprender cómo realizar multiplicaciones y divisiones utilizando distintos formatos Q. Además, tuvimos dificultades con la depuración del código, ya que no teníamos mucha experiencia realizando este tipo de tareas.
+**En Bash (Linux / macOS / Git Bash):**
+```bash
+python assembler.py benchmark_opt/main_grupo27.asm benchmark_opt/lib/*.asm -o benchmark_opt/benchmark.hex
+```
 
-### 14 de octubre de 2026 – Asignación de la función seno
-Se nos asignó el cálculo de la función seno (`SIN`) utilizando el método híbrido Chebyshev-Padé.
-A partir de esta asignación comenzamos a investigar y comprender cómo funciona esta aproximación matemática y cómo podíamos llevarla a lenguaje Assembly para ejecutarla en el procesador LC-3.
-El principal desafío era adaptar los cálculos matemáticos a las posibilidades de la arquitectura, teniendo en cuenta el uso de números en punto fijo y las operaciones disponibles.
+*(También es posible generar además la imagen binaria agregando `--bin benchmark_opt/benchmark.bin` al final del comando).*
 
-### 21 de octubre de 2026 – Puesta en común de los algoritmos
-Comenzamos a compartir con los demás grupos los programas y algoritmos que cada uno debía implementar en Assembly para integrar el *workload* del laboratorio.
-Esta actividad nos permitió conocer cómo se estaban desarrollando las distintas funciones y comprender la importancia de establecer criterios comunes para que todos los programas pudieran integrarse correctamente.
-También relacionamos este trabajo con los contenidos vistos en clase.
+## 4. Cómo ejecutar el benchmark en el simulador
 
-### 28 de octubre de 2026 – Organización del trabajo con Git y GitHub
-Creamos nuestras cuentas de Git y GitHub para organizar el trabajo colaborativo y subir los archivos correspondientes al proyecto.
-Esto nos permitió comenzar a organizar el código Assembly, el informe y los demás archivos necesarios para la entrega del laboratorio.
+El repositorio ya incluye el benchmark ensamblado en `benchmark_opt/benchmark.hex`, listo para ejecutarse directamente.
 
-### 29 de octubre de 2026 – Finalización del proyecto e informe.
-Trabajamos en la finalización del proyecto y en la elaboración del informe.
-En esta etapa organizamos la información sobre el método utilizado, los formatos de punto fijo, las operaciones necesarias y el procedimiento desarrollado para calcular la función seno.
-También tuvimos en cuenta los contenidos de arquitectura estudiados durante la cursada, especialmente las características de la ISA LC-3 y las instrucciones disponibles para implementar nuestro algoritmo.
+### Opción A — Simulador por consola (`sim.py`)
 
-### 1 de noviembre de 2026 – Intercambio con otros grupos
-Nos comunicamos con otros grupos que estaban trabajando en funciones trigonométricas, como seno y coseno, para consultar qué formatos de punto fijo estaban utilizando.
-El objetivo fue compartir información y conocer cómo habían resuelto la representación de los números, ya que era importante mantener cierta compatibilidad entre las funciones que luego formarían parte del mismo sistema.
+**Modo estándar:**
+```powershell
+python sim.py benchmark_opt/benchmark.hex
+```
 
-### 2 de noviembre de 2026 – Coordinación con el grupo de la interfaz
-Nos comunicamos con el grupo 27, encargado del desarrollo de la interfaz, para acordar cómo se integrarían los distintos programas.
-Durante la comunicación conversamos sobre el diseño de la interfaz, los registros que utilizaríamos y los formatos numéricos que debíamos respetar para que las funciones pudieran comunicarse correctamente.
-Además, solicitamos al Ing. Carballo un usuario y una contraseña para acceder al ensamblador disponible en `lgrum.xyz`, con el objetivo de contar con acceso a esta herramienta para trabajar con nuestros programas Assembly y realizar las modificaciones necesarias.
+**Modo contabilizando las rutinas del sistema operativo (`os_rutinas.asm`):**
+```powershell
+python sim.py benchmark_opt/benchmark.hex --contar-os
+```
 
-### 3 de noviembre de 2026 – Consulta al tutor
-Fuimos a buscar al tutor para presentarle los avances realizados y consultar si el trabajo estaba encaminado correctamente, pero no se encontraba disponible.
-Por este motivo, dejamos pendiente la revisión para el día siguiente.
+### Opción B — Interfaz gráfica (`gui.py`)
 
-### 4 de noviembre de 2026 – Presentación y aprobación de los avances
-Presentamos al tutor los avances realizados durante el desarrollo del laboratorio.
-Luego de revisar el trabajo, nos dio el visto bueno para subir los archivos del proyecto. No solicitó cambios ni modificaciones, por lo que pudimos continuar con la preparación de la entrega.
+**Abriendo el benchmark ya ensamblado:**
+```powershell
+python gui.py benchmark_opt/benchmark.hex
+```
 
-### 5 de noviembre de 2026 – Presentación del LABORATORIO 3
-Realizamos la carga de los archivos correspondientes al Grupo 30 en el repositorio de GitHub. Subimos los informes y los códigos desarrollados en lenguaje C y Assembly, correspondientes a las dos partes del Laboratorio 3.
-También subimos al ensamblador del Grupo 8 los códigos en Assembly correspondientes al cálculo de la función seno mediante el método híbrido Chebyshev-Padé, donde quedaron disponibles para su ejecución y prueba.
+**O abriendo el código fuente para ensamblarlo desde la propia interfaz:**
+```powershell
+python gui.py benchmark_opt/main_grupo27.asm
+```
+
+Controles principales dentro de la interfaz gráfica:
+- **`F5`** (*Ensamblar y Cargar*): ensambla el archivo `.asm` abierto junto con `benchmark_opt/lib/*.asm`.
+- **`F9`** (*Ejecutar*): ejecuta el programa completo hasta finalizar.
+- **`F10`** (*Paso a paso*): avanza de a una instrucción.
+- **`F8`** (*Reiniciar*): reinicia la ejecución al punto de partida.
+- Casilla **`Contar OS`**: activa o desactiva el conteo de las rutinas de `os_rutinas.asm`.
+
+## 5. Salida esperada que confirma el funcionamiento correcto
+
+Al ejecutar `python assembler.py ...` sin errores, debe mostrar:
+```text
+Generado .hex: benchmark_opt/benchmark.hex (origen x3000, 9202 bytes de programa)
+```
+
+Al ejecutar `python sim.py benchmark_opt/benchmark.hex`, la consola imprime los resultados de las **23 operaciones** del benchmark (desde `==REDUCCION DE ARGUMENTO (CORDIC)==` hasta `==Q3.12 -> Q7.8==`) y finaliza con el bloque de métricas:
+
+```text
+--- Resultados ---
+  instrucciones: 16485
+  palabras_buscadas: 16485
+  bytes_leidos: 9304
+  bytes_escritos: 4237
+  direcciones_tocadas: 5050
+  direcciones_leidas: 2008
+  direcciones_escritas: 262
+  memoria_programa_bytes: 9202
+  memoria_pila_datos_bytes: 44
+  memoria_usuario_bytes: 9246
+```
+
+Con el flag `--contar-os`, al final de las 23 operaciones imprime `HALT` y el resumen reporta:
+
+```text
+--- Resultados ---
+  instrucciones: 28075
+  instrucciones_usuario: 16485
+  instrucciones_os: 11590
+  palabras_buscadas: 28075
+  bytes_leidos: 14789
+  bytes_escritos: 8869
+  direcciones_tocadas: 5181
+  direcciones_leidas: 2051
+  direcciones_escritas: 286
+  memoria_programa_bytes: 9202
+  memoria_pila_datos_bytes: 44
+  memoria_usuario_bytes: 9246
+```
