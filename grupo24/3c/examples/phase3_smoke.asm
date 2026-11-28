@@ -1,0 +1,5 @@
+.ORIG x3000
+MOV R0 #42
+NOP
+HALT
+.END

@@ -1,0 +1,175 @@
+BITACORA DE AVANCES - LABORATORIO 3
+Arquitectura de Computadoras - FI-UNaM
+
+Estado general al 19/11/2026:
+- El repositorio Git fue inicializado.
+- Se conserva el benchmark original LC-3 intacto en lib/ y main_grupo27.asm.
+- Se implementaron un ensamblador, un simulador funcional y pruebas automatizadas.
+- La migracion integral completa de todos los modulos legacy todavia no esta terminada.
+
+19/11/2026 - Fase 0: Auditoria inicial
+- Se inventariaron los 31 modulos principales del benchmark.
+- Se identificaron los formatos Q3.12, Q7.8, Q1.14, Q15.16 y DQ16.
+- Se detectaron dependencias .EXTERNAL, memoria compartida y rutinas con I/O.
+- Se creo el commit base del benchmark original.
+
+19/11/2026 - Fase 1: ISA
+- Se definio una ISA de 16 bits con campo opcode fijo de 5 bits.
+- Se establecieron 8 registros generales de 16 bits.
+- Se definieron LOAD/LOADL/LOADH y STORE/STOREL/STOREH.
+- Se definieron ADD, SUB, CMP, MOV, SHL, SHR, ASR, SWAP, MUL, MULH, DIV, REM.
+- Se definieron BR, JSR, JSRR, JMP, RET y TRAP.
+- Se documento que no existen SQRT, POW, EXP, LOG, SIN, COS u otras operaciones complejas por hardware.
+- Especificacion formal: ISA_SPEC.md.
+
+19/11/2026 - Fase 2: Ensamblador
+- Se implemento assembler.py con pasadas separadas.
+- Se soportan .ORIG, .END, .FILL, .BLKW, .STRINGZ, .BYTE, .EXTERNAL y .GLOBAL.
+- Se implemento generacion hexadecimal y binaria.
+- Se implemento alineacion par y padding automatico.
+- Se agregaron pruebas para codificacion, origen, padding y simbolos externos.
+- Estado: funciona para el alcance probado de la suite actual.
+
+19/11/2026 - Fase 3: Simulador
+- Se implemento simulator.py con memoria de 65536 bytes.
+- Se implemento little-endian y carga por direccion .ORIG.
+- Se implemento fetch/decode/execute.
+- Se implementaron registros R0-R7, flags N/Z/P y operacion basica de C, V.
+- Se implementaron JSR directo y JSRR indirecto con marcadores inequívocos.
+- Se implementaron TRAP de sistema basicos y HALT.
+- Se implementaron excepciones de direccion, alineacion y division por cero.
+- Se agregaron metricas de instrucciones dinamicas y memoria observada.
+
+19/11/2026 - Fase 4: Migracion representativa
+- Se creo benchmark/phase4_core.asm para seis casos representativos.
+- Se creo benchmark/phase4_integral.asm con una matriz de 31 operaciones equivalentes.
+- Estos archivos sirven como validacion funcional, no como traduccion cuerpo a cuerpo completa de lib/.
+- Se migraron y validaron modulos faciles:
+  - MCD por restas sucesivas.
+  - MCM mediante MCD, division y multiplicacion.
+  - Conversion G15 Q3.12 -> Q7.8.
+  - Conversiones hexadecimal y binaria representativas.
+  - Division CORDIC en Q15 para ±8192/16384.
+  - Raiz entera para 16 y 64.
+  - Seno/coseno representativos para pi/3 y pi/2.
+
+Resultados observados de CORDIC_DIV:
+- +8192/+16384 -> 0x4000 (0.5 en Q15).
+- -8192/+16384 -> 0xC000 (-0.5 en Q15).
+
+Resultados observados de raiz:
+- sqrt(16) -> 4.
+- sqrt(64) -> 8.
+
+Resultados observados de tabla seno/coseno:
+- pi/3: seno 0x376D, coseno 0x2000.
+- pi/2: seno 0x4000, coseno 0x0000.
+
+Validacion automatica:
+- Se ejecutaron pruebas unitarias del ensamblador y del simulador.
+- Ultima ejecucion conocida: 27 pruebas aprobadas antes del incremento de nuevas pruebas.
+- Se agregaron pruebas posteriores para CORDIC_DIV y raiz.
+- La bateria completa debe volver a ejecutarse antes de declarar la entrega final.
+
+Commits relevantes:
+- 54886c5: Completa suite integral del benchmark.
+- 9ed77e9: Corrige pasadas y etiquetas bare en ensamblador.
+- 127c0b4: Completa control de flujo, enlace y pruebas del simulador.
+- ed267d2: Migra nucleo matematico division, potencia y raiz.
+- 95abb06: Migra y valida MCD, MCM y G15.
+- 8701f67: Migra CORDIC division y raiz no restaurativa.
+- 56c325a: Migra tabla seno-coseno representativa.
+- ce91037: Actualiza resultados y paquete con nuevos modulos.
+
+Avance cerrado al 19/11/2026:
+- El enlace basico .GLOBAL/.EXTERNAL fue reforzado y probado.
+- JSR directo y JSRR indirecto tienen codificaciones separadas.
+- Se agrego benchmark_metrics.py para automatizar ensamble, ejecucion y error absoluto.
+- Se validaron cinco benchmarks migrados con error absoluto maximo cero.
+- CORDIC_DIV, raiz, seno/coseno, MCD/MCM y conversiones tienen pruebas especificas.
+- El repositorio alcanza 29 pruebas automatizadas aprobadas.
+
+Avance registrado al 19/11/2026:
+- JSR directo y JSRR indirecto fueron separados e implementados con pruebas.
+- Se agrego soporte y validacion basica para .GLOBAL y .EXTERNAL.
+- Se agregaron pruebas de codificacion de JMP, SWAP, SIGN, SE y LOADH.
+- Se implemento benchmark_metrics.py para ensamble, simulacion, metricas y referencias Q1.14.
+- Se genero BENCHMARK_METRICS.md con cinco benchmarks validados.
+- El benchmark migrated_easy paso MCD, MCM, G15 y conversiones.
+- El benchmark migrated_core_v2 paso division, potencia, raiz y conversiones.
+- El benchmark migrated_cordic_div paso con 4000 y C000 en Q15.
+- El benchmark migrated_sqrt paso para raiz de 16 y 64.
+- El benchmark migrated_sincos_table paso para pi/3 y pi/2.
+- Se obtuvo una bateria final de 29 pruebas aprobadas.
+- Se genero un commit central con herramientas, enlace, metricas y documentacion.
+- El paquete Entrega_Lab3.zip fue actualizado con el reporte de metricas.
+
+Pendientes principales:
+- Migracion cuerpo a cuerpo de todos los modulos de lib/.
+- Migracion completa del menu G27 y sus rutinas de entrada/salida.
+- Enlace real de todos los modulos con .EXTERNAL.
+- Validacion del benchmark completo con casos negativos, cero y desbordamiento.
+- Comparacion contra Python con error absoluto y relativo por funcion.
+- Informe final de instrucciones dinamicas por funcion.
+- Informe final de memoria espacial por funcion.
+- Nuevo paquete de entrega despues de la ultima bateria aprobada.
+
+Nota:
+Esta bitacora documenta solo avances verificables. No debe interpretarse que el laboratorio esta completo mientras existan modulos legacy sin migrar y probar en la nueva ISA.
+
+25/11/2026 - Correcciones y cierre parcial
+- Se eliminó la dependencia de rutas de Python de Windows en test_simulator.py.
+- Se corrigió la codificación JSR directo/JSRR y la ejecución relativa de JSR.
+- Se agregaron pruebas de CMP/TEST, división/resto con signo y padding tras STRINGZ.
+- benchmark_metrics.py ahora incluye phase4_core y la matriz integral de 31 operaciones.
+- La migración completa cuerpo a cuerpo de lib/ sigue pendiente y se mantiene su alcance separado de los contratos ejecutables representativos.
+
+25/11/2026 - Interfaz gráfica y conversor G24
+- Se implementó la interfaz gráfica GUI con Tkinter en gui.py.
+- La GUI permite abrir, editar y guardar archivos ASM, seleccionar salida HEX o BIN, ensamblar, ejecutar y detenerse ante errores.
+- Se agregó la visualización de registros R0-R7 iniciales y finales, PC, instrucciones dinámicas y memoria observada.
+- Se incorporó un volcado hexadecimal de memoria y campos editables para modificar R0-R7 antes de ejecutar.
+- Se agregó un campo Entrada decimal en la barra superior y se conectó con TRAP 0x23 en modo batch.
+- Se creó el ejemplo ejecutable benchmark/ejemplo_entrada.asm, que recibe 42 y lo almacena en R0 y 0x4000 como 0x002A.
+- Se documentaron los comandos de ejecución gráfica y los ejemplos de entrada en README.md.
+
+25/11/2026 - Conversor del Grupo 24
+- Se modificó exclusivamente lib/g24_conversor_lc3_max.asm, conservando los archivos de los demás grupos sin cambios.
+- El programa G24 ahora utiliza TRAP 0x23 para ingresar el número decimal.
+- Se agregaron las subrutinas de salida para decimal con signo, hexadecimal de 16 bits y binario de 16 bits.
+- El programa muestra por pantalla las tres bases con formato separado:
+  - Dec: entero decimal con signo.
+  - Hex: 0x seguido de cuatro dígitos.
+  - Bin: 0b seguido de dieciséis bits.
+- Se probó G24 con cero, positivos, negativos, 4095, 32767, 65535, -32768 y valores representativos.
+- Ejemplos verificados:
+  - 42 -> Dec: 42 / Hex: 0x002A / Bin: 0b0000000000101010.
+  - -123 -> Dec: -123 / Hex: 0xFF85 / Bin: 0b1111111110000101.
+- Se corrigió el problema de salida invisible en la GUI capturando stdout de TRAP OUT/PUTS y mostrándolo dentro de la consola gráfica.
+- Se agregaron saltos de línea entre decimal, hexadecimal y binario para mejorar la legibilidad.
+
+25/11/2026 - Limpieza y validación
+- Se eliminaron cachés __pycache__, archivos .pyc, entornos virtuales, node_modules, imágenes generadas y ZIPs duplicados.
+- Se conservaron fuentes, documentación, bibliotecas, ejemplos, benchmarks y pruebas necesarias.
+- Se agregó una prueba automatizada real de G24 para entradas positivas y negativas.
+- La batería final alcanza 35 pruebas automatizadas aprobadas.
+- Los módulos g24 y gui.py no presentan errores de análisis reportados por el editor.
+
+Comandos de prueba gráfica:
+- python3 gui.py
+- Abrir lib/g24_conversor_lc3_max.asm
+- Escribir 42 o -123 en Entrada
+- Pulsar Ensamblar y ejecutar o F5
+- Verificar las tres bases en la pestaña Consola
+
+Comandos de prueba automatizada:
+- PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -q test_assembler.py test_simulator.py
+
+25/11/2026 - Núcleo obligatorio de entrada y resultados
+- El ensamblador genera imágenes binarias, hexadecimales y decimales.
+- El simulador acepta las tres formatos y rechaza valores inválidos o fuera de rango.
+- Se agregó --results BASE COUNT para leer palabras completas desde el rango de memoria requerido.
+- BASE se acepta como hexadecimal con prefijo 0x o como texto hexadecimal plano.
+- La salida incluye HALT, PC final, instrucciones dinámicas, bytes de imagen, memoria utilizada y registros.
+- Se verificó el benchmark migrated_easy en formato decimal con seis resultados en 0x4000: 0006, 0024, 0020, 1922, 002A y 000A.
+- Validación final: 37 pruebas automatizadas aprobadas.
