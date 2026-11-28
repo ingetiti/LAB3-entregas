@@ -109,7 +109,7 @@ Notas:
 | `Shift lógico a la derecha` | `RSHFL DR, SR, #n` | `DR = SR >> n` (desplazamiento lógico a la derecha, rellena con ceros) |
 | `Shift aritmético a la derecha` | `RSHFA DR, SR, #n` | `DR = SR >> n` (desplazamiento aritmético a la derecha, conserva el signo) |
  
-- La cantidad `n` es un inmediato de `0` a `15`; fuera de ese rango el ensamblador informa un error. No existe la forma con registro.
+- La cantidad `n` es un inmediato de `0` a `15`; fuera de ese rango el ensamblador informa un error.
 
 ### Acceso a memoria por bytes
  
@@ -121,7 +121,6 @@ Notas:
 | `Store byte alto` | `STH SR, BaseR, #offset` | guarda el byte alto de `SR` en el byte alto de la palabra |
  
 - `BaseR` contiene una dirección de palabra (se multiplica por 2 para obtener la dirección de byte) y `offset` se suma en bytes. Es un inmediato con signo de 5 bits, de `-16` a `15`; fuera de ese rango el ensamblador informa un error.
-- La carga y el guardado de 16 bits siguen siendo `LDR` y `STR` (`LDR DR, BaseR, #offset`, `STR SR, BaseR, #offset`), cuyo offset se cuenta en palabras. Si el offset no entra en `-16..15`, el ensamblador usa automáticamente las formas extendidas `LDRX` y `STRX` con offset de 16 bits.
 
 ## 5. Pruebas automatizadas (`test_simulador.py`)
 
