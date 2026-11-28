@@ -30,3 +30,7 @@ La resolución indica cuánto cambia el valor al pasar de un número representab
 
 - **Entrada Q3.12:** $2^{-12}=1/4096=0,000244140625$.
 - **Salida Q7.8:** $2^{-8}=1/256=0,00390625$.
+
+## Laboratorio 3c
+
+La arquitectura **BYTEX-16**, su simulador, ensamblador y documentación están en [Lab3c/BYTEX-16](Lab3c/BYTEX-16/README.md).

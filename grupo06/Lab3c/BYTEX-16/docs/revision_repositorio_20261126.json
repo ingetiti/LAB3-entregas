@@ -1,0 +1,111 @@
+{
+  "fecha": "2026-11-26",
+  "repositorio": "https://github.com/ingetiti/LAB3-entregas",
+  "commit": "d47c5ecb93f7ab4c1d2d521a88e68f20713a10a8",
+  "archivos": [
+    {
+      "path": "grupo06/Informe Lab 3 - Arquitectura.pdf",
+      "sha": "8b897aab9186c74a09d534447450cba10ff7de8f"
+    },
+    {
+      "path": "grupo06/README.md",
+      "sha": "a59d41386103e5b3660918a427b5c8d18f5d7793"
+    },
+    {
+      "path": "grupo06/exp_alta_radix.c",
+      "sha": "9480c078339c1195b516443aa67d497f838eeb90"
+    },
+    {
+      "path": "grupo06/exp_lc3.asm",
+      "sha": "55c3c619217ad8eebcdb95722f7563343a5c15e5"
+    },
+    {
+      "path": "grupo06/lab3_punto_fijo.c",
+      "sha": "3e1866cfd9504ca56d7e7c566d03a66b889b2ed5"
+    },
+    {
+      "path": "grupo06/lab3a_puntofijo.asm",
+      "sha": "84657261d1bb7b42f2156c740455da7c377fbf32"
+    },
+    {
+      "path": "grupo27/DOC.md",
+      "sha": "255101bcfbe7d09914937b18ee694714284aa296"
+    },
+    {
+      "path": "grupo27/README.md",
+      "sha": "e565f2642bbf78b88690a0a0e52a9e5bb44b510b"
+    },
+    {
+      "path": "grupo27/como_programar_bloque_automatizacion.asm",
+      "sha": "9990eb8623e4a2aaf73ab1d8510c4fe48ea7de2a"
+    },
+    {
+      "path": "grupo27/como_programar_una_subrutina_RevRC.asm",
+      "sha": "4c1caf97f0d8f5220758b5b0433506fa5f09195f"
+    },
+    {
+      "path": "grupo27/main_menu/main.asm",
+      "sha": "0c9f3a03bd97aa52b06b3d9d65a53e9717dd30a4"
+    },
+    {
+      "path": "grupo27/main_menu/main_menu.asm",
+      "sha": "0f1fa4bae7a69b5b457ec22a67ecc528e369b283"
+    },
+    {
+      "path": "grupo27/main_menu/main_menu_PROGRESO.asm",
+      "sha": "6cc084d2f005e26df28999f150a00570ede94b59"
+    },
+    {
+      "path": "grupo27/main_menu/q_cast/from_qm_n.asm",
+      "sha": "94ccbb65c3d94cc47f852edb84a74dd540c66ef9"
+    },
+    {
+      "path": "grupo27/main_menu/q_cast/to_qm_n.asm",
+      "sha": "9fb6789c1a4c72c1c8ee731a0325f1c98d4f6f59"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/circlsh.asm",
+      "sha": "2e158f72a12050e879f61c4f8afdb1d5c0bbaca7"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/fromdec.asm",
+      "sha": "e60153cdc121f34af3bb2a8e17fc87c2e67af3f7"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/fromhex.asm",
+      "sha": "802d7a845020f44ae9e79ccf71a1fcb275f0b87c"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/getcfiltered.asm",
+      "sha": "a2217b523828e5a29a5a3d81f0d740f5e5dfef53"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/getline.asm",
+      "sha": "fba5c1e890b018e1cc6879374918c5afb9a5ddd4"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/pause.asm",
+      "sha": "4faeb688b920cdaeb006b1a70a692a329bce36b9"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/sumover.asm",
+      "sha": "d85bbf5ac6e92bae437940848700246b586b48bf"
+    },
+    {
+      "path": "grupo27/main_menu/subrutinas/todec.asm",
+      "sha": "80be9d33fb6cc412b7d06fd993e4c7a4487b2cfd"
+    },
+    {
+      "path": "grupo27/main_menu/val_io/getval.asm",
+      "sha": "54af2b9b81385129adbfba33298680b36efa5da8"
+    },
+    {
+      "path": "grupo27/main_menu/val_io/getval_buffer.asm",
+      "sha": "3dffb0b6b7f83faca6134289070d128a6465005d"
+    },
+    {
+      "path": "grupo27/main_menu/val_io/outval.asm",
+      "sha": "322ecb9cdc1fb750bf243764191a1d7db081b3a5"
+    }
+  ]
+}

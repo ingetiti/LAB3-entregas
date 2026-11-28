@@ -1,0 +1,10 @@
+; Adaptacion BYTEX-16; ver ../cambios_punteros.json y ../procedencia.json.
+
+;
+;   Buffer compartido entre las subrutinas de esta carpeta
+;
+
+BUFFER          .BLKW #32
+BUFFER_END      .FILL #0
+
+.END

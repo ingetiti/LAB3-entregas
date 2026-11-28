@@ -1,0 +1,17 @@
+; R0=x7F80, R2=xFF80, R3=xBEEF. El tercer byte termina en x7F.
+; El ensamblador inserta un byte de padding antes de INICIO.
+.ORIG x3000
+    BR INICIO
+DATOS .BYTE x80
+    .BYTE x7F
+    .BYTE x34
+INICIO LEA R1,DATOS
+    AND R0,R0,#0
+    LDBL R0,R1,#0
+    LDBH R0,R1,#1
+    LDBS R2,R1,#0
+    STBH R0,R1,#2
+    LD R3,PALABRA
+    HALT
+PALABRA .FILL xBEEF
+.END

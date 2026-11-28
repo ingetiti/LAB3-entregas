@@ -1,0 +1,9 @@
+OK automatico G27 (OBJ entregado, verboso=1): 23 operaciones, 365469 instrucciones, 0 fallos
+OK automatico G27 (OBJ entregado, verboso=0): 23 operaciones, 241990 instrucciones, 0 fallos
+OK automatico G27 (main recibido, verboso=1): 23 operaciones, 365467 instrucciones, 0 fallos
+OK interactivo (Q7.8) 20.0859375: 12494 instrucciones
+OK interactivo (Q3.12) 0.865966796: 237965 instrucciones
+OK interactivo Hexadecimal: 053E: 8745 instrucciones
+OK interactivo Binario: 1111101111001010: 8840 instrucciones
+Shift+Add: 4292 productos con signo y preservacion de registros, 0 fallos
+Taylor: 11 entradas, 4 cuadrantes, limites y preservacion R1-R7, 0 fallos

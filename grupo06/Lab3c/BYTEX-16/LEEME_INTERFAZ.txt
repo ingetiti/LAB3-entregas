@@ -1,0 +1,73 @@
+INTERFAZ GRAFICA DE BYTEX-16 — GRUPO 6
+26 de noviembre de 2026
+
+ABRIR
+Hace doble clic en interfaz.bat dentro de esta carpeta.
+Tambien podes abrir build/bytex16_gui.exe. Conserva el proyecto completo junto
+al ejecutable: los ejemplos y las bibliotecas se cargan desde estas carpetas.
+Los binarios incluidos estan compilados para Windows x64.
+
+CLARO Y OSCURO
+El boton Modo oscuro de arriba a la derecha cambia la apariencia de los
+paneles, el editor, la consola, la memoria, los registros y los controles.
+En modo oscuro pasa a llamarse Modo claro para volver al tema inicial.
+Tambien esta en Ayuda > Cambiar tema claro / oscuro.
+Alternar el tema conserva el programa, los resultados y los contadores.
+La eleccion vale durante la sesion; al abrir nuevamente inicia en claro.
+Los menus y cuadros de archivos conservan los controles nativos de Windows.
+
+PRIMERA PRUEBA
+1. La ventana inicia con la suma 15 + 27 ya ensamblada.
+2. Ejecutar F5 termina el programa: R0 contiene x002A, decimal 42.
+3. En el campo de memoria escribi RESULTADO y pulsa Enter.
+4. La memoria x300E tambien contiene x002A.
+5. El contador muestra programa=5, sistema=103, total=108.
+6. Desmarca Incluir instrucciones del sistema: el contador grande muestra 5.
+   El resultado y los tres conteos se conservan. Volve a marcarla para ver 108.
+
+TRABAJAR CON OTRO PROGRAMA
+- Archivo > Abrir: acepta .asm y .obj.
+- Ensamblar F7 transforma el fuente en codigo ejecutable y reinicia contadores.
+- Ejecutar F5 ensambla si hace falta y ejecuta. Si termino con HALT, vuelve
+  a iniciar desde la imagen original; si estaba pausado, continua.
+- Pausar F6 o Esc detiene temporalmente la ejecucion.
+- Paso F10 ejecuta un paso del procesador, incluido el sistema si esta alli.
+- Reiniciar F2 restaura memoria y registros, limpia teclado y consola y
+  pone todos los contadores en cero. Conserva los breakpoints.
+- Guardar conserva el fuente como UTF-8. Archivo > Exportar objeto crea .obj.
+
+CONTADORES
+El total siempre incluye cada instruccion realmente buscada y decodificada.
+El desglose separa programa y sistema; no cuenta lineas de comentarios o datos.
+HALT y TRAP del fuente son instrucciones del programa. Sus servicios internos
+se cuentan como sistema. Las bibliotecas EXP y las subrutinas de la calculadora
+se cuentan como programa. La casilla cambia la visualizacion, no la ejecucion.
+El limite de la parte superior usa siempre el total para poder detener bucles.
+Pausar y continuar conserva el acumulado. Ensamblar o reiniciar lo borra.
+
+TECLADO
+Hace clic en la consola y escribi: cada tecla va al programa simulado.
+Enter envia LF, que es lo que espera GETLINE. Tambien podes escribir abajo:
+Enviar linea agrega Enter; Solo texto envia el contenido sin agregar Enter.
+Se admite ASCII. La cola permite hasta 256 bytes pendientes.
+
+EJEMPLOS
+El menu Ejemplos permite cargar suma, mensajes, EXP, operaciones nuevas,
+lectura de teclado y la calculadora completa.
+Para la calculadora: F5, clic en consola, 5, despues 3 y Enter.
+La opcion 5 se elige con esa tecla sola, sin Enter. La pantalla se actualiza
+automaticamente con cada entrada; no hace falta pulsar Pausar ni continuar.
+EXP debe mostrar 20.0859375. Una tecla vuelve al menu; d sale.
+La ventana admite programas propios: la calculadora es una prueba opcional.
+
+BREAKPOINTS Y MEMORIA
+Selecciona una fila y usa BP o F9; tambien sirve doble clic.
+La ejecucion se detiene antes de la instruccion. F5 la continua.
+PC lleva la vista a la direccion de la proxima instruccion.
+Los datos tambien se desensamblan; para un resultado mira Hex y Decimal.
+
+MAS DETALLES
+F1 abre ayuda dentro de la ventana.
+docs/INTERFAZ_GRAFICA.md explica el conteo, la compilacion y como medir
+EXP aislada con breakpoints, sin incluir al llamador ni a la impresion.
+La interfaz reutiliza el ensamblador y el procesador C de nuestra ISA.

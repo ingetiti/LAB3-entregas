@@ -1,0 +1,3 @@
+# Preserve exact delivery bytes, including source files and benchmark inputs.
+# SHA256SUMS.txt must remain valid after Git add and checkout.
+* -text

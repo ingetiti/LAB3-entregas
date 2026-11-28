@@ -1,0 +1,4 @@
+.EXTERNAL aritmetica-NO_EXISTE
+.ORIG x3000
+HALT
+.END
