@@ -1,0 +1,262 @@
+<!doctype html>
+<!--
+  index.html - Interfaz de ISA-5b Studio (Grupo 7)
+  ================================================
+  Estructura limpia en tres paneles configurables:
+    - Ensamblador multimódulo (editor ampliable, errores/avisos, Hex / Listado / Símbolos)
+    - Simulador funcional (registros, próximas instrucciones, consola E/S, traza FAULT)
+    - Memoria byte a byte, variables de datos y métricas de desempeño
+  Scripts clásicos (sin ES modules) para funcionar desde file://, GitHub Pages o servidor local.
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ISA-5b Studio — Ensamblador y Simulador · Grupo 7</title>
+  <meta name="description" content="Ensamblador multimódulo y simulador funcional para la ISA expandida de 5 bits de opcode (Grupo 7).">
+  <meta property="og:title" content="ISA-5b Studio — Ensamblador y Simulador · Grupo 7">
+  <meta property="og:description" content="Ensamblador multimódulo y simulador funcional para la ISA expandida de 5 bits de opcode (Grupo 7).">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="simulador/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="logo">LC-3</span>
+    <span class="sub">Ensamblador y simulador funcional · Grupo 7</span>
+  </div>
+  <div class="status-wrap">
+    <span id="statusPill" class="pill idle">SIN CARGAR</span>
+    <span id="faultMsg" class="fault" hidden></span>
+  </div>
+</header>
+
+<nav class="blocks-bar" aria-label="Mostrar u ocultar bloques">
+  <span class="blocks-lbl">Paneles</span>
+  <button type="button" class="blk-btn on" data-block="asmPanel" aria-pressed="true">Ensamblador</button>
+  <button type="button" class="blk-btn on" data-block="runPanel" aria-pressed="true">Simulador</button>
+  <button type="button" class="blk-btn on" data-block="memPanel" aria-pressed="true">Memoria y métricas</button>
+  <span class="blocks-sep" aria-hidden="true"></span>
+  <span class="blocks-lbl">Bloques</span>
+  <button type="button" class="blk-btn on" data-block="registros" aria-pressed="true">Registros</button>
+  <button type="button" class="blk-btn on" data-block="disasm" aria-pressed="true">Próx. instrucciones</button>
+  <button type="button" class="blk-btn on" data-block="consola" aria-pressed="true">Consola E/S</button>
+  <button type="button" class="blk-btn on" data-block="memgrid" aria-pressed="true">Mapa memoria</button>
+  <button type="button" class="blk-btn on" data-block="watch" aria-pressed="true">Variables</button>
+  <button type="button" class="blk-btn on" data-block="metrics" aria-pressed="true">Métricas</button>
+</nav>
+
+<main id="mainGrid" class="grid cols-3">
+  <!-- ===== Panel izquierdo: ensamblador ===== -->
+  <section class="panel" id="asmPanel">
+    <div class="panel-hd">
+      <h2>Ensamblador</h2>
+      <div class="panel-actions">
+        <button id="btnAsmTall" type="button" class="ghost sm" aria-pressed="false" title="Aumentar la altura del editor">Ampliar alto</button>
+        <button id="btnAsmWide" type="button" class="ghost sm" aria-pressed="false" title="Expandir el ensamblador a todo el ancho">Expandir</button>
+      </div>
+    </div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Módulos assembly"></div>
+    <div class="editor-wrap">
+      <pre class="gutter" id="gutter" aria-hidden="true"></pre>
+      <textarea id="editor" spellcheck="false" wrap="off" aria-label="Código assembly"></textarea>
+    </div>
+    <div class="row">
+      <button id="btnAddMod" type="button" class="ghost">+ Módulo</button>
+      <label class="btn ghost" for="fileAsm">Abrir .asm<input id="fileAsm" type="file" accept=".asm,.txt,.s" multiple hidden></label>
+      <label class="btn ghost" for="fileZip">Cargar .zip<input id="fileZip" type="file" accept=".zip" hidden></label>
+      <button id="btnDlZip" type="button" class="ghost">Descargar .zip</button>
+      <button id="btnRestoreBench" type="button" class="ghost">Restaurar benchmark</button>
+      <button id="btnRenameMod" type="button" class="ghost">Renombrar</button>
+      <button id="btnDelMod" type="button" class="ghost danger">Quitar</button>
+    </div>
+    <div class="row">
+      <button id="btnAssemble" type="button" class="primary">Ensamblar a Hex/Bin</button>
+    </div>
+    <div id="asmMsgs" class="msgs" aria-live="polite"></div>
+
+    <div class="subtabs" role="tablist" aria-label="Salida del ensamblador">
+      <button type="button" class="subtab on" data-view="hex" role="tab" aria-selected="true">Hex</button>
+      <button type="button" class="subtab" data-view="listing" role="tab" aria-selected="false">Listado</button>
+      <button type="button" class="subtab" data-view="symbols" role="tab" aria-selected="false">Símbolos</button>
+    </div>
+    <pre id="outView" class="out">Todavía no se ensambló nada.</pre>
+    <div class="row">
+      <button id="btnDlHex" type="button" class="ghost" disabled>Descargar .hex</button>
+      <button id="btnDlBin" type="button" class="ghost" disabled>Descargar .bin</button>
+      <button id="btnExportListing" type="button" class="ghost" disabled>Exportar listado</button>
+      <label class="btn ghost" for="fileImg">Subir .hex/.bin<input id="fileImg" type="file" accept=".hex,.bin,.txt" hidden></label>
+    </div>
+  </section>
+
+  <!-- ===== Panel central: ejecución ===== -->
+  <section class="panel" id="runPanel">
+    <div class="panel-hd">
+      <h2>Simulador</h2>
+    </div>
+    <div class="row">
+      <button id="btnLoad" type="button" class="primary" disabled>Cargar en Simulador</button>
+      <button id="btnRun" type="button" disabled>Ejecutar (Run)</button>
+      <button id="btnStep" type="button" disabled>Paso a Paso (Step)</button>
+      <button id="btnReset" type="button" disabled>Reiniciar</button>
+    </div>
+    <div class="row small">
+      <label for="speed">Velocidad
+        <select id="speed">
+          <option value="1">Lenta (1 instr/frame)</option>
+          <option value="200">Media</option>
+          <option value="5000" selected>Rápida</option>
+          <option value="50000">Máxima</option>
+        </select>
+      </label>
+      <label for="limit">Límite <input id="limit" type="number" min="1" value="5000000"> instr.</label>
+    </div>
+
+    <div class="cpu-line">
+      <div class="reg-box"><span class="k">PC</span><b id="vPC">----</b></div>
+      <div class="reg-box"><span class="k">IR</span><b id="vIR">----</b></div>
+      <div class="reg-box flags"><span class="k">NZP</span>
+        <i id="fN">N</i><i id="fZ">Z</i><i id="fP">P</i>
+      </div>
+    </div>
+
+    <div id="faultTrace" class="fault-box" hidden>
+      <div class="fault-hd">
+        <span id="faultTitle" class="fault-title"></span>
+        <span id="faultPc" class="fault-pc"></span>
+      </div>
+      <div id="faultLoc" class="fault-loc"></div>
+      <div class="fault-sub">Últimas instrucciones ejecutadas (hasta 15)</div>
+      <div id="faultTraceList" class="trace-list"></div>
+    </div>
+
+    <div class="blk" data-blk="registros">
+      <h3>Registros</h3>
+      <table class="regs" id="regs">
+        <thead><tr><th>Reg</th><th>Hex</th><th>Dec (Q15.0)</th><th>Binario</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="blk" data-blk="disasm">
+      <h3>Próximas instrucciones</h3>
+      <pre id="disasm" class="out disasm">—</pre>
+    </div>
+
+    <div class="blk" data-blk="consola">
+      <h3>Consola E/S</h3>
+      <pre id="console" class="console" tabindex="0" aria-label="Consola de salida"></pre>
+      <form id="inForm" class="row">
+        <input id="inText" type="text" autocomplete="off" placeholder="Tecla por tecla (cada tecla se envía al instante)" aria-label="Entrada de consola">
+        <label class="chk key-mode" for="inKeyMode" title="Envía cada tecla al instante (Enter = salto de línea, Backspace = BS 8) sin agregar '\n' extra">
+          <input id="inKeyMode" type="checkbox" checked> Tecla por tecla
+        </label>
+        <button type="submit" id="btnSendIn" class="ghost">Enviar</button>
+        <button type="button" id="btnClearCon" class="ghost">Limpiar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== Panel derecho: memoria y métricas ===== -->
+  <section class="panel" id="memPanel">
+    <div class="panel-hd">
+      <h2>Memoria y métricas</h2>
+    </div>
+
+    <div class="blk" data-blk="memgrid">
+      <div class="row small">
+        <label for="memAddr">Dirección x<input id="memAddr" type="text" value="3000" maxlength="4" size="5"></label>
+        <button id="btnGo" type="button" class="ghost">Ir</button>
+        <label class="chk" for="follow"><input id="follow" type="checkbox" checked> seguir PC</label>
+      </div>
+      <div class="legend">
+        <span><i class="lg loaded"></i>cargado</span>
+        <span><i class="lg fetched"></i>instrucción</span>
+        <span><i class="lg read"></i>leído</span>
+        <span><i class="lg written"></i>escrito</span>
+        <span><i class="lg pc"></i>PC</span>
+      </div>
+      <div id="mem" class="mem"></div>
+    </div>
+
+    <div class="blk" data-blk="watch">
+      <h3>Variables (etiquetas de datos)</h3>
+      <div id="watch" class="watch">—</div>
+    </div>
+
+    <div class="blk" data-blk="metrics">
+      <h3>Métricas de desempeño</h3>
+      <div class="metrics" id="metrics">
+        <div><span>Instrucciones (sin SO)</span><b id="mInstr">0</b></div>
+        <div><span>Instrucciones (con SO)</span><b id="mInstrOS">0</b></div>
+        <div><span>Bytes cargados</span><b id="mLoaded">0</b></div>
+        <div><span>Bytes guardados</span><b id="mWritten">0</b></div>
+        <div><span>Lecturas de datos</span><b id="mRd">0</b></div>
+        <div><span>Escrituras de datos</span><b id="mWr">0</b></div>
+      </div>
+      <p class="hint">Sin SO = instrucciones del programa. Con SO = además las que usaría el sistema operativo al resolver los TRAP (GETC, OUT, PUTS, IN, HALT). Bytes guardados = bytes distintos escritos en memoria al ejecutar.</p>
+      <div class="ops" id="ops"></div>
+      <div class="row">
+        <button id="btnCopyMetrics" type="button" class="ghost">Copiar métricas</button>
+        <span id="copyStatus" class="copy-status" aria-live="polite"></span>
+      </div>
+      <div id="copyFallback" class="copy-fallback" hidden>
+        <label for="copyText" class="hint">Copiá manualmente las métricas para el informe:</label>
+        <textarea id="copyText" readonly></textarea>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="emptyState" class="empty-state" hidden>
+  Todos los paneles están ocultos. Activá al menos uno en la barra superior.
+</div>
+
+<footer class="foot">
+  <div class="foot-links">
+    <button id="btnAutotest" type="button" class="ghost">Autotest</button>
+  </div>
+</footer>
+
+<dialog id="autotestDialog" class="dlg" aria-labelledby="atTitle">
+  <div class="dlg-hd">
+    <h2 id="atTitle">Autotest de verificación</h2>
+    <div class="row">
+      <button id="btnRunAutotest" type="button" class="ghost">Volver a ejecutar</button>
+      <button id="btnCloseAutotest" type="button" class="ghost">Cerrar</button>
+    </div>
+  </div>
+  <div id="atSummary" class="dlg-sum" aria-live="polite"></div>
+  <div id="atList" class="dlg-list"></div>
+</dialog>
+
+<dialog id="importDialog" class="dlg" aria-labelledby="impTitle">
+  <div class="dlg-hd">
+    <h2 id="impTitle">Cargar módulos</h2>
+    <button id="btnImpCancel" type="button" class="ghost">Cancelar</button>
+  </div>
+  <div id="impSummary" class="imp-sum"></div>
+  <div id="impWarnings" class="msgs"></div>
+  <p class="hint">Elegí cómo incorporar los módulos seleccionados (en modo agregar, los nombres existentes se sobrescriben):</p>
+  <div class="row">
+    <button id="btnImpReplace" type="button" class="primary">Reemplazar todos los módulos</button>
+    <button id="btnImpAdd" type="button">Agregar a los existentes</button>
+  </div>
+</dialog>
+
+<div id="dropOverlay" class="drop-overlay" hidden>
+  <div class="drop-box">Soltá un archivo <b>.zip</b> o archivos <b>.asm</b> para cargar módulos</div>
+</div>
+
+<script src="ensamblador/isa.js"></script>
+<script src="simulador/cpu.js"></script>
+<script src="ensamblador/assembler.js"></script>
+<script src="ejemplos/ejemplos.js"></script>
+<script src="simulador/autotest.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="simulador/app.js"></script>
+</body>
+</html>
