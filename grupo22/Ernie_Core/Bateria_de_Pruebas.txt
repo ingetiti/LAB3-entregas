@@ -1,0 +1,37 @@
+1. Pruebas rápidas del Ensamblador (ernie_assembler.py)
+1.1. Validación de sintaxis sin generar archivos (--syntax):
+
+python ernie_assembler.py --syntax Benchmark_Versions\Benchmark_Optimized\lib\g22_Tabla_SIN_y_COS.asm
+
+1.2. Reglas estrictas (--strict):
+
+python ernie_assembler.py --syntax --strict Benchmark_Versions\Benchmark_Optimized\lib\g22_Tabla_SIN_y_COS.asm
+
+1.3. Mapa de memoria y tabla de símbolos en consola (--map):
+
+python ernie_assembler.py --map Benchmark_Versions\Benchmark_Optimized\lib\g22_Tabla_SIN_y_COS.asm
+
+2. Pruebas rápidas del Runner y Simulador (ernie_runner.py / ernie_simulator.py)
+
+2.1 Autoevaluación automática del benchmark (--selftest):
+
+python ernie_runner.py --selftest --opt
+
+2.2. Perfilado de subrutinas y pico de pila (--profile):
+
+python ernie_runner.py --profile --opt | Select-String "SUBRUTINA|G22|SENO|COSENO|R6"
+
+2.3 Auditoría de convención de llamadas (--check-abi):
+
+python ernie_runner.py --check-abi --opt | Select-String "SUBRUTINA|G22|SENO_TABLA|COSENO_TABLA|Llamadas"
+
+2.4. Verificación integral de los 723 vectores (--verify):
+
+python ernie_runner.py --verify --opt
+
+3. Ejecución directa del Simulador con un binario individual (ernie_simulator.py)
+
+3.1 Ensamblar, simular y auditar ABI sobre un .bin puntual:
+
+python ernie_assembler.py Benchmark_Versions\Benchmark_Optimized\lib\g22_Tabla_SIN_y_COS.asm Resultados\test_g22.bin
+python ernie_simulator.py --check-abi Resultados\test_g22.bin
